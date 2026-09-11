@@ -22,8 +22,22 @@ export const headlineWords = ["solves", "builds", "vibe codes"] as const;
 export const headlineStaticSentence =
   "Designer who solves, builds, and vibe codes.";
 
-/** Horizontal editorial label under the headline, one line, always. */
+/**
+ * A vertical editorial annotation beside the headline on desktop —
+ * rotated ~90° via writing-mode, reflowing to a horizontal row on
+ * narrow screens rather than disappearing.
+ */
 export const sideVocabulary = ["DESIGN", "DETAILS", "VIBE CODING"] as const;
+
+/**
+ * Reserved placeholder for the future "design journey, rapped" audio
+ * moment. No audio exists yet — swap `AudioPlaceholder` for a real
+ * player without touching the hero layout around it.
+ */
+export const audioPlaceholder = {
+  title: "My design journey, rapped",
+  status: "Coming soon",
+} as const;
 
 export type NavItem = {
   label: string;

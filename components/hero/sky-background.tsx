@@ -2,7 +2,8 @@
  * The hero's sky environment — an illustrated world, not a gradient.
  *
  * One SVG canvas carries the whole scene (sun/moon, three depths of
- * cloud, a night horizon, stars) so the composition scales fluidly
+ * cloud drifting at different speeds, a night horizon, stars, and an
+ * occasional shooting star) so the composition scales fluidly
  * with the hero instead of being assembled from separately-positioned
  * divs. Sun and moon share the same position: day and night are two
  * states of one world, not two different backgrounds (spec: "do not
@@ -111,6 +112,12 @@ export function SkyBackground() {
             <circle cx="1180" cy="200" r="52" fill="white" />
             <circle cx="1202" cy="185" r="45" fill="black" />
           </mask>
+          {/* Keyed off --star, so this fades away in daylight with no
+              extra logic — same trick the stars themselves use. */}
+          <linearGradient id="shooting-tail" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--star)" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="var(--star)" stopOpacity="0" />
+          </linearGradient>
         </defs>
 
         {/* ---------------- sun (day) / moon (night) ---------------- */}
@@ -155,6 +162,24 @@ export function SkyBackground() {
           {SPARKLES.map((s, i) => (
             <Sparkle key={i} {...s} />
           ))}
+
+          {/* A shooting star — one brief crossing every ~23s, timed so
+              it reads as a small discovery rather than a loop you'd
+              consciously wait for. Travels behind the headline's
+              on-screen position, gated to night by the --star token
+              like everything else here. */}
+          <g className="opacity-0 motion-safe:animate-shooting-star">
+            <line
+              x1="792"
+              y1="112"
+              x2="742"
+              y2="152"
+              stroke="url(#shooting-tail)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            <circle cx="742" cy="152" r="2.4" fill="var(--star)" />
+          </g>
         </g>
 
         {/* ---------------- cloud strata ---------------- */}
@@ -172,7 +197,7 @@ export function SkyBackground() {
           ))}
         </g>
 
-        <g>
+        <g className="motion-safe:animate-drift-slower">
           {MID_CLOUDS.map((c, i) => (
             <g key={i}>
               <use

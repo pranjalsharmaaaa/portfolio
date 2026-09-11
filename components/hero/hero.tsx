@@ -1,3 +1,4 @@
+import { AudioPlaceholder } from "@/components/hero/audio-placeholder";
 import { GlassNav } from "@/components/navigation/glass-nav";
 import { AnimatedHeadline } from "@/components/hero/animated-headline";
 import { LocationBadge } from "@/components/hero/location-badge";
@@ -8,9 +9,9 @@ import { kicker } from "@/lib/site-content";
 /**
  * The complete first-screen composition: an illustrated sky world
  * carrying the intro copy, a centered glass nav, a location marker,
- * and a quiet editorial caption. A self-contained scene — the
- * transition into the rest of the site is deliberately out of scope
- * for now.
+ * a vertical design annotation, and a reserved slot for a future
+ * audio moment. A self-contained scene — the transition into the
+ * rest of the site is deliberately out of scope for now.
  */
 export function Hero() {
   return (
@@ -40,14 +41,33 @@ export function Hero() {
           <div aria-hidden="true" className="hidden md:block" />
         </div>
 
-        <div className="flex flex-1 flex-col justify-center gap-8 py-10 sm:py-14">
-          <p className="text-xs font-semibold tracking-[0.25em] text-ink-muted uppercase">
-            {kicker}
-          </p>
+        {/* Vocabulary gets its own grid track beside the headline so it
+            can never overlap it — a design annotation, not underneath
+            the type on desktop, reflowing to a horizontal row above it
+            on narrow screens instead of disappearing. */}
+        <div className="grid flex-1 grid-cols-1 items-center gap-8 py-10 md:grid-cols-[auto_1fr] md:gap-10 sm:py-14 lg:gap-14">
+          <div className="hidden h-56 items-center justify-center md:flex">
+            <SideVocabulary />
+          </div>
 
-          <AnimatedHeadline />
+          <div className="flex flex-col gap-6">
+            <div className="md:hidden">
+              <SideVocabulary />
+            </div>
 
-          <SideVocabulary />
+            <p className="text-xs font-semibold tracking-[0.25em] text-ink-muted uppercase">
+              {kicker}
+            </p>
+
+            <AnimatedHeadline />
+          </div>
+        </div>
+
+        {/* A quiet, floating reservation for the future audio moment —
+            positioned low and to the right so it reads as an object
+            found in the sky, not a UI bar competing with the type. */}
+        <div className="flex justify-center md:justify-end">
+          <AudioPlaceholder />
         </div>
       </div>
     </section>

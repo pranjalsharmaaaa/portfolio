@@ -121,6 +121,8 @@
   --animate-drift-slow: drift 70s ease-in-out infinite;
   --animate-drift-slower: drift 100s ease-in-out infinite reverse;
   --animate-spin-slow: spin 5s linear infinite;
+  --animate-float-slow: float-slow 6s ease-in-out infinite;
+  --animate-shooting-star: shooting-star 23s linear infinite;
 }
 
 @keyframes twinkle {
@@ -148,6 +150,89 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* The audio placeholder drifts as if suspended in the sky. */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* A shooting star: mostly invisible, crosses the sky once per long
+   cycle so it reads as a discovery rather than a constant effect.
+   Night-only (gated by --star being transparent by day). */
+@keyframes shooting-star {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  2% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0;
+    transform: translate(-220px, 130px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-220px, 130px);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero typography interaction                                         */
+/*                                                                      */
+/* "Designer who" reacts letter-by-letter — a hover-driven wave for    */
+/* mouse users (pure CSS, no JS) and a matching one-shot animation for */
+/* keyboard focus / touch, since :hover can't reach either of those.   */
+/* ------------------------------------------------------------------ */
+
+.letter-hoverable {
+  display: inline-block;
+  transition:
+    color 0.22s ease,
+    transform 0.22s ease;
+}
+.letter-hoverable:hover {
+  color: var(--accent);
+  font-style: italic;
+  transform: translateY(-0.09em);
+}
+
+@keyframes letter-pulse {
+  0%,
+  100% {
+    color: inherit;
+    font-style: normal;
+    transform: translateY(0);
+  }
+  40% {
+    color: var(--accent);
+    font-style: italic;
+    transform: translateY(-0.09em);
+  }
+}
+.letter-wave {
+  /* No fill-mode: once this finishes, it must fully let go of
+     color/transform so :hover can take over again — an earlier draft
+     used `both`, which kept "winning" over :hover forever after the
+     first play because a fill-forwards animation outranks a static
+     pseudo-class rule for the same properties. */
+  animation: letter-pulse 0.9s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter-hoverable:hover {
+    transform: none;
+  }
+  .letter-wave {
+    animation: none;
   }
 }
 

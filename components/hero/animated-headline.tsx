@@ -12,6 +12,8 @@ import {
 /** Longest word in the loop — reserves layout space so nothing jumps. */
 const LONGEST_WORD = headlineWords.reduce((a, b) => (b.length > a.length ? b : a));
 
+const DESIGNER_WHO = "Designer who";
+
 const containerVariants: Variants = {
   initial: {},
   animate: { transition: { staggerChildren: 0.022, delayChildren: 0.01 } },
@@ -68,20 +70,60 @@ function Letters({ word, variants }: { word: string; variants: Variants }) {
 }
 
 /**
+ * "Designer who", letter by letter. Each letter reacts to a mouse
+ * hovering directly over it (plain CSS `:hover` — no JS, so it costs
+ * nothing and can't lag). The caller remounts this component (via its
+ * own `key`) to replay the `.letter-wave` CSS animation across every
+ * letter at once — the equivalent for keyboard focus and touch, since
+ * neither can trigger a per-letter `:hover`.
+ */
+function DesignerWho() {
+  return (
+    <span aria-hidden="true">
+      {[...DESIGNER_WHO].map((ch, i) =>
+        ch === " " ? (
+          <span key={i} className="inline-block" style={{ width: "0.3em" }} />
+        ) : (
+          <span
+            key={i}
+            className="letter-hoverable letter-wave"
+            style={{ animationDelay: `${i * 26}ms` }}
+          >
+            {ch}
+          </span>
+        ),
+      )}
+    </span>
+  );
+}
+
+/**
  * "Designer who {solves → builds → vibe codes}" — the hero's primary
- * visual element, not a small typographic detail.
+ * visual element.
  *
- * The word swap animates per letter (a brief staggered "reveal" in,
- * "collapse" out) rather than a flat crossfade, so it reads as a
- * designed transformation. Hovering, focusing, or touching the word
- * replays that same per-letter choreography in place — the text
- * visibly responds to attention instead of sitting inert — and pauses
- * the loop so it holds still while being read.
+ * Two deliberately separate interactions live here, per spec:
+ *
+ * A) The automatic loop (solves → builds → vibe codes) animates each
+ *    word swap per letter — a staggered "reveal" in, "collapse" out —
+ *    rather than a flat crossfade.
+ * B) "Designer who" has its own, different reaction: hovering a
+ *    letter tilts it italic in the accent color (pure CSS); keyboard
+ *    focus or a touch replays that same transform as a wave across
+ *    every letter, since neither can trigger per-letter `:hover`.
+ *
+ * Focusing or touching the headline also pauses the loop — a small
+ * courtesy so the text holds still while it's being read — but that's
+ * a side effect, not the interaction itself.
+ *
+ * One focusable element carries both: aria-hidden decorative glyphs
+ * nested under a properly-labeled ancestor, never the reverse (an
+ * earlier draft made the animated word itself both aria-hidden and
+ * tabbable — a real WCAG violation — before landing on this shape).
  */
 export function AnimatedHeadline() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [waveKey, setWaveKey] = useState(0);
+  const [designerWaveKey, setDesignerWaveKey] = useState(0);
   const prefersReducedMotion = useReducedMotion();
   const touchReleaseTimer = useRef<number | undefined>(undefined);
 
@@ -95,21 +137,22 @@ export function AnimatedHeadline() {
 
   useEffect(() => () => window.clearTimeout(touchReleaseTimer.current), []);
 
-  const triggerWave = () => {
-    if (!prefersReducedMotion) setWaveKey((k) => k + 1);
-  };
+  // Mouse hover directly over the cycling word: pause only. Its own
+  // reaction is interaction A's transitions, already in motion.
+  const pauseOnHover = () => setPaused(true);
+  const releaseHover = () => setPaused(false);
 
-  const holdStill = () => {
+  // Focus/touch on the whole headline: pause, and play interaction B
+  // (the "Designer who" wave) since :hover can't reach either input.
+  const engage = () => {
     setPaused(true);
-    triggerWave();
+    if (!prefersReducedMotion) setDesignerWaveKey((k) => k + 1);
   };
-  const release = () => setPaused(false);
-
+  const disengage = () => setPaused(false);
   const handleTouchStart = () => {
-    setPaused(true);
-    triggerWave();
+    engage();
     window.clearTimeout(touchReleaseTimer.current);
-    touchReleaseTimer.current = window.setTimeout(() => setPaused(false), 1400);
+    touchReleaseTimer.current = window.setTimeout(disengage, 1400);
   };
 
   const word = headlineWords[index];
@@ -122,24 +165,22 @@ export function AnimatedHeadline() {
           heading" command) gets one static, complete sentence. */}
       <span className="sr-only">{headlineStaticSentence}</span>
 
-      <span className="flex flex-col gap-1 sm:gap-2">
-        <span aria-hidden="true" className="text-[clamp(1.75rem,4vw,3rem)] leading-tight">
-          Designer who
+      <span
+        tabIndex={0}
+        aria-label={headlineStaticSentence}
+        onFocus={engage}
+        onBlur={disengage}
+        onTouchStart={handleTouchStart}
+        className="flex w-fit flex-col gap-1 sm:gap-2"
+      >
+        <span className="text-[clamp(2.5rem,5.5vw,4.25rem)] leading-tight">
+          <DesignerWho key={designerWaveKey} />
         </span>
 
-        {/* Tab-navigation mode gets its own focusable stop with the same
-            sentence as its accessible name — NOT aria-hidden, since a
-            focusable element that's invisible to assistive tech is the
-            one thing worse than no interaction at all. Its letter
-            glyphs are purely decorative and stay aria-hidden. */}
         <span
-          onMouseEnter={holdStill}
-          onMouseLeave={release}
-          onFocus={holdStill}
-          onBlur={release}
-          onTouchStart={handleTouchStart}
-          tabIndex={0}
-          aria-label={headlineStaticSentence}
+          onMouseEnter={pauseOnHover}
+          onMouseLeave={releaseHover}
+          aria-hidden="true"
           className="relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(4.5rem,13vw,10.5rem)] leading-[0.95] italic"
           style={{ perspective: 600 }}
         >
@@ -150,8 +191,7 @@ export function AnimatedHeadline() {
 
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
-              key={`${word}-${waveKey}`}
-              aria-hidden="true"
+              key={word}
               className="absolute inset-0 whitespace-nowrap"
               style={{ color: "var(--accent)" }}
               variants={container}
