@@ -31,6 +31,11 @@
   --hero-text: #fffaf2;
   --hero-text-quiet: rgb(255 250 242 / 78%);
 
+  /* Bottom-edge decorative pattern — fixed cream in both themes, same
+     idea as --hero-text: one consistent motif whether it's sitting on
+     the day gradient or the night horizon, not a re-tinted skin. */
+  --shore: rgb(255 250 242 / 88%);
+
   /* Surfaces */
   --surface: #fffdf9;
   --nav-bg: rgb(255 255 255 / 55%);

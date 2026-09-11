@@ -61,6 +61,28 @@ const SPARKLES = [
   { x: 1290, y: 260, size: 7 },
 ] as const;
 
+/**
+ * A decorative flowing pattern along the hero's bottom edge — the same
+ * illustrated world continuing to its lower border rather than trailing
+ * off into flat empty space. Each instance reuses one tapered ribbon
+ * shape (`#swoosh-shape`) at a different position/size/rotation, the
+ * same layering trick as the cloud strata above. Fixed cream in both
+ * themes (see `--shore`) so it reads as one consistent motif whether
+ * it's sitting on the day gradient or the night horizon, exactly like
+ * `--hero-text` staying white in both.
+ */
+type SwooshInstance = { x: number; y: number; scale: number; rotate: number; opacity?: number };
+
+const SHORE_SWOOSHES: SwooshInstance[] = [
+  { x: -60, y: 792, scale: 1.5, rotate: -5 },
+  { x: 240, y: 838, scale: 1.05, rotate: 4 },
+  { x: 470, y: 788, scale: 1.65, rotate: -3 },
+  { x: 760, y: 832, scale: 1.15, rotate: 7 },
+  { x: 1010, y: 782, scale: 1.5, rotate: -6 },
+  { x: 1280, y: 828, scale: 1.25, rotate: 5 },
+  { x: 1500, y: 786, scale: 1.4, rotate: -8 },
+];
+
 function Sparkle({ x, y, size }: { x: number; y: number; size: number }) {
   return (
     <path
@@ -95,6 +117,13 @@ export function SkyBackground() {
           <symbol id="cloud-shape" viewBox="0 0 210 95">
             <path d={CLOUD_PATH} />
           </symbol>
+          {/* A tapered, comma-like ribbon — the unit shape behind the
+              bottom-edge pattern. Original geometry, not traced from
+              any reference: several bezier lobes so it reads as a
+              flowing brush stroke rather than a simple oval. */}
+          <symbol id="swoosh-shape" viewBox="0 0 200 60">
+            <path d="M4,40 C18,12 52,4 88,13 C111,19 118,36 145,35 C166,34 177,17 196,21 C184,42 159,53 130,51 C103,49 82,35 55,40 C33,44 13,52 4,40 Z" />
+          </symbol>
           <filter id="soft-blur-lg" x="-60%" y="-60%" width="220%" height="220%">
             <feGaussianBlur stdDeviation="34" />
           </filter>
@@ -109,8 +138,8 @@ export function SkyBackground() {
               shows through the "dark" side, so it never reads as a
               solid eclipse disc. */}
           <mask id="moon-phase">
-            <circle cx="1180" cy="200" r="60" fill="white" />
-            <circle cx="1204" cy="183" r="52" fill="black" />
+            <circle cx="1300" cy="200" r="60" fill="white" />
+            <circle cx="1324" cy="183" r="52" fill="black" />
           </mask>
           {/* Keyed off --star, so this fades away in daylight with no
               extra logic — same trick the stars themselves use. */}
@@ -121,26 +150,29 @@ export function SkyBackground() {
         </defs>
 
         {/* ---------------- sun (day) / moon (night) ---------------- */}
-        {/* parallax-glow: a faint drift toward the cursor, as if the
+        {/* Sits farther right than the headline ever reaches — clear of
+            "Designer who" and the cycling word at every breakpoint —
+            rather than crowding the main typography.
+            parallax-glow: a faint drift toward the cursor, as if the
             light source itself has a little atmosphere of its own. */}
         <g className="sun-layer parallax-glow">
           {/* A large, clean warm disc with a soft atmosphere around
               it — no hard-edged ring, just glow → mid → core, so it
               reads as one illustrated light source rather than a
               generic CSS gradient circle. */}
-          <circle cx="1180" cy="200" r="185" fill="var(--sun-glow)" filter="url(#soft-blur-lg)" />
-          <circle cx="1180" cy="200" r="110" fill="var(--sun-glow)" filter="url(#soft-blur-md)" opacity="0.7" />
-          <circle cx="1180" cy="200" r="68" fill="var(--sun-mid)" filter="url(#soft-blur-sm)" />
-          <circle cx="1180" cy="200" r="52" fill="var(--sun-core)" />
+          <circle cx="1300" cy="200" r="185" fill="var(--sun-glow)" filter="url(#soft-blur-lg)" />
+          <circle cx="1300" cy="200" r="110" fill="var(--sun-glow)" filter="url(#soft-blur-md)" opacity="0.7" />
+          <circle cx="1300" cy="200" r="68" fill="var(--sun-mid)" filter="url(#soft-blur-sm)" />
+          <circle cx="1300" cy="200" r="52" fill="var(--sun-core)" />
         </g>
 
         <g className="moon-layer parallax-glow">
-          <circle cx="1180" cy="200" r="175" fill="var(--moon-glow)" filter="url(#soft-blur-lg)" />
+          <circle cx="1300" cy="200" r="175" fill="var(--moon-glow)" filter="url(#soft-blur-lg)" />
           <g mask="url(#moon-phase)">
-            <circle cx="1180" cy="200" r="60" fill="var(--moon-body)" />
-            <circle cx="1161" cy="214" r="8" fill="var(--moon-shade)" />
-            <circle cx="1178" cy="180" r="5" fill="var(--moon-shade)" />
-            <circle cx="1197" cy="222" r="4" fill="var(--moon-shade)" />
+            <circle cx="1300" cy="200" r="60" fill="var(--moon-body)" />
+            <circle cx="1281" cy="214" r="8" fill="var(--moon-shade)" />
+            <circle cx="1298" cy="180" r="5" fill="var(--moon-shade)" />
+            <circle cx="1317" cy="222" r="4" fill="var(--moon-shade)" />
           </g>
         </g>
 
@@ -257,6 +289,27 @@ export function SkyBackground() {
           filter="url(#soft-blur-sm)"
           className="transition-colors duration-700"
         />
+
+        {/* ---------------- bottom-edge decorative pattern ---------------- */}
+        {/* Sits on top of the horizon so the hero's lower edge keeps
+            going rather than fading into flat space — the same barely-
+            perceptible breathing motion as the cloud strata, at a scale
+            too slow to distract from it being decorative. */}
+        <g className="motion-safe:animate-drift-slower" opacity="0.92">
+          {SHORE_SWOOSHES.map((s, i) => (
+            <use
+              key={i}
+              href="#swoosh-shape"
+              x={s.x}
+              y={s.y}
+              width={200 * s.scale}
+              height={60 * s.scale}
+              opacity={s.opacity ?? 1}
+              transform={`rotate(${s.rotate} ${s.x + 100 * s.scale} ${s.y + 30 * s.scale})`}
+              fill="var(--shore)"
+            />
+          ))}
+        </g>
       </svg>
 
       {/* Grain — a hair of texture so nothing reads as a flat vector fill. */}

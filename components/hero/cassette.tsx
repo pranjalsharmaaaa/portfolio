@@ -6,7 +6,7 @@ import { cassette } from "@/lib/site-content";
 function Reel() {
   return (
     <div
-      className="cassette-reel relative flex aspect-square w-[clamp(3.25rem,5.5vw,4.25rem)] shrink-0 items-center justify-center rounded-full"
+      className="cassette-reel relative flex aspect-square w-[clamp(2.5rem,9vw,4.25rem)] shrink-0 items-center justify-center rounded-full"
       style={{
         background:
           "radial-gradient(circle at 35% 30%, #4b5266 0%, #2b303e 55%, #1c2029 100%)",
@@ -54,7 +54,12 @@ export function Cassette() {
 
   return (
     <div
-      className="cassette flex w-[clamp(23rem,30vw,32rem)] items-center gap-3 rounded-[1.75rem] p-3"
+      // Below `sm`, the fixed desktop floor (26rem) doesn't fit a phone
+      // viewport — it would sit inside the section's `overflow-hidden`
+      // and get visually clipped rather than triggering a scrollbar, so
+      // it needs its own viewport-relative cap there instead of just
+      // inheriting the desktop clamp.
+      className="cassette flex w-[min(85vw,26rem)] items-center gap-3 rounded-[1.75rem] p-3 sm:w-[clamp(26rem,30vw,32rem)]"
       style={{
         background: "linear-gradient(160deg, #fffaf0 0%, #f6e9cf 100%)",
         boxShadow:
@@ -77,10 +82,13 @@ export function Cassette() {
             that DOES flip (text-ink, var(--accent-strong), …), or
             dark mode quietly turns them into light-on-light. Verified
             by screenshotting dark mode specifically, not assumed. */}
-        {/* Wraps rather than truncates — "My design journey, rapped" must
-            stay fully visible (spec), and a fixed clamp width can't
-            guarantee enough room for it at every desktop breakpoint. */}
-        <p className="text-[0.85rem] leading-snug font-semibold" style={{ color: "#1c2230" }}>
+        {/* Must stay on one line (spec) — the cassette's minimum width
+            (26rem) is sized with enough room for "My design journey,
+            rapped" at this font size, verified across breakpoints. */}
+        <p
+          className="overflow-hidden text-[0.85rem] leading-snug font-semibold text-ellipsis whitespace-nowrap"
+          style={{ color: "#1c2230" }}
+        >
           {cassette.title}
         </p>
 
