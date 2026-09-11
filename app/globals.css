@@ -199,6 +199,28 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Hero typography — per-letter hover                                  */
+/*                                                                      */
+/* "Designer who" and the cycling word both inherit --hero-text (white) */
+/* from their container, so resting letters need no rule of their own — */
+/* only the exact letter under the cursor is targeted here, never the   */
+/* word or the line. Keyboard/touch can't aim at one letter, so those    */
+/* flip `.all-active` on the ancestor instead, which this same rule      */
+/* picks up to light every letter at once — a deliberate whole-line      */
+/* fallback, not a second attempt at doing the same thing per letter.    */
+/* ------------------------------------------------------------------ */
+
+.letter-char {
+  display: inline-block;
+  transition: color 200ms ease;
+}
+.letter-char:hover,
+.all-active .letter-char {
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------------ */
 /* Cassette                                                             */
 /* ------------------------------------------------------------------ */
 

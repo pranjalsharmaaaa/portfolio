@@ -9,6 +9,8 @@ import {
   headlineWords,
 } from "@/lib/site-content";
 
+const DESIGNER_WHO = "Designer who";
+
 const containerVariants: Variants = {
   initial: {},
   animate: { transition: { staggerChildren: 0.022, delayChildren: 0.01 } },
@@ -39,6 +41,16 @@ const reducedLetterVariants: Variants = {
   exit: { opacity: 0, transition: { duration: headlineTransitionMs / 2000 } },
 };
 
+/**
+ * Per-letter swap animation for the cycling word. Each `.letter-char`
+ * also carries the plain-CSS per-letter hover rule (see globals.css) —
+ * that rule only ever touches `color`/`font-style`, never `transform`,
+ * specifically so it can't collide with the `transform` these
+ * variants are actively animating on the very same elements (an
+ * animated property beats a stylesheet rule for that property for as
+ * long as the animation holds it — the exact bug already found twice
+ * elsewhere in this file's history).
+ */
 function Letters({ word, variants }: { word: string; variants: Variants }) {
   return (
     <>
@@ -51,7 +63,7 @@ function Letters({ word, variants }: { word: string; variants: Variants }) {
             style={{ display: "inline-block", width: "0.32em" }}
           />
         ) : (
-          <motion.span key={i} variants={variants} style={{ display: "inline-block" }}>
+          <motion.span key={i} variants={variants} className="letter-char">
             {ch}
           </motion.span>
         ),
@@ -61,16 +73,14 @@ function Letters({ word, variants }: { word: string; variants: Variants }) {
 }
 
 /**
- * The one hover rule both hero text elements share: white and upright
- * at rest, the accent color and italic on interaction — a visible
- * transform of the type itself, not a fade or a scale.
- *
- * Mouse hover drives it directly (instant, no JS in the loop). Focus
- * and touch — neither of which can trigger `:hover` — flip the same
- * `active` state by hand, so keyboard and touch users get the same
- * transform rather than losing the interaction entirely.
+ * Keyboard focus and touch can't trigger a per-letter `:hover`, so
+ * both flip one `active` flag instead, which a CSS descendant rule
+ * (`.all-active .letter-char`) applies to every letter at once — a
+ * whole-line fallback, not a literal per-letter equivalent, because
+ * making every character its own tab stop would turn one heading into
+ * dozens of stops for a purely decorative flourish.
  */
-function useHoverFlip() {
+function useKeyboardTouchFallback() {
   const [active, setActive] = useState(false);
   const touchTimer = useRef<number | undefined>(undefined);
 
@@ -78,29 +88,26 @@ function useHoverFlip() {
 
   return {
     active,
-    handlers: {
-      onMouseEnter: () => setActive(true),
-      onMouseLeave: () => setActive(false),
-      onFocus: () => setActive(true),
-      onBlur: () => setActive(false),
-      onTouchStart: () => {
-        setActive(true);
-        window.clearTimeout(touchTimer.current);
-        touchTimer.current = window.setTimeout(() => setActive(false), 1400);
-      },
+    onFocus: () => setActive(true),
+    onBlur: () => setActive(false),
+    onTouchStart: () => {
+      setActive(true);
+      window.clearTimeout(touchTimer.current);
+      touchTimer.current = window.setTimeout(() => setActive(false), 1400);
     },
   };
 }
 
-const HOVER_STYLE = { color: "var(--accent)", fontStyle: "italic" as const };
-const REST_STYLE = { color: "#fffaf2", fontStyle: "normal" as const };
-
 /**
- * "Designer who" — white and upright at rest; the accent color and
- * italic under mouse hover, keyboard focus, or touch.
+ * "Designer who" — every letter is its own hover target (plain CSS
+ * `:hover` on `.letter-char`, no JS in the loop): only the letter
+ * under the cursor turns the accent color and italic, the rest stay
+ * white and upright. Color is set once here and inherited by every
+ * letter, so "at rest" needs no per-letter styling at all — only the
+ * hovered one overrides it.
  */
 export function DesignerWhoLine() {
-  const { active, handlers } = useHoverFlip();
+  const { active, onFocus, onBlur, onTouchStart } = useKeyboardTouchFallback();
 
   return (
     <h1 className="max-w-4xl font-display leading-[1] font-semibold">
@@ -112,32 +119,47 @@ export function DesignerWhoLine() {
       <span
         tabIndex={0}
         aria-label="Designer who"
-        {...handlers}
-        className="inline-block cursor-default text-[clamp(3.5rem,8vw,6.5rem)] leading-[0.95] transition-colors duration-300"
-        style={{ ...(active ? HOVER_STYLE : REST_STYLE), textShadow: "0 4px 24px rgb(0 0 0 / 18%)" }}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onTouchStart={onTouchStart}
+        className={`inline-block cursor-default text-[clamp(3.5rem,8vw,6.5rem)] leading-[0.95] ${active ? "all-active" : ""}`}
+        style={{ color: "var(--hero-text)", textShadow: "0 4px 24px rgb(0 0 0 / 18%)" }}
       >
-        Designer who
+        <span aria-hidden="true">
+          {[...DESIGNER_WHO].map((ch, i) =>
+            ch === " " ? (
+              <span key={i} className="inline-block" style={{ width: "0.3em" }} />
+            ) : (
+              <span key={i} className="letter-char">
+                {ch}
+              </span>
+            ),
+          )}
+        </span>
       </span>
     </h1>
   );
 }
 
 /**
- * The cycling word — solves → builds → vibe codes — white and upright
- * at rest, sharing the same hover/focus/touch → accent+italic rule as
- * "Designer who" above, but as its own independent region: hovering
- * one does not affect the other.
+ * The cycling word — solves → builds → vibe codes. Two independent
+ * things happen here:
  *
- * The word swap itself (interaction A) is a separate concern from the
- * hover rule (interaction B): each letter stages in/out on a swap,
- * regardless of whether the word happens to be in its hovered state
- * at that moment — the two run independently and just compose.
+ * A) The automatic swap: each letter stages in/out with its own
+ *    stagger when the word changes (Framer Motion variants).
+ * B) The hover rule: each letter is independently `:hover`-able,
+ *    exactly like "Designer who" — hovering one letter of "builds"
+ *    never touches the other five.
+ *
+ * These compose without conflict only because (A) animates `transform`
+ * and (B) only ever touches `color`/`font-style` — see the note on
+ * `Letters` above.
  */
 export function CyclingWord() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const prefersReducedMotion = useReducedMotion();
-  const { active, handlers } = useHoverFlip();
+  const { active, onFocus, onBlur, onTouchStart } = useKeyboardTouchFallback();
 
   useEffect(() => {
     if (paused) return;
@@ -155,29 +177,22 @@ export function CyclingWord() {
     <span
       tabIndex={0}
       aria-label={headlineStaticSentence}
-      onMouseEnter={() => {
-        setPaused(true);
-        handlers.onMouseEnter();
-      }}
-      onMouseLeave={() => {
-        setPaused(false);
-        handlers.onMouseLeave();
-      }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
       onFocus={() => {
         setPaused(true);
-        handlers.onFocus();
+        onFocus();
       }}
       onBlur={() => {
         setPaused(false);
-        handlers.onBlur();
+        onBlur();
       }}
-      onTouchStart={handlers.onTouchStart}
-      className="relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(4.5rem,11vw,9rem)] leading-[0.95] transition-colors duration-300"
-      style={{
-        ...(active ? HOVER_STYLE : REST_STYLE),
-        textShadow: "0 4px 24px rgb(0 0 0 / 18%)",
-        perspective: 600,
+      onTouchStart={() => {
+        setPaused(true);
+        onTouchStart();
       }}
+      className={`relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(4.5rem,11vw,9rem)] leading-[0.95] ${active ? "all-active" : ""}`}
+      style={{ color: "var(--hero-text)", textShadow: "0 4px 24px rgb(0 0 0 / 18%)", perspective: 600 }}
     >
       {/* No reserved "longest word" box here on purpose: the cassette
           sits flush beside this word, so its box must track whatever's

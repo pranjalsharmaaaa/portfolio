@@ -1,28 +1,28 @@
 import { sideVocabulary } from "@/lib/site-content";
 
 /**
- * "DESIGN / DETAILS / VIBE CODING" — a design annotation that sits
- * beside the headline, not underneath it.
+ * "DESIGN / DETAILS / VIBE CODING" beside the headline — one
+ * continuous piece of text, not three independently-positioned words.
+ * The previous version gave each word its own `writing-mode`, which
+ * read as three separate vertical objects loosely stacked rather than
+ * one label; a single element can't drift out of alignment with
+ * itself the way three siblings can.
  *
- * Runs vertically at ~90° (writing-mode) on desktop, alongside the
- * headline's own grid track so it can never overlap it; reflows into
- * a quiet horizontal row on narrow screens rather than disappearing.
+ * On desktop, that one string is set in `writing-mode: vertical-rl`
+ * (rotating the whole block into a column) and then the entire block
+ * is rotated 180° again, as one object, to read bottom-to-top —
+ * matching the reference's orientation without rotating each
+ * character or word individually. Below `md` it reflows to a plain
+ * horizontal line rather than disappearing.
  */
 export function SideVocabulary() {
   return (
     <p
-      className="flex flex-row items-center gap-3 text-[0.65rem] font-medium tracking-[0.3em] uppercase md:h-full md:flex-col md:gap-4 md:[writing-mode:vertical-rl]"
+      className="text-[0.65rem] font-medium tracking-[0.3em] whitespace-nowrap uppercase md:h-full md:[writing-mode:vertical-rl] md:[transform:rotate(180deg)]"
       style={{ color: "var(--hero-text-quiet)" }}
       aria-hidden="true"
     >
-      {sideVocabulary.map((word, i) => (
-        <span key={word} className="flex items-center gap-3 md:flex-col">
-          {word}
-          {i < sideVocabulary.length - 1 && (
-            <span className="inline-block h-px w-3 bg-current opacity-50 md:h-3 md:w-px" />
-          )}
-        </span>
-      ))}
+      {sideVocabulary}
     </p>
   );
 }

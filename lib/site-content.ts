@@ -23,11 +23,14 @@ export const headlineStaticSentence =
   "Designer who solves, builds, and vibe codes.";
 
 /**
- * A vertical editorial annotation beside the headline on desktop —
- * rotated ~90° via writing-mode, reflowing to a horizontal row on
- * narrow screens rather than disappearing.
+ * The vertical editorial annotation beside the headline on desktop —
+ * one continuous string, not three separately-positioned words, so
+ * font/size/spacing/weight are identical by construction rather than
+ * matched by hand across separate elements. Rendered as a single
+ * writing-mode block rotated 180° as one object; reflows into a
+ * horizontal row on narrow screens rather than disappearing.
  */
-export const sideVocabulary = ["DESIGN", "DETAILS", "VIBE CODING"] as const;
+export const sideVocabulary = "DESIGN / DETAILS / VIBE CODING";
 
 /**
  * The cassette: a reserved, inactive slot for a future audio piece.

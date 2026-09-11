@@ -109,8 +109,8 @@ export function SkyBackground() {
               shows through the "dark" side, so it never reads as a
               solid eclipse disc. */}
           <mask id="moon-phase">
-            <circle cx="1180" cy="200" r="52" fill="white" />
-            <circle cx="1202" cy="185" r="45" fill="black" />
+            <circle cx="1180" cy="200" r="60" fill="white" />
+            <circle cx="1204" cy="183" r="52" fill="black" />
           </mask>
           {/* Keyed off --star, so this fades away in daylight with no
               extra logic — same trick the stars themselves use. */}
@@ -124,27 +124,23 @@ export function SkyBackground() {
         {/* parallax-glow: a faint drift toward the cursor, as if the
             light source itself has a little atmosphere of its own. */}
         <g className="sun-layer parallax-glow">
-          <circle cx="1180" cy="200" r="150" fill="var(--sun-glow)" filter="url(#soft-blur-lg)" />
-          <circle
-            cx="1180"
-            cy="200"
-            r="86"
-            fill="none"
-            stroke="var(--sun-ray)"
-            strokeWidth="10"
-            filter="url(#soft-blur-md)"
-          />
-          <circle cx="1180" cy="200" r="58" fill="var(--sun-mid)" filter="url(#soft-blur-sm)" />
-          <circle cx="1180" cy="200" r="44" fill="var(--sun-core)" />
+          {/* A large, clean warm disc with a soft atmosphere around
+              it — no hard-edged ring, just glow → mid → core, so it
+              reads as one illustrated light source rather than a
+              generic CSS gradient circle. */}
+          <circle cx="1180" cy="200" r="185" fill="var(--sun-glow)" filter="url(#soft-blur-lg)" />
+          <circle cx="1180" cy="200" r="110" fill="var(--sun-glow)" filter="url(#soft-blur-md)" opacity="0.7" />
+          <circle cx="1180" cy="200" r="68" fill="var(--sun-mid)" filter="url(#soft-blur-sm)" />
+          <circle cx="1180" cy="200" r="52" fill="var(--sun-core)" />
         </g>
 
         <g className="moon-layer parallax-glow">
-          <circle cx="1180" cy="200" r="140" fill="var(--moon-glow)" filter="url(#soft-blur-lg)" />
+          <circle cx="1180" cy="200" r="175" fill="var(--moon-glow)" filter="url(#soft-blur-lg)" />
           <g mask="url(#moon-phase)">
-            <circle cx="1180" cy="200" r="52" fill="var(--moon-body)" />
-            <circle cx="1163" cy="212" r="7" fill="var(--moon-shade)" />
-            <circle cx="1178" cy="182" r="4.5" fill="var(--moon-shade)" />
-            <circle cx="1195" cy="222" r="3.5" fill="var(--moon-shade)" />
+            <circle cx="1180" cy="200" r="60" fill="var(--moon-body)" />
+            <circle cx="1161" cy="214" r="8" fill="var(--moon-shade)" />
+            <circle cx="1178" cy="180" r="5" fill="var(--moon-shade)" />
+            <circle cx="1197" cy="222" r="4" fill="var(--moon-shade)" />
           </g>
         </g>
 
