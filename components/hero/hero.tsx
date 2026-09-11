@@ -42,39 +42,47 @@ export function Hero() {
           <div aria-hidden="true" className="hidden md:block" />
         </div>
 
-        {/* Vocabulary gets its own grid track beside the headline so it
-            can never overlap it — a design annotation, not underneath
-            the type on desktop, reflowing to a horizontal row above it
-            on narrow screens instead of disappearing. */}
-        <div className="grid flex-1 grid-cols-1 items-center gap-8 py-10 md:grid-cols-[auto_1fr] md:gap-10 sm:py-14 lg:gap-14">
-          <div className="hidden h-56 items-center justify-center md:flex">
+        <div className="flex flex-1 flex-col justify-center gap-6 py-10 sm:py-14">
+          <div className="md:hidden">
             <SideVocabulary />
           </div>
 
-          <div className="flex flex-col gap-6">
-            <div className="md:hidden">
+          <p
+            className="text-xs font-semibold tracking-[0.25em] uppercase"
+            style={{ color: "var(--hero-text)" }}
+          >
+            {kicker}
+          </p>
+
+          <DesignerWhoLine />
+
+          {/* One horizontal composition on desktop: the vertical
+              vocabulary, the cassette, and the changing word share the
+              same row and the same vertical center — the cassette
+              always sits directly beside whichever word is currently
+              showing, never on a row of its own underneath "Designer
+              who". `flex-nowrap` from md up keeps that trio from
+              breaking apart; only below md (where the vocabulary
+              already renders separately above, not here) does the row
+              wrap, letting the word drop under the cassette instead of
+              overflowing. */}
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-6 md:flex-nowrap md:gap-x-8">
+            {/* A vertical-writing-mode child inside a flex row is a
+                known trap: with no explicit height, its auto block-size
+                calculation stretches to the flex line's full cross
+                size (the row silently became 900px tall — the entire
+                viewport height — before this fix) instead of sizing to
+                its own text. 17rem is the string's own measured extent
+                at this font-size/tracking (~16.3rem) plus a small
+                buffer, so it renders as one line at its natural size
+                and `items-center` centers it against the cassette and
+                the word rather than either collapsing to nothing or
+                blowing out the row. */}
+            <div className="hidden shrink-0 items-center md:flex md:h-[17rem]">
               <SideVocabulary />
             </div>
-
-            <p
-              className="text-xs font-semibold tracking-[0.25em] uppercase"
-              style={{ color: "var(--hero-text)" }}
-            >
-              {kicker}
-            </p>
-
-            <DesignerWhoLine />
-
-            {/* The cassette sits between the vertical vocabulary (its
-                own grid track, to the left) and the cycling word here
-                — "below Designer who, to the left of the changing
-                word" — as a flex row rather than an overlap, so it
-                reflows under the word instead of colliding with it at
-                narrower desktop widths. */}
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-6">
-              <Cassette />
-              <CyclingWord />
-            </div>
+            <Cassette />
+            <CyclingWord />
           </div>
         </div>
       </div>

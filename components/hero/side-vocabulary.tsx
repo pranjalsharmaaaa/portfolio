@@ -19,7 +19,12 @@ export function SideVocabulary() {
   return (
     <p
       className="text-[0.65rem] font-medium tracking-[0.3em] whitespace-nowrap uppercase md:h-full md:[writing-mode:vertical-rl] md:[transform:rotate(180deg)]"
-      style={{ color: "var(--hero-text-quiet)" }}
+      // Same reasoning as the headline's text-shadow: this sits
+      // directly on the illustrated sky, which is bright/white in
+      // places (clouds, sun glow) — without it, this near-white,
+      // partly-transparent text can all but vanish where it happens
+      // to cross a light cloud shape.
+      style={{ color: "var(--hero-text-quiet)", textShadow: "0 2px 10px rgb(0 0 0 / 22%)" }}
       aria-hidden="true"
     >
       {sideVocabulary}

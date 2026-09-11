@@ -34,7 +34,13 @@ const MID_CLOUDS: CloudInstance[] = [
 ];
 
 const NEAR_CLOUDS: CloudInstance[] = [
-  { x: -80, y: 560, scale: 1.4 },
+  // Was y:560 — with the vertical vocabulary now sharing a row with
+  // the cassette/cycling word (rather than its own tall grid track),
+  // that y put this cloud's bright, high-opacity fill directly behind
+  // "VIBE CODING" and washed it out (near-white on near-white). Moved
+  // down clear of that row instead of shrinking or dimming it, so the
+  // cloud itself is unchanged, just relocated.
+  { x: -80, y: 700, scale: 1.4 },
   { x: 620, y: 610, scale: 1.15 },
   { x: 1240, y: 580, scale: 1.3 },
 ];
