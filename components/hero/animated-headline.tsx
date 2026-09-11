@@ -9,9 +9,6 @@ import {
   headlineWords,
 } from "@/lib/site-content";
 
-/** Longest word in the loop — reserves layout space so nothing jumps. */
-const LONGEST_WORD = headlineWords.reduce((a, b) => (b.length > a.length ? b : a));
-
 const DESIGNER_WHO = "Designer who";
 
 const containerVariants: Variants = {
@@ -173,7 +170,7 @@ export function AnimatedHeadline() {
         onTouchStart={handleTouchStart}
         className="flex w-fit flex-col gap-1 sm:gap-2"
       >
-        <span className="text-[clamp(2.5rem,5.5vw,4.25rem)] leading-tight">
+        <span className="text-[clamp(2.75rem,6vw,4.5rem)] leading-tight">
           <DesignerWho key={designerWaveKey} />
         </span>
 
@@ -181,18 +178,20 @@ export function AnimatedHeadline() {
           onMouseEnter={pauseOnHover}
           onMouseLeave={releaseHover}
           aria-hidden="true"
-          className="relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(4.5rem,13vw,10.5rem)] leading-[0.95] italic"
+          className="inline-block w-fit min-w-[1ch] cursor-default text-[clamp(4.5rem,11vw,9rem)] leading-[0.95] italic"
           style={{ perspective: 600 }}
         >
-          {/* Reserve space using the longest word so layout never jumps. */}
-          <span className="invisible" aria-hidden="true">
-            {LONGEST_WORD}
-          </span>
-
+          {/* No reserved "longest word" box here on purpose: the
+              cassette sits flush beside this word (spec), so its box
+              must track whatever's actually showing, not a phantom
+              width sized for "vibe codes". `popLayout` does exactly
+              that — it pops the *exiting* word out of flow for its
+              exit animation, so the container's width follows the
+              incoming word immediately instead of holding open. */}
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
               key={word}
-              className="absolute inset-0 whitespace-nowrap"
+              className="inline-block whitespace-nowrap"
               style={{ color: "var(--accent)" }}
               variants={container}
               initial="initial"

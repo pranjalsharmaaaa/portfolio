@@ -123,6 +123,8 @@
   --animate-spin-slow: spin 5s linear infinite;
   --animate-float-slow: float-slow 6s ease-in-out infinite;
   --animate-shooting-star: shooting-star 23s linear infinite;
+  --animate-reel-idle: spin 34s linear infinite;
+  --animate-reel-awake: spin 5s linear infinite;
 }
 
 @keyframes twinkle {
@@ -236,6 +238,51 @@
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Cassette                                                             */
+/* ------------------------------------------------------------------ */
+
+.cassette-reel {
+  animation: var(--animate-reel-idle);
+}
+.cassette:hover .cassette-reel,
+.cassette:focus-within .cassette-reel {
+  animation: var(--animate-reel-awake);
+}
+
+/* A brief, honest "not yet" shake on the play control — feedback
+   without pretending playback happened. */
+@keyframes cassette-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-3px);
+  }
+  40% {
+    transform: translateX(3px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+.cassette-nudge {
+  animation: cassette-nudge 0.4s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cassette-reel {
+    animation: none;
+  }
+  .cassette-nudge {
+    animation: none;
+  }
+}
+
 /* Sun/moon crossfade between themes — same position, two states of
    one world, per the sky illustration in components/hero/sky-background.tsx */
 .sun-layer {
@@ -249,6 +296,26 @@
 }
 .dark .moon-layer {
   opacity: 1;
+}
+
+/* Cursor parallax — `--px`/`--py` (roughly -1..1) come from
+   sky-stage.tsx and default to 0 wherever it never attaches a
+   listener (reduced motion, touch/coarse pointers), so these layers
+   simply hold still there rather than needing their own media query. */
+.parallax-near {
+  transform: translate(calc(var(--px, 0) * 14px), calc(var(--py, 0) * 9px));
+  transition: transform 0.2s ease-out;
+}
+.parallax-glow {
+  transform: translate(calc(var(--px, 0) * 6px), calc(var(--py, 0) * 4px));
+  /* Both listed explicitly in one rule, rather than layering this
+     class's transform transition on top of a separate Tailwind
+     transition-opacity utility — two rules each owning a shorthand
+     `transition` on the same element is exactly the kind of thing
+     that silently drops one of them. */
+  transition:
+    opacity 0.7s ease,
+    transform 0.3s ease-out;
 }
 
 /* Loading screen — a warm dot "eating" its way across a row of marks. */

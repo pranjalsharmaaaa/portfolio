@@ -121,7 +121,9 @@ export function SkyBackground() {
         </defs>
 
         {/* ---------------- sun (day) / moon (night) ---------------- */}
-        <g className="sun-layer transition-opacity duration-700">
+        {/* parallax-glow: a faint drift toward the cursor, as if the
+            light source itself has a little atmosphere of its own. */}
+        <g className="sun-layer parallax-glow">
           <circle cx="1180" cy="200" r="150" fill="var(--sun-glow)" filter="url(#soft-blur-lg)" />
           <circle
             cx="1180"
@@ -136,7 +138,7 @@ export function SkyBackground() {
           <circle cx="1180" cy="200" r="44" fill="var(--sun-core)" />
         </g>
 
-        <g className="moon-layer transition-opacity duration-700">
+        <g className="moon-layer parallax-glow">
           <circle cx="1180" cy="200" r="140" fill="var(--moon-glow)" filter="url(#soft-blur-lg)" />
           <g mask="url(#moon-phase)">
             <circle cx="1180" cy="200" r="52" fill="var(--moon-body)" />
@@ -221,28 +223,35 @@ export function SkyBackground() {
           ))}
         </g>
 
-        <g className="motion-safe:animate-drift-slow">
-          {NEAR_CLOUDS.map((c, i) => (
-            <g key={i}>
-              <use
-                href="#cloud-shape"
-                x={c.x}
-                y={c.y + 16}
-                width={210 * c.scale}
-                height={95 * c.scale}
-                fill="var(--cloud-shadow)"
-                filter="url(#soft-blur-md)"
-              />
-              <use
-                href="#cloud-shape"
-                x={c.x}
-                y={c.y}
-                width={210 * c.scale}
-                height={95 * c.scale}
-                fill="var(--cloud-near)"
-              />
-            </g>
-          ))}
+        {/* Two independent transforms compose here rather than fight —
+            the drift keyframe on the inner group, the cursor parallax
+            on the outer one. Putting both on one element would let
+            whichever runs as a CSS animation silently own `transform`
+            and discard the other. */}
+        <g className="parallax-near">
+          <g className="motion-safe:animate-drift-slow">
+            {NEAR_CLOUDS.map((c, i) => (
+              <g key={i}>
+                <use
+                  href="#cloud-shape"
+                  x={c.x}
+                  y={c.y + 16}
+                  width={210 * c.scale}
+                  height={95 * c.scale}
+                  fill="var(--cloud-shadow)"
+                  filter="url(#soft-blur-md)"
+                />
+                <use
+                  href="#cloud-shape"
+                  x={c.x}
+                  y={c.y}
+                  width={210 * c.scale}
+                  height={95 * c.scale}
+                  fill="var(--cloud-near)"
+                />
+              </g>
+            ))}
+          </g>
         </g>
 
         {/* ---------------- night horizon (transparent by day) ---------------- */}

@@ -1,17 +1,18 @@
-import { AudioPlaceholder } from "@/components/hero/audio-placeholder";
+import { Cassette } from "@/components/hero/cassette";
 import { GlassNav } from "@/components/navigation/glass-nav";
 import { AnimatedHeadline } from "@/components/hero/animated-headline";
 import { LocationBadge } from "@/components/hero/location-badge";
 import { SideVocabulary } from "@/components/hero/side-vocabulary";
-import { SkyBackground } from "@/components/hero/sky-background";
+import { SkyStage } from "@/components/hero/sky-stage";
 import { kicker } from "@/lib/site-content";
 
 /**
  * The complete first-screen composition: an illustrated sky world
  * carrying the intro copy, a centered glass nav, a location marker,
- * a vertical design annotation, and a reserved slot for a future
- * audio moment. A self-contained scene — the transition into the
- * rest of the site is deliberately out of scope for now.
+ * a vertical design annotation, and the cassette — a reserved audio
+ * moment built as part of the main artwork, not a corner widget.
+ * A self-contained scene — the transition into the rest of the site
+ * is deliberately out of scope for now.
  */
 export function Hero() {
   return (
@@ -20,7 +21,7 @@ export function Hero() {
       aria-label="Introduction"
       className="relative isolate flex min-h-dvh w-full flex-col overflow-hidden"
     >
-      <SkyBackground />
+      <SkyStage />
 
       <div className="mx-auto flex w-full max-w-[100rem] flex-1 flex-col px-6 pt-6 pb-10 sm:px-10 sm:pt-8 lg:px-12">
         <div className="mb-4 md:hidden">
@@ -59,15 +60,16 @@ export function Hero() {
               {kicker}
             </p>
 
-            <AnimatedHeadline />
+            {/* The cassette bottom-aligns with the headline block, which
+                puts it beside the cycling word (the headline's own last
+                line) while staying below "Designer who" above it — a
+                flex/items-end relationship, not a pixel overlap, so it
+                reflows instead of colliding at narrower desktop widths. */}
+            <div className="flex flex-wrap items-end gap-x-10 gap-y-8">
+              <AnimatedHeadline />
+              <Cassette />
+            </div>
           </div>
-        </div>
-
-        {/* A quiet, floating reservation for the future audio moment —
-            positioned low and to the right so it reads as an object
-            found in the sky, not a UI bar competing with the type. */}
-        <div className="flex justify-center md:justify-end">
-          <AudioPlaceholder />
         </div>
       </div>
     </section>

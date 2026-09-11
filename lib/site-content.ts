@@ -30,13 +30,14 @@ export const headlineStaticSentence =
 export const sideVocabulary = ["DESIGN", "DETAILS", "VIBE CODING"] as const;
 
 /**
- * Reserved placeholder for the future "design journey, rapped" audio
- * moment. No audio exists yet — swap `AudioPlaceholder` for a real
- * player without touching the hero layout around it.
+ * The cassette: a reserved, inactive slot for a future audio piece.
+ * No audio exists yet — swap `Cassette`'s inner content for a real
+ * player without touching where it sits in the hero.
  */
-export const audioPlaceholder = {
-  title: "My design journey, rapped",
+export const cassette = {
+  title: "My design journey",
   status: "Coming soon",
+  playLabel: "Play “My design journey” — coming soon",
 } as const;
 
 export type NavItem = {
