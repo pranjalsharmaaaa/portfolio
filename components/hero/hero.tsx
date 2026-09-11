@@ -1,6 +1,6 @@
 import { Cassette } from "@/components/hero/cassette";
 import { GlassNav } from "@/components/navigation/glass-nav";
-import { AnimatedHeadline } from "@/components/hero/animated-headline";
+import { CyclingWord, DesignerWhoLine } from "@/components/hero/animated-headline";
 import { LocationBadge } from "@/components/hero/location-badge";
 import { SideVocabulary } from "@/components/hero/side-vocabulary";
 import { SkyStage } from "@/components/hero/sky-stage";
@@ -56,18 +56,24 @@ export function Hero() {
               <SideVocabulary />
             </div>
 
-            <p className="text-xs font-semibold tracking-[0.25em] text-ink-muted uppercase">
+            <p
+              className="text-xs font-semibold tracking-[0.25em] uppercase"
+              style={{ color: "var(--hero-text)" }}
+            >
               {kicker}
             </p>
 
-            {/* The cassette bottom-aligns with the headline block, which
-                puts it beside the cycling word (the headline's own last
-                line) while staying below "Designer who" above it — a
-                flex/items-end relationship, not a pixel overlap, so it
-                reflows instead of colliding at narrower desktop widths. */}
-            <div className="flex flex-wrap items-end gap-x-10 gap-y-8">
-              <AnimatedHeadline />
+            <DesignerWhoLine />
+
+            {/* The cassette sits between the vertical vocabulary (its
+                own grid track, to the left) and the cycling word here
+                — "below Designer who, to the left of the changing
+                word" — as a flex row rather than an overlap, so it
+                reflows under the word instead of colliding with it at
+                narrower desktop widths. */}
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-6">
               <Cassette />
+              <CyclingWord />
             </div>
           </div>
         </div>

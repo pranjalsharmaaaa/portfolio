@@ -54,7 +54,7 @@ export function Cassette() {
 
   return (
     <div
-      className="cassette flex w-[clamp(23rem,29vw,31rem)] items-center gap-3 rounded-[1.75rem] p-3"
+      className="cassette flex w-[clamp(23rem,30vw,32rem)] items-center gap-3 rounded-[1.75rem] p-3"
       style={{
         background: "linear-gradient(160deg, #fffaf0 0%, #f6e9cf 100%)",
         boxShadow:
@@ -64,7 +64,7 @@ export function Cassette() {
       <Reel />
 
       <div
-        className="flex min-w-0 flex-1 flex-col gap-2 rounded-2xl px-3.5 py-3"
+        className="flex min-w-0 flex-1 flex-col gap-2.5 rounded-2xl px-3.5 py-3.5"
         style={{
           background: "rgb(28 34 48 / 6%)",
           boxShadow: "inset 0 2px 4px rgb(28 34 48 / 12%)",
@@ -77,7 +77,10 @@ export function Cassette() {
             that DOES flip (text-ink, var(--accent-strong), …), or
             dark mode quietly turns them into light-on-light. Verified
             by screenshotting dark mode specifically, not assumed. */}
-        <p className="truncate text-[0.85rem] font-semibold" style={{ color: "#1c2230" }}>
+        {/* Wraps rather than truncates — "My design journey, rapped" must
+            stay fully visible (spec), and a fixed clamp width can't
+            guarantee enough room for it at every desktop breakpoint. */}
+        <p className="text-[0.85rem] leading-snug font-semibold" style={{ color: "#1c2230" }}>
           {cassette.title}
         </p>
 
@@ -106,13 +109,6 @@ export function Cassette() {
               style={{ width: "3%", background: "#6b7688" }}
             />
           </div>
-
-          <p
-            className="shrink-0 text-[0.58rem] font-bold tracking-[0.12em] uppercase"
-            style={{ color: "#6b7688" }}
-          >
-            {cassette.status}
-          </p>
         </div>
       </div>
 

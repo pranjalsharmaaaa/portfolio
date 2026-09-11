@@ -35,9 +35,8 @@ export const sideVocabulary = ["DESIGN", "DETAILS", "VIBE CODING"] as const;
  * player without touching where it sits in the hero.
  */
 export const cassette = {
-  title: "My design journey",
-  status: "Coming soon",
-  playLabel: "Play “My design journey” — coming soon",
+  title: "My design journey, rapped",
+  playLabel: "Play “My design journey, rapped” — no audio yet",
 } as const;
 
 export type NavItem = {

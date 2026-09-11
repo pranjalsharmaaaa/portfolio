@@ -82,7 +82,7 @@ export function SkyBackground() {
         className="absolute inset-0 transition-colors duration-700 ease-out"
         style={{
           background:
-            "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 58%, var(--sky-bottom) 100%)",
+            "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 72%, var(--sky-bottom) 100%)",
         }}
       />
 

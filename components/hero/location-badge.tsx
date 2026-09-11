@@ -6,7 +6,10 @@ import { site } from "@/lib/site-content";
  */
 export function LocationBadge() {
   return (
-    <p className="flex items-center gap-2 text-xs font-medium tracking-[0.2em] text-ink-muted uppercase">
+    <p
+      className="flex items-center gap-2 text-xs font-medium tracking-[0.2em] uppercase"
+      style={{ color: "var(--hero-text)" }}
+    >
       <span
         aria-hidden="true"
         className="inline-block h-1.5 w-1.5 rounded-full"

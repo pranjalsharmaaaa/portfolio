@@ -10,15 +10,26 @@
 :root {
   color-scheme: light;
 
-  /* Sky gradient stops — a daytime blue with real saturation, not a pastel wash */
-  --sky-top: #6fb3ec;
-  --sky-mid: #bfe0f8;
+  /* Sky gradient stops — a daytime blue with real saturation, not a
+     pastel wash: the hero typography sits directly on this and is
+     fixed white in both themes (see --hero-text below), so the sky
+     itself has to carry the contrast rather than a pale wash near the
+     middle of the gradient. */
+  --sky-top: #4a9de4;
+  --sky-mid: #6fb3ec;
   --sky-bottom: #fdf1dc;
 
   /* Text */
   --ink: #1c2230;
   --ink-muted: #4d5768;
   --ink-quiet: #6b7688;
+
+  /* Hero typography sitting directly on the sky — fixed white in both
+     themes on purpose (the sky provides the contrast, not a theme
+     swap), so these live only in :root and are never redefined in
+     .dark. */
+  --hero-text: #fffaf2;
+  --hero-text-quiet: rgb(255 250 242 / 78%);
 
   /* Surfaces */
   --surface: #fffdf9;
@@ -184,57 +195,6 @@
   100% {
     opacity: 0;
     transform: translate(-220px, 130px);
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/* Hero typography interaction                                         */
-/*                                                                      */
-/* "Designer who" reacts letter-by-letter — a hover-driven wave for    */
-/* mouse users (pure CSS, no JS) and a matching one-shot animation for */
-/* keyboard focus / touch, since :hover can't reach either of those.   */
-/* ------------------------------------------------------------------ */
-
-.letter-hoverable {
-  display: inline-block;
-  transition:
-    color 0.22s ease,
-    transform 0.22s ease;
-}
-.letter-hoverable:hover {
-  color: var(--accent);
-  font-style: italic;
-  transform: translateY(-0.09em);
-}
-
-@keyframes letter-pulse {
-  0%,
-  100% {
-    color: inherit;
-    font-style: normal;
-    transform: translateY(0);
-  }
-  40% {
-    color: var(--accent);
-    font-style: italic;
-    transform: translateY(-0.09em);
-  }
-}
-.letter-wave {
-  /* No fill-mode: once this finishes, it must fully let go of
-     color/transform so :hover can take over again — an earlier draft
-     used `both`, which kept "winning" over :hover forever after the
-     first play because a fill-forwards animation outranks a static
-     pseudo-class rule for the same properties. */
-  animation: letter-pulse 0.9s ease-in-out;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .letter-hoverable:hover {
-    transform: none;
-  }
-  .letter-wave {
-    animation: none;
   }
 }
 

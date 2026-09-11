@@ -11,7 +11,8 @@ import { sideVocabulary } from "@/lib/site-content";
 export function SideVocabulary() {
   return (
     <p
-      className="flex flex-row items-center gap-3 text-[0.65rem] font-medium tracking-[0.3em] text-ink-quiet uppercase md:h-full md:flex-col md:gap-4 md:[writing-mode:vertical-rl]"
+      className="flex flex-row items-center gap-3 text-[0.65rem] font-medium tracking-[0.3em] uppercase md:h-full md:flex-col md:gap-4 md:[writing-mode:vertical-rl]"
+      style={{ color: "var(--hero-text-quiet)" }}
       aria-hidden="true"
     >
       {sideVocabulary.map((word, i) => (

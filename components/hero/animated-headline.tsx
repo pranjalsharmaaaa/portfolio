@@ -9,8 +9,6 @@ import {
   headlineWords,
 } from "@/lib/site-content";
 
-const DESIGNER_WHO = "Designer who";
-
 const containerVariants: Variants = {
   initial: {},
   animate: { transition: { staggerChildren: 0.022, delayChildren: 0.01 } },
@@ -33,11 +31,7 @@ const letterVariants: Variants = {
   },
 };
 
-const reducedContainerVariants: Variants = {
-  initial: {},
-  animate: {},
-  exit: {},
-};
+const reducedContainerVariants: Variants = { initial: {}, animate: {}, exit: {} };
 
 const reducedLetterVariants: Variants = {
   initial: { opacity: 0 },
@@ -67,62 +61,83 @@ function Letters({ word, variants }: { word: string; variants: Variants }) {
 }
 
 /**
- * "Designer who", letter by letter. Each letter reacts to a mouse
- * hovering directly over it (plain CSS `:hover` — no JS, so it costs
- * nothing and can't lag). The caller remounts this component (via its
- * own `key`) to replay the `.letter-wave` CSS animation across every
- * letter at once — the equivalent for keyboard focus and touch, since
- * neither can trigger a per-letter `:hover`.
+ * The one hover rule both hero text elements share: white and upright
+ * at rest, the accent color and italic on interaction — a visible
+ * transform of the type itself, not a fade or a scale.
+ *
+ * Mouse hover drives it directly (instant, no JS in the loop). Focus
+ * and touch — neither of which can trigger `:hover` — flip the same
+ * `active` state by hand, so keyboard and touch users get the same
+ * transform rather than losing the interaction entirely.
  */
-function DesignerWho() {
+function useHoverFlip() {
+  const [active, setActive] = useState(false);
+  const touchTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(touchTimer.current), []);
+
+  return {
+    active,
+    handlers: {
+      onMouseEnter: () => setActive(true),
+      onMouseLeave: () => setActive(false),
+      onFocus: () => setActive(true),
+      onBlur: () => setActive(false),
+      onTouchStart: () => {
+        setActive(true);
+        window.clearTimeout(touchTimer.current);
+        touchTimer.current = window.setTimeout(() => setActive(false), 1400);
+      },
+    },
+  };
+}
+
+const HOVER_STYLE = { color: "var(--accent)", fontStyle: "italic" as const };
+const REST_STYLE = { color: "#fffaf2", fontStyle: "normal" as const };
+
+/**
+ * "Designer who" — white and upright at rest; the accent color and
+ * italic under mouse hover, keyboard focus, or touch.
+ */
+export function DesignerWhoLine() {
+  const { active, handlers } = useHoverFlip();
+
   return (
-    <span aria-hidden="true">
-      {[...DESIGNER_WHO].map((ch, i) =>
-        ch === " " ? (
-          <span key={i} className="inline-block" style={{ width: "0.3em" }} />
-        ) : (
-          <span
-            key={i}
-            className="letter-hoverable letter-wave"
-            style={{ animationDelay: `${i * 26}ms` }}
-          >
-            {ch}
-          </span>
-        ),
-      )}
-    </span>
+    <h1 className="max-w-4xl font-display leading-[1] font-semibold">
+      {/* Heading-navigation mode (e.g. a screen reader's "jump by
+          heading" command) gets the complete sentence, including the
+          word that's currently cycling elsewhere on the page. */}
+      <span className="sr-only">{headlineStaticSentence}</span>
+
+      <span
+        tabIndex={0}
+        aria-label="Designer who"
+        {...handlers}
+        className="inline-block cursor-default text-[clamp(3.5rem,8vw,6.5rem)] leading-[0.95] transition-colors duration-300"
+        style={{ ...(active ? HOVER_STYLE : REST_STYLE), textShadow: "0 4px 24px rgb(0 0 0 / 18%)" }}
+      >
+        Designer who
+      </span>
+    </h1>
   );
 }
 
 /**
- * "Designer who {solves → builds → vibe codes}" — the hero's primary
- * visual element.
+ * The cycling word — solves → builds → vibe codes — white and upright
+ * at rest, sharing the same hover/focus/touch → accent+italic rule as
+ * "Designer who" above, but as its own independent region: hovering
+ * one does not affect the other.
  *
- * Two deliberately separate interactions live here, per spec:
- *
- * A) The automatic loop (solves → builds → vibe codes) animates each
- *    word swap per letter — a staggered "reveal" in, "collapse" out —
- *    rather than a flat crossfade.
- * B) "Designer who" has its own, different reaction: hovering a
- *    letter tilts it italic in the accent color (pure CSS); keyboard
- *    focus or a touch replays that same transform as a wave across
- *    every letter, since neither can trigger per-letter `:hover`.
- *
- * Focusing or touching the headline also pauses the loop — a small
- * courtesy so the text holds still while it's being read — but that's
- * a side effect, not the interaction itself.
- *
- * One focusable element carries both: aria-hidden decorative glyphs
- * nested under a properly-labeled ancestor, never the reverse (an
- * earlier draft made the animated word itself both aria-hidden and
- * tabbable — a real WCAG violation — before landing on this shape).
+ * The word swap itself (interaction A) is a separate concern from the
+ * hover rule (interaction B): each letter stages in/out on a swap,
+ * regardless of whether the word happens to be in its hovered state
+ * at that moment — the two run independently and just compose.
  */
-export function AnimatedHeadline() {
+export function CyclingWord() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [designerWaveKey, setDesignerWaveKey] = useState(0);
   const prefersReducedMotion = useReducedMotion();
-  const touchReleaseTimer = useRef<number | undefined>(undefined);
+  const { active, handlers } = useHoverFlip();
 
   useEffect(() => {
     if (paused) return;
@@ -132,77 +147,56 @@ export function AnimatedHeadline() {
     return () => window.clearInterval(id);
   }, [paused]);
 
-  useEffect(() => () => window.clearTimeout(touchReleaseTimer.current), []);
-
-  // Mouse hover directly over the cycling word: pause only. Its own
-  // reaction is interaction A's transitions, already in motion.
-  const pauseOnHover = () => setPaused(true);
-  const releaseHover = () => setPaused(false);
-
-  // Focus/touch on the whole headline: pause, and play interaction B
-  // (the "Designer who" wave) since :hover can't reach either input.
-  const engage = () => {
-    setPaused(true);
-    if (!prefersReducedMotion) setDesignerWaveKey((k) => k + 1);
-  };
-  const disengage = () => setPaused(false);
-  const handleTouchStart = () => {
-    engage();
-    window.clearTimeout(touchReleaseTimer.current);
-    touchReleaseTimer.current = window.setTimeout(disengage, 1400);
-  };
-
   const word = headlineWords[index];
   const container = prefersReducedMotion ? reducedContainerVariants : containerVariants;
   const letter = prefersReducedMotion ? reducedLetterVariants : letterVariants;
 
   return (
-    <h1 className="max-w-4xl font-display leading-[1] font-semibold text-ink">
-      {/* Heading-navigation mode (e.g. a screen reader's "jump by
-          heading" command) gets one static, complete sentence. */}
-      <span className="sr-only">{headlineStaticSentence}</span>
-
-      <span
-        tabIndex={0}
-        aria-label={headlineStaticSentence}
-        onFocus={engage}
-        onBlur={disengage}
-        onTouchStart={handleTouchStart}
-        className="flex w-fit flex-col gap-1 sm:gap-2"
-      >
-        <span className="text-[clamp(2.75rem,6vw,4.5rem)] leading-tight">
-          <DesignerWho key={designerWaveKey} />
-        </span>
-
-        <span
-          onMouseEnter={pauseOnHover}
-          onMouseLeave={releaseHover}
-          aria-hidden="true"
-          className="inline-block w-fit min-w-[1ch] cursor-default text-[clamp(4.5rem,11vw,9rem)] leading-[0.95] italic"
-          style={{ perspective: 600 }}
+    <span
+      tabIndex={0}
+      aria-label={headlineStaticSentence}
+      onMouseEnter={() => {
+        setPaused(true);
+        handlers.onMouseEnter();
+      }}
+      onMouseLeave={() => {
+        setPaused(false);
+        handlers.onMouseLeave();
+      }}
+      onFocus={() => {
+        setPaused(true);
+        handlers.onFocus();
+      }}
+      onBlur={() => {
+        setPaused(false);
+        handlers.onBlur();
+      }}
+      onTouchStart={handlers.onTouchStart}
+      className="relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(4.5rem,11vw,9rem)] leading-[0.95] transition-colors duration-300"
+      style={{
+        ...(active ? HOVER_STYLE : REST_STYLE),
+        textShadow: "0 4px 24px rgb(0 0 0 / 18%)",
+        perspective: 600,
+      }}
+    >
+      {/* No reserved "longest word" box here on purpose: the cassette
+          sits flush beside this word, so its box must track whatever's
+          actually showing, not a phantom width sized for "vibe codes".
+          `popLayout` does exactly that — it pops the *exiting* word out
+          of flow for its exit animation, so the container's width
+          follows the incoming word immediately instead of holding open. */}
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={word}
+          className="inline-block whitespace-nowrap"
+          variants={container}
+          initial="initial"
+          animate="animate"
+          exit="exit"
         >
-          {/* No reserved "longest word" box here on purpose: the
-              cassette sits flush beside this word (spec), so its box
-              must track whatever's actually showing, not a phantom
-              width sized for "vibe codes". `popLayout` does exactly
-              that — it pops the *exiting* word out of flow for its
-              exit animation, so the container's width follows the
-              incoming word immediately instead of holding open. */}
-          <AnimatePresence mode="popLayout" initial={false}>
-            <motion.span
-              key={word}
-              className="inline-block whitespace-nowrap"
-              style={{ color: "var(--accent)" }}
-              variants={container}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-            >
-              <Letters word={word} variants={letter} />
-            </motion.span>
-          </AnimatePresence>
-        </span>
-      </span>
-    </h1>
+          <Letters word={word} variants={letter} />
+        </motion.span>
+      </AnimatePresence>
+    </span>
   );
 }
