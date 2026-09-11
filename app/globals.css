@@ -10,10 +10,10 @@
 :root {
   color-scheme: light;
 
-  /* Sky gradient stops */
-  --sky-top: #bfe0f8;
-  --sky-mid: #dcedfa;
-  --sky-bottom: #fbf3e6;
+  /* Sky gradient stops — a daytime blue with real saturation, not a pastel wash */
+  --sky-top: #6fb3ec;
+  --sky-mid: #bfe0f8;
+  --sky-bottom: #fdf1dc;
 
   /* Text */
   --ink: #1c2230;
@@ -31,10 +31,26 @@
   --accent-strong: #1c2230;
   --accent-on-strong: #fbf3e6;
 
-  /* Decorative sky elements */
-  --cloud: rgb(255 255 255 / 85%);
-  --glow: rgb(255 226 178 / 60%);
+  /* Sun — layered warm discs, not a hatched illustration */
+  --sun-core: #ffdf94;
+  --sun-mid: #ffb84d;
+  --sun-ray: rgb(255 200 120 / 45%);
+  --sun-glow: rgb(255 197 120 / 40%);
+
+  /* Moon — present in tokens even though unused in light, so nothing
+     is undefined; visibility is toggled per-theme in the component CSS. */
+  --moon-body: #f5efdd;
+  --moon-shade: rgb(60 60 90 / 14%);
+  --moon-glow: rgb(210 220 255 / 0%);
+
+  /* Clouds at three depths, white and softening toward the horizon */
+  --cloud-near: rgb(255 255 255 / 92%);
+  --cloud-mid: rgb(255 255 255 / 74%);
+  --cloud-far: rgb(255 255 255 / 48%);
+  --cloud-shadow: rgb(94 128 168 / 16%);
+
   --star: transparent;
+  --hill: transparent;
 
   --focus-ring: #1c2230;
 }
@@ -42,9 +58,9 @@
 .dark {
   color-scheme: dark;
 
-  --sky-top: #060a16;
-  --sky-mid: #0c1526;
-  --sky-bottom: #171f34;
+  --sky-top: #050810;
+  --sky-mid: #0b1226;
+  --sky-bottom: #1b2340;
 
   --ink: #f3efe6;
   --ink-muted: #b7c0d1;
@@ -59,9 +75,24 @@
   --accent-strong: #f3efe6;
   --accent-on-strong: #0c1120;
 
-  --cloud: rgb(255 255 255 / 5%);
-  --glow: rgb(140 168 230 / 22%);
+  /* Sun tokens stay defined (unused, hidden) so the pair is symmetric */
+  --sun-core: #ffdf94;
+  --sun-mid: #ffb84d;
+  --sun-ray: rgb(255 200 120 / 0%);
+  --sun-glow: rgb(255 197 120 / 0%);
+
+  --moon-body: #eef0f7;
+  --moon-shade: rgb(30 34 58 / 30%);
+  --moon-glow: rgb(150 175 255 / 30%);
+
+  /* Muted, dark cloud strata — present, not just darkened white */
+  --cloud-near: rgb(130 150 200 / 14%);
+  --cloud-mid: rgb(110 130 180 / 10%);
+  --cloud-far: rgb(90 110 160 / 7%);
+  --cloud-shadow: rgb(0 0 0 / 0%);
+
   --star: rgb(255 255 255 / 85%);
+  --hill: #0a0e1e;
 
   --focus-ring: #f0b65c;
 }
@@ -87,6 +118,9 @@
   --font-sans: var(--font-inter);
 
   --animate-twinkle: twinkle 4.5s ease-in-out infinite;
+  --animate-drift-slow: drift 70s ease-in-out infinite;
+  --animate-drift-slower: drift 100s ease-in-out infinite reverse;
+  --animate-spin-slow: spin 5s linear infinite;
 }
 
 @keyframes twinkle {
@@ -96,6 +130,64 @@
   }
   50% {
     opacity: 0.9;
+  }
+}
+
+/* Very slow horizontal breathing so the sky never sits perfectly still —
+   barely perceptible, reads as atmosphere rather than motion. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3%);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sun/moon crossfade between themes — same position, two states of
+   one world, per the sky illustration in components/hero/sky-background.tsx */
+.sun-layer {
+  opacity: 1;
+}
+.dark .sun-layer {
+  opacity: 0;
+}
+.moon-layer {
+  opacity: 0;
+}
+.dark .moon-layer {
+  opacity: 1;
+}
+
+/* Loading screen — a warm dot "eating" its way across a row of marks. */
+@keyframes loader-eat {
+  0% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  15% {
+    opacity: 0.08;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 0.08;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes loader-slide {
+  0% {
+    transform: translate(-10px, -50%);
+  }
+  100% {
+    transform: translate(130px, -50%);
   }
 }
 

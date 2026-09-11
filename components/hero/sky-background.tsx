@@ -1,29 +1,74 @@
 /**
- * The hero's sky environment.
+ * The hero's sky environment — an illustrated world, not a gradient.
  *
- * Built from layered gradients, soft blurred cloud shapes and a whisper
- * of grain — a designed environment rather than a photo pasted behind
- * the content (spec §03). Entirely decorative, so it's hidden from
- * assistive tech; the words carry the meaning.
+ * One SVG canvas carries the whole scene (sun/moon, three depths of
+ * cloud, a night horizon, stars) so the composition scales fluidly
+ * with the hero instead of being assembled from separately-positioned
+ * divs. Sun and moon share the same position: day and night are two
+ * states of one world, not two different backgrounds (spec: "do not
+ * simply darken the daytime background").
  *
- * Fixed star/cloud positions are pre-computed (not Math.random() at
- * render time) so server and client markup match exactly.
+ * Visibility between themes is toggled in CSS (`.sun-layer` /
+ * `.moon-layer`, keyed off the existing `.dark` class), so this stays
+ * a plain server component — no theme-detection JS, no hydration
+ * flash. Entirely decorative, hidden from assistive tech.
  */
 
+const CLOUD_PATH =
+  "M20,65 C13,45 35,26 60,31 C67,12 101,7 116,25 C132,8 166,15 169,36 C191,33 201,53 185,65 C193,77 174,85 157,78 C144,89 88,89 71,78 C54,87 24,83 20,65 Z";
+
+type CloudInstance = { x: number; y: number; scale: number; opacity?: number };
+
+const FAR_CLOUDS: CloudInstance[] = [
+  { x: 120, y: 120, scale: 0.55 },
+  { x: 520, y: 90, scale: 0.4 },
+  { x: 980, y: 140, scale: 0.5 },
+  { x: 1360, y: 100, scale: 0.42 },
+];
+
+const MID_CLOUDS: CloudInstance[] = [
+  { x: -40, y: 300, scale: 0.9 },
+  { x: 420, y: 340, scale: 0.7 },
+  { x: 1100, y: 310, scale: 0.85 },
+];
+
+const NEAR_CLOUDS: CloudInstance[] = [
+  { x: -80, y: 560, scale: 1.4 },
+  { x: 620, y: 610, scale: 1.15 },
+  { x: 1240, y: 580, scale: 1.3 },
+];
+
 const STARS = [
-  { top: "12%", left: "8%", size: 2, delay: "0s" },
-  { top: "22%", left: "22%", size: 1.5, delay: "0.6s" },
-  { top: "9%", left: "38%", size: 1.5, delay: "1.4s" },
-  { top: "30%", left: "52%", size: 2, delay: "2.1s" },
-  { top: "16%", left: "66%", size: 1.5, delay: "0.9s" },
-  { top: "27%", left: "78%", size: 1.5, delay: "1.8s" },
-  { top: "6%", left: "88%", size: 2, delay: "0.3s" },
-  { top: "38%", left: "12%", size: 1.5, delay: "2.6s" },
-  { top: "44%", left: "34%", size: 1, delay: "1.1s" },
-  { top: "35%", left: "92%", size: 1, delay: "2.9s" },
-  { top: "50%", left: "60%", size: 1, delay: "0.4s" },
-  { top: "18%", left: "95%", size: 1, delay: "1.6s" },
+  { x: 90, y: 90, r: 2 },
+  { x: 260, y: 220, r: 1.6 },
+  { x: 60, y: 340, r: 1.6 },
+  { x: 460, y: 60, r: 1.6 },
+  { x: 720, y: 190, r: 2 },
+  { x: 880, y: 70, r: 1.6 },
+  { x: 1420, y: 130, r: 1.6 },
+  { x: 1540, y: 260, r: 2 },
+  { x: 1500, y: 400, r: 1.4 },
+  { x: 1300, y: 470, r: 1.4 },
+  { x: 210, y: 470, r: 1.4 },
+  { x: 380, y: 160, r: 1.4 },
+  { x: 950, y: 420, r: 1.2 },
+  { x: 1050, y: 240, r: 1.4 },
 ] as const;
+
+const SPARKLES = [
+  { x: 1080, y: 130, size: 10 },
+  { x: 1290, y: 260, size: 7 },
+] as const;
+
+function Sparkle({ x, y, size }: { x: number; y: number; size: number }) {
+  return (
+    <path
+      className="star-el"
+      d={`M${x},${y - size} L${x + size * 0.22},${y - size * 0.22} L${x + size},${y} L${x + size * 0.22},${y + size * 0.22} L${x},${y + size} L${x - size * 0.22},${y + size * 0.22} L${x - size},${y} L${x - size * 0.22},${y - size * 0.22} Z`}
+      fill="var(--star)"
+    />
+  );
+}
 
 export function SkyBackground() {
   return (
@@ -31,71 +76,160 @@ export function SkyBackground() {
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
     >
-      {/* Base sky gradient — shifts smoothly between light/dark via the
-          CSS custom properties defined in globals.css. */}
+      {/* Base gradient — the atmosphere the illustration sits inside. */}
       <div
         className="absolute inset-0 transition-colors duration-700 ease-out"
         style={{
           background:
-            "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-bottom) 100%)",
+            "linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 58%, var(--sky-bottom) 100%)",
         }}
       />
 
-      {/* Soft glow — a diffuse light source rather than a literal sun/moon disc.
-          A radial gradient fades all the way to transparent, so it reads as
-          atmosphere rather than a hard-edged tinted blob. */}
-      <div
-        className="absolute -top-32 right-[4%] h-[34rem] w-[34rem] rounded-full transition-colors duration-700 sm:h-[42rem] sm:w-[42rem]"
-        style={{
-          background:
-            "radial-gradient(circle, var(--glow) 0%, transparent 68%)",
-        }}
-      />
+      <svg
+        viewBox="0 0 1600 900"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+      >
+        <defs>
+          <symbol id="cloud-shape" viewBox="0 0 210 95">
+            <path d={CLOUD_PATH} />
+          </symbol>
+          <filter id="soft-blur-lg" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="34" />
+          </filter>
+          <filter id="soft-blur-md" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="14" />
+          </filter>
+          <filter id="soft-blur-sm" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="6" />
+          </filter>
+          {/* The moon's phase is a real cutout, not a flat-colored
+              overlay — whatever sits behind it (its own glow, the sky)
+              shows through the "dark" side, so it never reads as a
+              solid eclipse disc. */}
+          <mask id="moon-phase">
+            <circle cx="1180" cy="200" r="52" fill="white" />
+            <circle cx="1202" cy="185" r="45" fill="black" />
+          </mask>
+        </defs>
 
-      {/* Cloud strata — large, soft, asymmetric radial forms that fade
-          to nothing at their edges rather than reading as flat ovals. */}
-      <div
-        className="absolute top-[26%] left-[-12%] h-48 w-[60%]"
-        style={{
-          background:
-            "radial-gradient(ellipse, var(--cloud) 0%, transparent 72%)",
-        }}
-      />
-      <div
-        className="absolute top-[44%] right-[-10%] h-40 w-[46%]"
-        style={{
-          background:
-            "radial-gradient(ellipse, var(--cloud) 0%, transparent 72%)",
-        }}
-      />
-      <div
-        className="absolute top-[60%] left-[16%] h-32 w-[40%]"
-        style={{
-          background:
-            "radial-gradient(ellipse, var(--cloud) 0%, transparent 72%)",
-        }}
-      />
-
-      {/* Stars — only meaningfully visible in dark mode (--star is
-          transparent in light mode via the token). */}
-      <div className="absolute inset-0">
-        {STARS.map((star, i) => (
-          <span
-            key={i}
-            className="absolute rounded-full motion-safe:animate-twinkle"
-            style={{
-              top: star.top,
-              left: star.left,
-              width: star.size,
-              height: star.size,
-              background: "var(--star)",
-              animationDelay: star.delay,
-            }}
+        {/* ---------------- sun (day) / moon (night) ---------------- */}
+        <g className="sun-layer transition-opacity duration-700">
+          <circle cx="1180" cy="200" r="150" fill="var(--sun-glow)" filter="url(#soft-blur-lg)" />
+          <circle
+            cx="1180"
+            cy="200"
+            r="86"
+            fill="none"
+            stroke="var(--sun-ray)"
+            strokeWidth="10"
+            filter="url(#soft-blur-md)"
           />
-        ))}
-      </div>
+          <circle cx="1180" cy="200" r="58" fill="var(--sun-mid)" filter="url(#soft-blur-sm)" />
+          <circle cx="1180" cy="200" r="44" fill="var(--sun-core)" />
+        </g>
 
-      {/* Grain — a hair of texture so the gradient doesn't read as flat. */}
+        <g className="moon-layer transition-opacity duration-700">
+          <circle cx="1180" cy="200" r="140" fill="var(--moon-glow)" filter="url(#soft-blur-lg)" />
+          <g mask="url(#moon-phase)">
+            <circle cx="1180" cy="200" r="52" fill="var(--moon-body)" />
+            <circle cx="1163" cy="212" r="7" fill="var(--moon-shade)" />
+            <circle cx="1178" cy="182" r="4.5" fill="var(--moon-shade)" />
+            <circle cx="1195" cy="222" r="3.5" fill="var(--moon-shade)" />
+          </g>
+        </g>
+
+        {/* ---------------- stars (night only via --star token) ---------------- */}
+        <g>
+          {STARS.map((s, i) => (
+            <circle
+              key={i}
+              className="star-el motion-safe:animate-twinkle"
+              cx={s.x}
+              cy={s.y}
+              r={s.r}
+              fill="var(--star)"
+              style={{ animationDelay: `${(i % 7) * 0.5}s` }}
+            />
+          ))}
+          {SPARKLES.map((s, i) => (
+            <Sparkle key={i} {...s} />
+          ))}
+        </g>
+
+        {/* ---------------- cloud strata ---------------- */}
+        <g opacity="0.9">
+          {FAR_CLOUDS.map((c, i) => (
+            <use
+              key={i}
+              href="#cloud-shape"
+              x={c.x}
+              y={c.y}
+              width={210 * c.scale}
+              height={95 * c.scale}
+              fill="var(--cloud-far)"
+            />
+          ))}
+        </g>
+
+        <g>
+          {MID_CLOUDS.map((c, i) => (
+            <g key={i}>
+              <use
+                href="#cloud-shape"
+                x={c.x}
+                y={c.y + 10}
+                width={210 * c.scale}
+                height={95 * c.scale}
+                fill="var(--cloud-shadow)"
+                filter="url(#soft-blur-sm)"
+              />
+              <use
+                href="#cloud-shape"
+                x={c.x}
+                y={c.y}
+                width={210 * c.scale}
+                height={95 * c.scale}
+                fill="var(--cloud-mid)"
+              />
+            </g>
+          ))}
+        </g>
+
+        <g className="motion-safe:animate-drift-slow">
+          {NEAR_CLOUDS.map((c, i) => (
+            <g key={i}>
+              <use
+                href="#cloud-shape"
+                x={c.x}
+                y={c.y + 16}
+                width={210 * c.scale}
+                height={95 * c.scale}
+                fill="var(--cloud-shadow)"
+                filter="url(#soft-blur-md)"
+              />
+              <use
+                href="#cloud-shape"
+                x={c.x}
+                y={c.y}
+                width={210 * c.scale}
+                height={95 * c.scale}
+                fill="var(--cloud-near)"
+              />
+            </g>
+          ))}
+        </g>
+
+        {/* ---------------- night horizon (transparent by day) ---------------- */}
+        <path
+          d="M0,900 L0,760 C220,700 380,790 620,750 C860,712 980,800 1180,770 C1360,745 1480,800 1600,760 L1600,900 Z"
+          fill="var(--hill)"
+          filter="url(#soft-blur-sm)"
+          className="transition-colors duration-700"
+        />
+      </svg>
+
+      {/* Grain — a hair of texture so nothing reads as a flat vector fill. */}
       <svg className="absolute inset-0 h-full w-full opacity-[0.05] mix-blend-overlay">
         <filter id="grain">
           <feTurbulence
@@ -108,7 +242,7 @@ export function SkyBackground() {
         <rect width="100%" height="100%" filter="url(#grain)" />
       </svg>
 
-      {/* Horizon line — a quiet edge where sky meets the content ground. */}
+      {/* Horizon line — a quiet edge where sky meets the content ground (day). */}
       <div
         className="absolute inset-x-0 bottom-0 h-px opacity-40"
         style={{ background: "var(--ink-quiet)" }}

@@ -6,10 +6,11 @@ import { SkyBackground } from "@/components/hero/sky-background";
 import { kicker } from "@/lib/site-content";
 
 /**
- * The complete first-screen composition (spec §03, §08): a sky
- * environment carrying the intro copy, glass nav, location marker and
- * side vocabulary. A self-contained scene — the transition into the
- * rest of the site is deliberately out of scope for now (spec §17).
+ * The complete first-screen composition: an illustrated sky world
+ * carrying the intro copy, a centered glass nav, a location marker,
+ * and a quiet editorial caption. A self-contained scene — the
+ * transition into the rest of the site is deliberately out of scope
+ * for now.
  */
 export function Hero() {
   return (
@@ -20,31 +21,32 @@ export function Hero() {
     >
       <SkyBackground />
 
-      <div className="mx-auto flex w-full max-w-[92rem] flex-1 flex-col px-6 pt-6 pb-10 sm:px-10 sm:pt-8 lg:px-16">
-        <div className="flex items-center justify-between gap-4">
+      <div className="mx-auto flex w-full max-w-[100rem] flex-1 flex-col px-6 pt-6 pb-10 sm:px-10 sm:pt-8 lg:px-12">
+        <div className="mb-4 md:hidden">
           <LocationBadge />
+        </div>
+
+        {/* Three-column top row: INDIA and a matching spacer flank the
+            nav so the nav sits genuinely centered, not just "left of
+            whatever's on the right" — a CSS Grid balance, not a tuned
+            offset. Below md, INDIA renders separately above (its own
+            block just before this one) and this row centers the nav
+            alone. */}
+        <div className="grid grid-cols-1 items-center justify-items-center gap-4 md:grid-cols-[1fr_auto_1fr] md:justify-items-stretch">
+          <div className="hidden md:block">
+            <LocationBadge />
+          </div>
           <GlassNav />
+          <div aria-hidden="true" className="hidden md:block" />
         </div>
 
-        <div className="grid flex-1 grid-cols-1 items-center gap-8 py-12 md:grid-cols-[auto_1fr] md:gap-10 lg:gap-14">
-          {/* Desktop: a vertical editorial spine, given its own grid
-              track so it can never overlap the headline — its width
-              comes from its own content, not a tuned pixel offset. */}
-          <div className="hidden h-48 items-center justify-center md:flex">
-            <SideVocabulary />
-          </div>
+        <div className="flex flex-1 flex-col justify-center gap-8 py-10 sm:py-14">
+          <p className="text-xs font-semibold tracking-[0.25em] text-ink-muted uppercase">
+            {kicker}
+          </p>
 
-          <div className="flex flex-col gap-6">
-            <p className="text-xs font-semibold tracking-[0.25em] text-ink-muted uppercase">
-              {kicker}
-            </p>
+          <AnimatedHeadline />
 
-            <AnimatedHeadline />
-          </div>
-        </div>
-
-        {/* Mobile: the same label reflows into a quiet row under the headline. */}
-        <div className="md:hidden">
           <SideVocabulary />
         </div>
       </div>
