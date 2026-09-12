@@ -30,7 +30,7 @@ export const headlineStaticSentence =
  * writing-mode block rotated 180° as one object; reflows into a
  * horizontal row on narrow screens rather than disappearing.
  */
-export const sideVocabulary = "DESIGN / DETAILS / VIBE CODING";
+export const sideVocabulary = "DESIGN / DETAILS / SIMPLY";
 
 /**
  * The cassette: a reserved, inactive slot for a future audio piece.

@@ -19,13 +19,17 @@ export function Hero() {
     <section
       id="main"
       aria-label="Introduction"
-      // Was `min-h-dvh` (a floor only — content could grow past the
-      // viewport and force a scroll to see the bottom, which is
-      // exactly what happened). This is an actual cap: on any real
-      // desktop viewport (<1400px tall) it's just 100dvh — the whole
-      // hero fits on first paint — and on an unusually tall display it
-      // stops growing at 1400px instead of stretching further.
-      className="relative isolate flex h-[min(100dvh,1400px)] w-full flex-col overflow-hidden"
+      // A floor and a ceiling, not a fixed height: on any real desktop
+      // viewport (<1400px tall) min-height alone determines the box —
+      // it's exactly 100dvh, the whole hero fits on first paint — and
+      // on an unusually tall display max-height stops it growing past
+      // 1400px. A *fixed* height here (this section's previous
+      // approach) is a hard cap that clips real content the moment
+      // anything renders even slightly taller than the calculation
+      // assumed — which is exactly what cropped the bottom sky
+      // pattern. With only min/max set, the box can still grow to fit
+      // its own content up to the 1400px ceiling instead of clipping it.
+      className="relative isolate flex min-h-[100dvh] max-h-[1400px] w-full flex-col overflow-hidden"
     >
       <SkyStage />
 
@@ -48,19 +52,29 @@ export function Hero() {
           <div aria-hidden="true" className="hidden md:block" />
         </div>
 
-        <div className="flex flex-1 flex-col justify-center gap-5 py-4 sm:gap-6 sm:py-6">
+        <div className="flex flex-1 flex-col justify-center gap-6 py-4 sm:gap-8 sm:py-6">
           <div className="md:hidden">
             <SideVocabulary />
           </div>
 
-          <p
-            className="text-xs font-semibold tracking-[0.25em] uppercase"
-            style={{ color: "var(--hero-text)" }}
-          >
-            {kicker}
-          </p>
+          {/* Kicker and headline get their own tight, deliberate gap —
+              siblings of one intro line — separate from the larger gap
+              (above, on the parent) that separates this whole intro
+              from the cassette/word row below it. Without this
+              grouping, the flex column's single gap value applied
+              uniformly everywhere, leaving as much air between the
+              kicker and "Designer who" as between "Designer who" and
+              the row underneath it. */}
+          <div className="flex flex-col gap-2">
+            <p
+              className="text-xs font-semibold tracking-[0.25em] uppercase"
+              style={{ color: "var(--hero-text)" }}
+            >
+              {kicker}
+            </p>
 
-          <DesignerWhoLine />
+            <DesignerWhoLine />
+          </div>
 
           {/* One horizontal composition on desktop: the vertical
               vocabulary, the cassette, and the changing word share the
@@ -78,13 +92,15 @@ export function Hero() {
                 calculation stretches to the flex line's full cross
                 size (the row silently became 900px tall — the entire
                 viewport height — before this fix) instead of sizing to
-                its own text. 17rem is the string's own measured extent
-                at this font-size/tracking (~16.3rem) plus a small
-                buffer, so it renders as one line at its natural size
-                and `items-center` centers it against the cassette and
-                the word rather than either collapsing to nothing or
-                blowing out the row. */}
-            <div className="hidden shrink-0 items-center md:flex md:h-[17rem]">
+                its own text. 14.5rem is this string's own measured
+                extent at this font-size/tracking (~13.5rem) plus a
+                small buffer, so it renders as one line at its natural
+                size and `items-center` centers it against the cassette
+                and the word rather than either collapsing to nothing,
+                blowing out the row, or (an oversized box, the previous
+                bug) reserving far more height than the shorter string
+                needs and pushing the whole row down. */}
+            <div className="hidden shrink-0 items-center md:flex md:h-[14.5rem]">
               <SideVocabulary />
             </div>
             <Cassette />
