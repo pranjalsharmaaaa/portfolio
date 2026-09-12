@@ -100,7 +100,11 @@ export function Hero() {
                 blowing out the row, or (an oversized box, the previous
                 bug) reserving far more height than the shorter string
                 needs and pushing the whole row down. */}
-            <div className="hidden shrink-0 items-center md:flex md:h-[14.5rem]">
+            {/* self-start (not the row's own items-center) so this
+                sits higher than the cassette/word it shares the row
+                with, toward the upper-left of the composition, rather
+                than centering on their same line. */}
+            <div className="hidden shrink-0 self-start md:flex md:h-[14.5rem]">
               <SideVocabulary />
             </div>
             <Cassette />

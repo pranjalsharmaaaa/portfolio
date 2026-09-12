@@ -69,15 +69,17 @@ export const headlineTransitionMs = 500;
 
 /**
  * The About section that follows the hero — reached by scrolling
- * through the cloud transition, not a separate route. Copy stays this
- * short and specific on purpose: one sentence of introduction, three
- * concrete current interests, one personal belief — not a second
- * biography paragraph restating the same ground.
+ * through the cloud transition, not a separate route. No heading here
+ * on purpose (no "A little about me.", no generic substitute like
+ * "About Me" or "Who I Am") — the section introduces itself through
+ * the intro line's own scale and composition instead of a labeled
+ * header. Copy stays this short and specific: one sentence of
+ * introduction, three concrete current interests, one personal
+ * belief — not a second biography paragraph restating the same ground.
  */
 export const about = {
-  eyebrow: "A little about me.",
   intro:
-    "Someone who enjoys learning, exploring new ideas, and finding the little details that make an experience feel just right.",
+    "Someone who enjoys learning, exploring new ideas and finding the little details that make an experience feel just right.",
   exploringLabel: "Things I'm exploring lately",
   belief: "I think every good design starts with a question. I'm here to keep asking better ones.",
 } as const;
