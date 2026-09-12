@@ -66,3 +66,30 @@ export const navItems: NavItem[] = [
 /** Timing for the "Designer who {word}" cycle — quick and alive, not a slideshow. */
 export const headlineIntervalMs = 1400;
 export const headlineTransitionMs = 500;
+
+/**
+ * The About section that follows the hero — reached by scrolling
+ * through the cloud transition, not a separate route. Copy stays this
+ * short and specific on purpose: one sentence of introduction, three
+ * concrete current interests, one personal belief — not a second
+ * biography paragraph restating the same ground.
+ */
+export const about = {
+  eyebrow: "A little about me.",
+  intro:
+    "Someone who enjoys learning, exploring new ideas, and finding the little details that make an experience feel just right.",
+  exploringLabel: "Things I'm exploring lately",
+  belief: "I think every good design starts with a question. I'm here to keep asking better ones.",
+} as const;
+
+export type ExplorationChip = {
+  label: string;
+  hint: string;
+};
+
+/** Each chip's `hint` describes its own hover character — read by assistive tech in place of a generic "hover for more". */
+export const explorationChips: ExplorationChip[] = [
+  { label: "Storytelling", hint: "Told like a title card" },
+  { label: "Prototyping + Motion", hint: "Built to move" },
+  { label: "Design for Empathy", hint: "Made with care" },
+];

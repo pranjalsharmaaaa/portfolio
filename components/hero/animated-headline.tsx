@@ -42,16 +42,27 @@ const reducedLetterVariants: Variants = {
 };
 
 /**
- * Per-letter swap animation for the cycling word. Each `.letter-char`
- * also carries the plain-CSS per-letter hover rule (see globals.css) —
- * that rule only ever touches `color`/`font-style`, never `transform`,
- * specifically so it can't collide with the `transform` these
- * variants are actively animating on the very same elements (an
- * animated property beats a stylesheet rule for that property for as
- * long as the animation holds it — the exact bug already found twice
- * elsewhere in this file's history).
+ * Per-letter swap animation. Each rendered letter also carries a
+ * plain-CSS hover rule (see globals.css) that only ever touches
+ * `color`/`font-style`/`font-family`, never `transform`, specifically
+ * so it can't collide with the `transform` these variants are actively
+ * animating on the very same elements (an animated property beats a
+ * stylesheet rule for that property for as long as the animation holds
+ * it — the exact bug already found twice elsewhere in this file's
+ * history). `letterClassName` lets the two callers below hand this the
+ * same stagger animation while hooking two different hover treatments
+ * to it: `.letter-char` (per-letter, "Designer who") vs
+ * `.cycling-letter` (whole-word, the cycling word).
  */
-function Letters({ word, variants }: { word: string; variants: Variants }) {
+function Letters({
+  word,
+  variants,
+  letterClassName,
+}: {
+  word: string;
+  variants: Variants;
+  letterClassName: string;
+}) {
   return (
     <>
       {word.split("").map((ch, i) =>
@@ -63,7 +74,7 @@ function Letters({ word, variants }: { word: string; variants: Variants }) {
             style={{ display: "inline-block", width: "0.32em" }}
           />
         ) : (
-          <motion.span key={i} variants={variants} className="letter-char">
+          <motion.span key={i} variants={variants} className={letterClassName}>
             {ch}
           </motion.span>
         ),
@@ -147,13 +158,20 @@ export function DesignerWhoLine() {
  *
  * A) The automatic swap: each letter stages in/out with its own
  *    stagger when the word changes (Framer Motion variants).
- * B) The hover rule: each letter is independently `:hover`-able,
- *    exactly like "Designer who" — hovering one letter of "builds"
- *    never touches the other five.
+ * B) The hover rule: hovering the word (`.cycling-word:hover
+ *    .cycling-letter` in globals.css) shifts every one of its letters
+ *    together from the editorial serif into a warm handwritten mark,
+ *    plus the accent color and a small lift — deliberately a
+ *    whole-word treatment, not per-letter like "Designer who": a
+ *    font-family swap can change a letter's width, and doing that per
+ *    letter would jostle its neighbors mid-word. Grouping it at the
+ *    word level means only the word's own box grows, which is safe —
+ *    it sits after the cassette in the row, so it never pushes it.
  *
  * These compose without conflict only because (A) animates `transform`
- * and (B) only ever touches `color`/`font-style` — see the note on
- * `Letters` above.
+ * on the per-letter entrance/exit and (B) only ever touches
+ * `color`/`font-family`/a *different*, small `transform` at the group
+ * level — see the note on `Letters` above for why that split matters.
  */
 export function CyclingWord() {
   const [index, setIndex] = useState(0);
@@ -191,7 +209,11 @@ export function CyclingWord() {
         setPaused(true);
         onTouchStart();
       }}
-      className={`relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(3.5rem,8.5vw,7rem)] leading-[0.95] ${active ? "all-active" : ""}`}
+      // font-display (Lora): matches "Designer who" so the two read as
+      // one sentence in one typeface at rest — the hover transition
+      // below then genuinely goes *from* that editorial serif *into*
+      // the handwritten mark, not from the body's default sans.
+      className={`cycling-word font-display relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(3rem,7vw,6rem)] leading-[0.95] ${active ? "all-active" : ""}`}
       style={{ color: "var(--hero-text)", textShadow: "0 4px 24px rgb(0 0 0 / 18%)", perspective: 600 }}
     >
       {/* No reserved "longest word" box here on purpose: the cassette
@@ -209,7 +231,7 @@ export function CyclingWord() {
           animate="animate"
           exit="exit"
         >
-          <Letters word={word} variants={letter} />
+          <Letters word={word} variants={letter} letterClassName="cycling-letter" />
         </motion.span>
       </AnimatePresence>
     </span>

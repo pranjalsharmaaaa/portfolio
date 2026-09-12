@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lora, Inter } from "next/font/google";
+import { Lora, Inter, Caveat } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
 
@@ -18,6 +18,21 @@ const inter = Inter({
   display: "swap",
 });
 
+/**
+ * The cycling word's hover treatment (spec: "do not make it a simple
+ * color change... the font transformation should be clearly
+ * noticeable") — a warm, personal handwritten mark against the
+ * editorial serif everywhere else, in keeping with the "playful,
+ * personal, slightly nostalgic" direction rather than a generic
+ * sans-serif swap.
+ */
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+  weight: ["600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Pranjal Sharma — Product Designer",
   description:
@@ -30,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${lora.variable} ${inter.variable}`}
+      className={`${lora.variable} ${inter.variable} ${caveat.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-dvh font-sans antialiased">
