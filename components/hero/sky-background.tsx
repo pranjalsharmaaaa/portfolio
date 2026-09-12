@@ -41,7 +41,13 @@ const NEAR_CLOUDS: CloudInstance[] = [
   // down clear of that row instead of shrinking or dimming it, so the
   // cloud itself is unchanged, just relocated.
   { x: -80, y: 700, scale: 1.4 },
-  { x: 620, y: 610, scale: 1.15 },
+  // Was y:610 — on phone-width viewports the sky's slice-crop centers
+  // on a narrow vertical strip of this same viewBox, and x:620 sits
+  // squarely inside it, so this bright, high-opacity cloud landed
+  // right behind the cycling word (washing it out, same class of bug
+  // as the vocab fix above). Moved down clear of that text on both
+  // mobile and desktop.
+  { x: 620, y: 700, scale: 1.15 },
   { x: 1240, y: 580, scale: 1.3 },
 ];
 

@@ -6,7 +6,7 @@ import { cassette } from "@/lib/site-content";
 function Reel() {
   return (
     <div
-      className="cassette-reel relative flex aspect-square w-[clamp(2.5rem,9vw,4.25rem)] shrink-0 items-center justify-center rounded-full"
+      className="cassette-reel relative flex aspect-square w-[clamp(2.25rem,9vw,4.25rem)] shrink-0 items-center justify-center rounded-full"
       style={{
         background:
           "radial-gradient(circle at 35% 30%, #4b5266 0%, #2b303e 55%, #1c2029 100%)",
@@ -58,8 +58,10 @@ export function Cassette() {
       // viewport — it would sit inside the section's `overflow-hidden`
       // and get visually clipped rather than triggering a scrollbar, so
       // it needs its own viewport-relative cap there instead of just
-      // inheriting the desktop clamp.
-      className="cassette flex w-[min(85vw,26rem)] items-center gap-3 rounded-[1.75rem] p-3 sm:w-[clamp(26rem,30vw,32rem)]"
+      // inheriting the desktop clamp. 92vw (not 85vw) because the title
+      // needs every spare pixel it can get at the narrowest real phone
+      // widths (~360px) to stay fully readable rather than ellipsizing.
+      className="cassette flex w-[min(92vw,26rem)] items-center gap-3 rounded-[1.75rem] p-3 sm:w-[clamp(26rem,30vw,32rem)]"
       style={{
         background: "linear-gradient(160deg, #fffaf0 0%, #f6e9cf 100%)",
         boxShadow:
@@ -82,11 +84,15 @@ export function Cassette() {
             that DOES flip (text-ink, var(--accent-strong), …), or
             dark mode quietly turns them into light-on-light. Verified
             by screenshotting dark mode specifically, not assumed. */}
-        {/* Must stay on one line (spec) — the cassette's minimum width
-            (26rem) is sized with enough room for "My design journey,
-            rapped" at this font size, verified across breakpoints. */}
+        {/* Must stay on one line (spec) — never wrap. At desktop
+            widths the cassette's 26rem floor gives this plenty of room
+            at 0.85rem; below `sm`, the cassette itself shrinks with the
+            viewport, so the title drops to 0.75rem there too so it
+            keeps reading in full instead of ellipsizing at the
+            narrowest real phone widths. `text-ellipsis` stays on as a
+            last-resort safety net, never the primary fit strategy. */}
         <p
-          className="overflow-hidden text-[0.85rem] leading-snug font-semibold text-ellipsis whitespace-nowrap"
+          className="overflow-hidden text-[0.75rem] leading-snug font-semibold text-ellipsis whitespace-nowrap sm:text-[0.85rem]"
           style={{ color: "#1c2230" }}
         >
           {cassette.title}
