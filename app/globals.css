@@ -42,6 +42,15 @@
      where they overlap; solid fill avoids that by construction. */
   --shore-solid: #fffaf2;
 
+  /* "Paper" ink — fixed, theme-independent text colors for content
+     that sits on the fixed --shore-solid cream (the cloud transition
+     and the About section it leads into). Declared only in :root and
+     never redefined in .dark, same pattern as --hero-text: the About
+     surface is one continuous cream "page" regardless of the theme
+     toggle, not a themed panel that flips navy at night. */
+  --paper-ink: #171717;
+  --paper-ink-muted: #6b6b6b;
+
   /* Surfaces */
   --surface: #fffdf9;
   --nav-bg: rgb(255 255 255 / 55%);
@@ -267,47 +276,47 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* About — exploration chips                                           */
+/* About — exploration list                                            */
 /*                                                                      */
-/* Three distinct hover characters, not one shared pill treatment —    */
-/* each chip's response is written to suit what its label is about.    */
+/* An editorial numbered list, not a row of pills/buttons: no border,  */
+/* no background, no shadow, no rounded container anywhere here. Three */
+/* distinct hover characters still apply, but each now moves only the  */
+/* number/label typography itself, never a chrome-like box around it.  */
 /* ------------------------------------------------------------------ */
 
 .chip {
   display: inline-flex;
-  align-items: center;
-  backdrop-filter: blur(12px);
-  transition:
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 220ms ease,
-    background-color 220ms ease;
+  align-items: baseline;
+  gap: 0.85em;
 }
-.chip:hover,
-.chip:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px -8px var(--nav-shadow);
+.chip-label {
+  display: inline-block;
+  color: var(--paper-ink);
+  transition:
+    color 220ms ease,
+    letter-spacing 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    font-style 320ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.chip:hover .chip-label,
+.chip:focus-visible .chip-label {
+  color: var(--accent);
 }
 
 /* Storytelling — a film title card: tracking widens and the label
    leans into the editorial serif's italic, like text settling into
    frame rather than a hover state firing. */
-.chip-storytelling .chip-label {
-  display: inline-block;
-  transition:
-    letter-spacing 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    font-style 320ms ease;
-}
 .chip-storytelling:hover .chip-label,
 .chip-storytelling:focus-visible .chip-label {
   letter-spacing: 0.06em;
   font-style: italic;
 }
 
-/* Prototyping + Motion — the chip itself demonstrates the word: a
-   small, springy nudge on hover rather than a static label. */
-.chip-motion:hover,
-.chip-motion:focus-visible {
-  transform: translateY(-2px) rotate(-1.5deg) scale(1.03);
+/* Prototyping + Motion — the label itself demonstrates the word: a
+   small, springy nudge on hover rather than a static line of text. */
+.chip-motion:hover .chip-label,
+.chip-motion:focus-visible .chip-label {
+  transform: translateY(-2px) rotate(-1deg);
 }
 
 /* Design for Empathy — a small heart that's reserved (not just
@@ -343,15 +352,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chip,
-  .chip-storytelling .chip-label,
+  .chip-label,
   .chip-heart {
     transition: none;
   }
-  .chip:hover,
-  .chip:focus-visible,
-  .chip-motion:hover,
-  .chip-motion:focus-visible {
+  .chip-motion:hover .chip-label,
+  .chip-motion:focus-visible .chip-label {
     transform: none;
   }
   .chip-empathy:hover .chip-heart,

@@ -24,6 +24,16 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
  * listener) keeps this off the main thread where possible and is what
  * already backs `useReducedMotion` elsewhere in this hero — the same
  * pattern, not a new one.
+ *
+ * The opacity curve never fades to 0: it used to, which meant the
+ * track's own background showed through right as the swoosh finished
+ * lifting away — invisible in light mode (where that background
+ * happened to be pale) but a hard navy seam in dark mode, since the
+ * track sat on --sky-bottom. The track's background is now the same
+ * fixed --shore-solid cream as the swoosh itself and the About surface
+ * beneath it, so the whole passage — swoosh, track, About — is one
+ * continuous paper-colored surface with no seam to reveal in the
+ * first place, regardless of theme.
  */
 export function CloudTransition() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -33,16 +43,16 @@ export function CloudTransition() {
     offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [0, -220]);
-  const opacity = useTransform(scrollYProgress, [0, 0.65, 1], [1, 0.9, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [1, 1] : [1, 1.06]);
+  const y = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [0, -140]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [0.92, 1]);
+  const scale = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [1, 1] : [1, 1.04]);
 
   return (
     <div
       ref={trackRef}
       aria-hidden="true"
-      className="relative h-[65vh] sm:h-[75vh]"
-      style={{ background: "var(--sky-bottom)" }}
+      className="relative h-[45vh] sm:h-[55vh]"
+      style={{ background: "var(--shore-solid)" }}
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <motion.svg
