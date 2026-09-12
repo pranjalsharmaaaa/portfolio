@@ -191,7 +191,7 @@ export function CyclingWord() {
         setPaused(true);
         onTouchStart();
       }}
-      className={`relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(4.5rem,11vw,9rem)] leading-[0.95] ${active ? "all-active" : ""}`}
+      className={`relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(3.5rem,8.5vw,7rem)] leading-[0.95] ${active ? "all-active" : ""}`}
       style={{ color: "var(--hero-text)", textShadow: "0 4px 24px rgb(0 0 0 / 18%)", perspective: 600 }}
     >
       {/* No reserved "longest word" box here on purpose: the cassette

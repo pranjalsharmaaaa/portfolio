@@ -19,11 +19,17 @@ export function Hero() {
     <section
       id="main"
       aria-label="Introduction"
-      className="relative isolate flex min-h-dvh w-full flex-col overflow-hidden"
+      // Was `min-h-dvh` (a floor only — content could grow past the
+      // viewport and force a scroll to see the bottom, which is
+      // exactly what happened). This is an actual cap: on any real
+      // desktop viewport (<1400px tall) it's just 100dvh — the whole
+      // hero fits on first paint — and on an unusually tall display it
+      // stops growing at 1400px instead of stretching further.
+      className="relative isolate flex h-[min(100dvh,1400px)] w-full flex-col overflow-hidden"
     >
       <SkyStage />
 
-      <div className="mx-auto flex w-full max-w-[100rem] flex-1 flex-col px-6 pt-6 pb-10 sm:px-10 sm:pt-8 lg:px-12">
+      <div className="mx-auto flex w-full max-w-[100rem] flex-1 flex-col px-6 pt-5 pb-6 sm:px-10 sm:pt-6 sm:pb-8 lg:px-12">
         <div className="mb-4 md:hidden">
           <LocationBadge />
         </div>
@@ -42,7 +48,7 @@ export function Hero() {
           <div aria-hidden="true" className="hidden md:block" />
         </div>
 
-        <div className="flex flex-1 flex-col justify-center gap-6 py-10 sm:py-14">
+        <div className="flex flex-1 flex-col justify-center gap-5 py-4 sm:gap-6 sm:py-6">
           <div className="md:hidden">
             <SideVocabulary />
           </div>
