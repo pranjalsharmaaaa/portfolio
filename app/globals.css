@@ -35,11 +35,12 @@
      idea as --hero-text: one consistent motif whether it's sitting on
      the day gradient or the night horizon, not a re-tinted skin. */
   --shore: rgb(255 250 242 / 88%);
-  /* Opaque twin of --shore — for the cloud-transition panel, where two
-     of its own shapes overlap (a base fill plus swoosh accents on
-     top). Semi-transparent shapes stacking on each other compound
-     their alpha, producing a visible band of double-darkened color
-     where they overlap; solid fill avoids that by construction. */
+  /* Opaque twin of --shore — the About section's own surface, and the
+     foreground cloud mass at its top edge (about-cloud.tsx). Solid,
+     not semi-transparent like --shore: the cloud's puffs overlap each
+     other and the section's own background, and stacking alpha fills
+     on top of each other would compound into a visible band of
+     double-darkened color where they overlap. */
   --shore-solid: #fffaf2;
 
   /* "Paper" ink — fixed, theme-independent text colors for content
@@ -326,47 +327,50 @@
   transform: translateY(-2px) rotate(-1deg);
 }
 
-/* Design for AI — a small spark mark that's reserved (not just
-   invisible) at rest, scaling in with a quick pulse on hover, like a
-   flicker of an idea rather than a generic icon fade. */
-.card-spark {
-  transform: scale(0) rotate(-20deg);
+/* Design for Empathy — a small heart that's reserved (not just
+   invisible) at rest, scaling in with two quick beats on hover, like
+   a pulse rather than a generic icon fade. */
+.card-heart {
+  transform: scale(0);
   transform-origin: center;
   transition: transform 200ms ease;
 }
-.card-ai:hover .card-spark,
-.card-ai:focus-visible .card-spark {
-  animation: spark-pulse 650ms ease-in-out 1;
-  transform: scale(1) rotate(0deg);
+.card-empathy:hover .card-heart,
+.card-empathy:focus-visible .card-heart {
+  animation: heartbeat 700ms ease-in-out 1;
+  transform: scale(1);
 }
-@keyframes spark-pulse {
+@keyframes heartbeat {
   0% {
-    transform: scale(0) rotate(-20deg);
+    transform: scale(0);
   }
-  40% {
-    transform: scale(1.3) rotate(8deg);
+  35% {
+    transform: scale(1.25);
   }
-  70% {
-    transform: scale(0.9) rotate(-4deg);
+  55% {
+    transform: scale(0.95);
+  }
+  75% {
+    transform: scale(1.15);
   }
   100% {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .exploration-card-label,
-  .card-spark {
+  .card-heart {
     transition: none;
   }
   .card-motion:hover .exploration-card-label,
   .card-motion:focus-visible .exploration-card-label {
     transform: none;
   }
-  .card-ai:hover .card-spark,
-  .card-ai:focus-visible .card-spark {
+  .card-empathy:hover .card-heart,
+  .card-empathy:focus-visible .card-heart {
     animation: none;
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
   }
 }
 
