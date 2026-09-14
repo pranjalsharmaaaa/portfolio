@@ -51,6 +51,18 @@
   --paper-ink: #171717;
   --paper-ink-muted: #6b6b6b;
 
+  /* Exploration cards — a deep editorial denim, not the sky's own
+     lighter daytime blue and not a generic UI blue: it has to hold its
+     own as a solid fill next to the cream paper surface. Fixed (same
+     "paper" pattern as --paper-ink above), each card a hair different
+     so the three don't read as one color repeated three times. White
+     text throughout is warmed to match --hero-text/--shore-solid's
+     cream rather than a cold pure white. */
+  --card-blue-1: #2b4f78;
+  --card-blue-2: #223f63;
+  --card-blue-3: #35608c;
+  --card-ink: #fbf5ea;
+
   /* Surfaces */
   --surface: #fffdf9;
   --nav-bg: rgb(255 255 255 / 55%);
@@ -276,60 +288,50 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* About — exploration list                                            */
+/* About — exploration cards                                           */
 /*                                                                      */
-/* An editorial numbered list, not a row of pills/buttons: no border,  */
-/* no background, no shadow, no rounded container anywhere here. Three */
-/* distinct hover characters still apply, but each now moves only the  */
-/* number/label typography itself, never a chrome-like box around it.  */
+/* Three tilted, editorial cards — not generic SaaS feature tiles. The  */
+/* lift/rotate/scale on hover is handled by framer-motion (see          */
+/* exploration-card.tsx, alongside the rest of this file's motion       */
+/* language); what lives here is each card's own hover *personality* —  */
+/* the same idea as the old numbered-list treatment this replaced, just */
+/* now applied to a card's label/heart instead of a bare line of text.  */
 /* ------------------------------------------------------------------ */
 
-.chip {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.85em;
-}
-.chip-label {
+.exploration-card-label {
   display: inline-block;
-  color: var(--paper-ink);
   transition:
-    color 220ms ease,
     letter-spacing 320ms cubic-bezier(0.22, 1, 0.36, 1),
     font-style 320ms ease,
     transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-.chip:hover .chip-label,
-.chip:focus-visible .chip-label {
-  color: var(--accent);
 }
 
 /* Storytelling — a film title card: tracking widens and the label
    leans into the editorial serif's italic, like text settling into
    frame rather than a hover state firing. */
-.chip-storytelling:hover .chip-label,
-.chip-storytelling:focus-visible .chip-label {
-  letter-spacing: 0.06em;
+.card-storytelling:hover .exploration-card-label,
+.card-storytelling:focus-visible .exploration-card-label {
+  letter-spacing: 0.04em;
   font-style: italic;
 }
 
 /* Prototyping + Motion — the label itself demonstrates the word: a
    small, springy nudge on hover rather than a static line of text. */
-.chip-motion:hover .chip-label,
-.chip-motion:focus-visible .chip-label {
+.card-motion:hover .exploration-card-label,
+.card-motion:focus-visible .exploration-card-label {
   transform: translateY(-2px) rotate(-1deg);
 }
 
 /* Design for Empathy — a small heart that's reserved (not just
    invisible) at rest, scaling in with two quick beats on hover, like
    a pulse rather than a generic icon fade. */
-.chip-heart {
-  color: var(--accent);
+.card-heart {
   transform: scale(0);
   transform-origin: center;
   transition: transform 200ms ease;
 }
-.chip-empathy:hover .chip-heart,
-.chip-empathy:focus-visible .chip-heart {
+.card-empathy:hover .card-heart,
+.card-empathy:focus-visible .card-heart {
   animation: heartbeat 700ms ease-in-out 1;
   transform: scale(1);
 }
@@ -352,16 +354,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chip-label,
-  .chip-heart {
+  .exploration-card-label,
+  .card-heart {
     transition: none;
   }
-  .chip-motion:hover .chip-label,
-  .chip-motion:focus-visible .chip-label {
+  .card-motion:hover .exploration-card-label,
+  .card-motion:focus-visible .exploration-card-label {
     transform: none;
   }
-  .chip-empathy:hover .chip-heart,
-  .chip-empathy:focus-visible .chip-heart {
+  .card-empathy:hover .card-heart,
+  .card-empathy:focus-visible .card-heart {
     animation: none;
     transform: scale(1);
   }

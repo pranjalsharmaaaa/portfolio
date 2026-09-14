@@ -2,9 +2,9 @@
 
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { about, explorationChips } from "@/lib/site-content";
-import { ExplorationChip, type ChipVariant } from "@/components/about/exploration-chip";
+import { ExplorationCard, type CardVariant } from "@/components/about/exploration-card";
 
-const CHIP_VARIANTS: ChipVariant[] = ["storytelling", "motion", "empathy"];
+const CARD_VARIANTS: CardVariant[] = ["storytelling", "motion", "empathy"];
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 26 },
@@ -16,7 +16,7 @@ const reducedReveal: Variants = {
   visible: { opacity: 1, transition: { duration: 0.4 } },
 };
 
-const chipContainer: Variants = {
+const cardContainer: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
 };
@@ -25,20 +25,18 @@ const chipContainer: Variants = {
  * What the cloud transition leads into — one continuous story
  * (spec §14), each piece revealed in view rather than all at once:
  * the intro statement, then the exploration label, then the three
- * chips staggered, then the closing belief. `whileInView` + `viewport
- * ={{ once: true }}` is the same "reveal on scroll, never re-trigger"
- * idiom already used sparingly elsewhere in this codebase's motion
- * language — no custom scroll math needed here (unlike the cloud
- * transition itself, which genuinely is scroll-position-linked).
+ * cards staggered, then the closing belief.
  *
  * Deliberately has no heading — no "A little about me.", no generic
  * substitute. The section introduces itself through composition and a
  * deliberate size hierarchy instead of a labeled header: the intro
- * line is a secondary, thoughtful opener (~42-58px); the exploration
- * label is the smallest thing on the page; the closing statement is
- * the section's one loud moment (~58-80px) — scale doing the work a
- * heading normally would, at the *end* of the section rather than the
- * start of it.
+ * line is a small, quiet opener; the exploration cards are the
+ * section's one playful visual moment; the closing statement is the
+ * section's other loud moment — smaller than it once was, but still
+ * the boldest type on the page, and pulled up to overlap the cards
+ * above it (a negative margin + higher stacking order, not a card or
+ * container) so it reads as coming forward rather than sitting inside
+ * a normal stacked block.
  *
  * Background and text are fixed "paper" tokens (--shore-solid /
  * --paper-ink), not the themed --surface/--ink pair used elsewhere:
@@ -59,35 +57,32 @@ export function AboutSection() {
       className="relative"
       style={{ background: "var(--shore-solid)", color: "var(--paper-ink)" }}
     >
-      {/* Same outer grid as the hero (px-6 sm:px-10 lg:px-12, same
-          max-width) so the intro statement's left edge lands exactly
-          under "Designer who"'s — the continuation the hero's own
-          cloud transition promises, not a differently-aligned section
-          bolted on after it. Top padding is deliberately small: the
-          cloud transition itself is what separates the hero from this
-          content, so About shouldn't add a second, redundant gap on
-          top of it. */}
-      <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-6 pb-20 sm:px-10 sm:pt-8 sm:pb-28 lg:px-12">
-        {/* A thoughtful introduction, not the headline — secondary in
-            scale to the closing statement below, sized like a
-            confident opening line rather than the section's main
-            event. */}
+      {/* Top padding stays deliberately small: the cloud transition
+          itself is what separates the hero from this content, so About
+          shouldn't add a second, redundant gap on top of it. */}
+      <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-4 pb-16 sm:px-10 sm:pt-6 sm:pb-20 lg:px-12">
+        {/* A quiet, centered opener — a concise personal introduction,
+            not the section's headline. Roughly half the size of the
+            hierarchy's loudest moment below, and centered rather than
+            pinned to the hero's left edge, so it reads as a calm first
+            beat rather than a second hero statement. */}
         <motion.p
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
           variants={variants}
-          className="font-display max-w-[50rem] text-[clamp(1.75rem,3.2vw,2.9rem)] leading-[1.35] font-medium"
+          className="font-display mx-auto max-w-[34rem] text-center text-[clamp(1rem,1.6vw,1.4rem)] leading-[1.65] font-normal"
+          style={{ color: "var(--paper-ink-muted)" }}
         >
           {about.intro}
         </motion.p>
 
-        {/* Indented relative to the intro line above — an asymmetric
-            second beat rather than a second column repeating the same
-            left edge, so the composition has more than one alignment
-            doing work. An editorial numbered list, not a row of chips:
-            no pills, no borders, no card backgrounds. */}
-        <div className="mt-10 flex flex-col gap-4 sm:mt-14 sm:ml-[8%] lg:ml-[14%]">
+        {/* Exploration — a small centered label leading into three
+            playful, tilted cards, replacing the earlier numbered list.
+            Cards get generous room to breathe (padding-block absorbs
+            their rotation/hover lift) without a large empty section
+            gap on either side of them. */}
+        <div className="mt-10 flex flex-col items-center sm:mt-14">
           <motion.p
             initial="hidden"
             whileInView="visible"
@@ -103,15 +98,15 @@ export function AboutSection() {
             initial="hidden"
             whileInView="visible"
             viewport={viewport}
-            variants={prefersReducedMotion ? reducedReveal : chipContainer}
-            className="flex flex-col gap-2.5 sm:gap-3"
+            variants={prefersReducedMotion ? reducedReveal : cardContainer}
+            className="mt-8 flex w-full max-w-full snap-x snap-mandatory flex-nowrap justify-start gap-5 overflow-x-auto px-6 py-6 sm:mt-10 sm:justify-center sm:gap-6 sm:overflow-visible sm:px-0 sm:py-8"
           >
-            {explorationChips.map((chip, i) => (
-              <motion.div key={chip.label} variants={variants}>
-                <ExplorationChip
-                  label={chip.label}
-                  hint={chip.hint}
-                  variant={CHIP_VARIANTS[i]}
+            {explorationChips.map((card, i) => (
+              <motion.div key={card.label} variants={variants} className="snap-center">
+                <ExplorationCard
+                  label={card.label}
+                  hint={card.hint}
+                  variant={CARD_VARIANTS[i]}
                   index={i + 1}
                 />
               </motion.div>
@@ -119,26 +114,22 @@ export function AboutSection() {
           </motion.div>
         </div>
 
-        {/* The closing punch — the strongest, largest typographic
-            moment in the section, pushed to the right of the intro
-            statement's edge (the opposite direction from the list's
-            indent above) so the section resolves on a different beat
-            than it opened on. No quotation marks, no card, no quote
-            icon — a manifesto line, not a testimonial. */}
+        {/* The closing punch — centered, bold, and noticeably more
+            compact than before, but pulled up with a negative margin so
+            it overlaps the cards' own bottom edge and sits at a higher
+            stacking order: typography coming forward into the
+            composition rather than a text block stacked underneath it.
+            No card/container behind it — the layering is purely
+            position + z-index + a soft lifted shadow on the type itself. */}
         <motion.p
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
           variants={variants}
-          className="font-display mt-10 ml-auto max-w-[42rem] text-right text-[clamp(2.25rem,6vw,5rem)] leading-[1.1] font-semibold italic sm:mt-14"
+          className="font-display relative z-10 mx-auto -mt-2 max-w-[38rem] text-center text-[clamp(1.85rem,3.6vw,2.9rem)] leading-[1.2] font-bold italic sm:-mt-3"
+          style={{ textShadow: "0 18px 32px rgb(23 23 23 / 12%)" }}
         >
-          {about.belief.replace(". ", ".\n")
-            .split("\n")
-            .map((line, i) => (
-              <span key={i} className="block">
-                {line}
-              </span>
-            ))}
+          {about.belief}
         </motion.p>
       </div>
     </section>

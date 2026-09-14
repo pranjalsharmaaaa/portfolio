@@ -89,7 +89,7 @@ export type ExplorationChip = {
   hint: string;
 };
 
-/** Each chip's `hint` describes its own hover character — read by assistive tech in place of a generic "hover for more". */
+/** Each card's `hint` describes its own hover character — read by assistive tech in place of a generic "hover for more". */
 export const explorationChips: ExplorationChip[] = [
   { label: "Storytelling", hint: "Told like a title card" },
   { label: "Prototyping + Motion", hint: "Built to move" },
