@@ -81,7 +81,8 @@ export const about = {
   intro:
     "Someone who enjoys learning, exploring new ideas and finding the little details that make an experience feel just right.",
   exploringLabel: "Things I'm exploring lately",
-  belief: "I think every good design starts with a question. I'm here to keep asking better ones.",
+  belief:
+    "I believe every great design forms the basis for an even greater story, and I am here to keep writing mine.",
 } as const;
 
 export type ExplorationChip = {
@@ -93,5 +94,5 @@ export type ExplorationChip = {
 export const explorationChips: ExplorationChip[] = [
   { label: "Storytelling", hint: "Told like a title card" },
   { label: "Prototyping + Motion", hint: "Built to move" },
-  { label: "Design for Empathy", hint: "Made with care" },
+  { label: "Design for AI", hint: "Explored with intention" },
 ];

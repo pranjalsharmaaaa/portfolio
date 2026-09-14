@@ -3,80 +3,56 @@
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * Three tilted, editorial cards (spec: interactive exploration cards,
- * not a row of pills/buttons) — replaces the earlier numbered-list
- * treatment. Each card keeps its own hover *personality* from that
- * earlier version (see .card-storytelling/.card-motion/.card-empathy
- * in globals.css); what's new here is the card shape itself: a solid
- * denim-blue tile, slightly rotated, that lifts/straightens/scales on
- * hover via framer-motion rather than a flat CSS color swap.
+ * Three uniform, editorial cards — same height, width, radius, padding,
+ * and (spec: must never read as three different shades) the same
+ * `--card-blue` fill, which itself switches with the theme (a light,
+ * airy blue in Light mode; a denser, richer one at night) rather than
+ * staying fixed like the rest of this "paper" section. The entrance
+ * choreography (cards emerging from behind one another) lives one
+ * level up, in about-section.tsx, as a wrapping motion.div per card —
+ * this component only owns the hover/focus response, so its own
+ * transform stays free for that outer choreography to drive.
+ *
+ * Each card keeps a distinct hover *personality* (an idea carried over
+ * from the earlier numbered-list treatment) even though the base shape
+ * is now identical across all three: a hairline of character without
+ * breaking the "same card, three times" requirement.
  */
-export type CardVariant = "storytelling" | "motion" | "empathy";
+export type CardVariant = "storytelling" | "motion" | "ai";
 
 const VARIANT_CLASS: Record<CardVariant, string> = {
   storytelling: "card-storytelling",
   motion: "card-motion",
-  empathy: "card-empathy",
-};
-
-/** One shade per card (--card-blue-1/2/3) plus a resting tilt and a
- * small vertical stagger — a small editorial arrangement rather than
- * three identical tiles in a rigid row. Middle card sits marginally
- * higher, echoing the reference's loose fan composition without
- * copying it exactly. */
-const VARIANT_STYLE: Record<
-  CardVariant,
-  { background: string; rotate: number; y: number }
-> = {
-  storytelling: { background: "var(--card-blue-1)", rotate: -5, y: 4 },
-  motion: { background: "var(--card-blue-2)", rotate: 2.5, y: -8 },
-  empathy: { background: "var(--card-blue-3)", rotate: -3, y: 6 },
+  ai: "card-ai",
 };
 
 export function ExplorationCard({
   label,
   hint,
   variant,
-  index,
 }: {
   label: string;
   hint: string;
   variant: CardVariant;
-  index: number;
 }) {
   const prefersReducedMotion = useReducedMotion();
-  const { background, rotate, y } = VARIANT_STYLE[variant];
 
   return (
     <motion.span
       tabIndex={0}
       role="group"
       aria-label={`${label} — ${hint}`}
-      className={`exploration-card relative flex w-full max-w-[15.5rem] shrink-0 cursor-default flex-col justify-between gap-6 rounded-[1.75rem] px-6 py-7 shadow-[0_18px_36px_-18px_rgb(20_30_50/45%)] sm:max-w-[16.5rem] ${VARIANT_CLASS[variant]}`}
-      style={{ background }}
-      initial={false}
-      animate={prefersReducedMotion ? { rotate: 0, y: 0 } : { rotate, y }}
+      className={`exploration-card flex h-48 w-full cursor-default flex-col items-center justify-center rounded-[1.75rem] px-6 py-7 text-center shadow-[0_18px_36px_-18px_rgb(20_30_50/45%)] sm:h-56 ${VARIANT_CLASS[variant]}`}
+      style={{ background: "var(--card-blue)" }}
       whileHover={
-        prefersReducedMotion
-          ? undefined
-          : { rotate: rotate * 0.3, y: y - 10, scale: 1.045 }
+        prefersReducedMotion ? undefined : { y: -8, scale: 1.04, filter: "brightness(1.06)" }
       }
       whileFocus={
-        prefersReducedMotion
-          ? undefined
-          : { rotate: rotate * 0.3, y: y - 10, scale: 1.045 }
+        prefersReducedMotion ? undefined : { y: -8, scale: 1.04, filter: "brightness(1.06)" }
       }
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
     >
-      <span
-        className="font-sans text-xs tabular-nums"
-        style={{ color: "rgb(255 255 255 / 60%)" }}
-        aria-hidden="true"
-      >
-        {String(index).padStart(2, "0")}
-      </span>
-
-      <span className="flex items-end justify-between gap-3">
+      <span className="flex flex-col items-center gap-2">
         <span
           className="exploration-card-label font-display text-2xl leading-[1.15] font-medium sm:text-[1.7rem]"
           style={{ color: "var(--card-ink)" }}
@@ -84,9 +60,9 @@ export function ExplorationCard({
         >
           {label}
         </span>
-        {variant === "empathy" && (
-          <span className="card-heart shrink-0 text-2xl" style={{ color: "var(--card-ink)" }} aria-hidden="true">
-            ♥
+        {variant === "ai" && (
+          <span className="card-spark text-2xl" style={{ color: "var(--card-ink)" }} aria-hidden="true">
+            ✦
           </span>
         )}
       </span>

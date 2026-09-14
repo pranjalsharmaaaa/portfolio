@@ -4,28 +4,31 @@ import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 /**
- * The passage from the hero's sky into the About section.
+ * The passage from the hero's sky into the About section — a genuine
+ * foreground cloud bank that overlaps BOTH worlds, not a divider
+ * between them (spec: "REMOVE" the straight horizontal line/gradient
+ * fade entirely).
  *
- * A previous version relied on `position: sticky` pinning a
- * full-viewport (`h-screen`) frame inside a much shorter (45-55vh)
- * track. A sticky child taller than its own containing block has
- * nowhere sane to release, and — because every shape drawn inside that
- * frame was filled with the exact same solid `--shore-solid` as the
- * frame's own backdrop — the swoosh motif was invisible against
- * itself besides. The net effect at rest was exactly the bug this
- * component exists to prevent: a large stretch of flat, textureless
- * cream between the hero and About's first line.
+ * Two earlier versions of this component both amounted to a flat band
+ * sitting *after* the hero in normal flow — first a broken sticky-pin
+ * hack, then a plain vertical gradient. Both still read as a seam,
+ * just a softer one. This version is structurally different: the
+ * whole element is pulled UP with a negative top margin so its box
+ * genuinely overlaps the hero's lower portion (Hero's own `isolate` +
+ * `overflow-hidden` only clip Hero's *own* children — a later sibling
+ * rendered at overlapping screen coordinates paints on top of it by
+ * ordinary document order, no z-index needed), and its top edge is
+ * never a straight line: a base fill (solid `--shore-solid`, so there
+ * is zero gap-risk regardless of viewport size) plus a cluster of
+ * large, irregular circular "puffs" positioned in %-of-container units
+ * so they read as one continuous, organic cloud-bank silhouette
+ * bulging into the sky above, at every breakpoint, without any
+ * SVG-viewBox crop math to get subtly wrong on odd aspect ratios.
  *
- * This version is a short, ordinary (non-sticky, non-scroll-jacked)
- * band: a vertical gradient continuing the hero's own `--sky-bottom`
- * tone into the About section's `--shore-solid` cream, with one more
- * cluster of the hero's swoosh shapes drawn in the hero's own
- * semi-transparent `--shore` tone so they read as a visible, soft
- * cloud-bank crest rather than disappearing into their background —
- * the sky flowing forward into the page rather than a hard horizontal
- * border. A gentle scroll-linked drift keeps a touch of life; it's
- * bounded to a few pixels so it never needs the earlier version's
- * large empty scroll track to play out.
+ * The cream fill IS the About surface's own color, so wherever the
+ * cloud sits, it already reads as About's surface — no separate
+ * "cream rising from behind" layer is needed; the shape itself defines
+ * where cream begins as the hero scrolls up and away above it.
  */
 export function CloudTransition() {
   const ref = useRef<HTMLDivElement>(null);
@@ -34,48 +37,73 @@ export function CloudTransition() {
     target: ref,
     offset: ["start end", "end start"],
   });
-
-  const y = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [14, -14]);
+  const y = useTransform(scrollYProgress, [0, 1], prefersReducedMotion ? [0, 0] : [10, -10]);
 
   return (
     <div
       ref={ref}
       aria-hidden="true"
-      className="relative h-[15vh] w-full overflow-hidden sm:h-[19vh]"
-      style={{
-        background: "linear-gradient(180deg, var(--sky-bottom) 0%, var(--shore-solid) 78%)",
-      }}
+      className="relative z-10 -mt-[15vh] h-[20vh] w-full sm:-mt-[17vh] sm:h-[24vh]"
     >
-      <motion.svg
-        style={{ y }}
-        viewBox="0 0 1600 220"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-x-0 top-0 h-full w-full"
-      >
-        <defs>
-          <symbol id="transition-swoosh" viewBox="0 0 200 60">
-            <path d="M4,40 C18,12 52,4 88,13 C111,19 118,36 145,35 C166,34 177,17 196,21 C184,42 159,53 130,51 C103,49 82,35 55,40 C33,44 13,52 4,40 Z" />
-          </symbol>
-        </defs>
+      {/* Base fill — the gap-proof floor, and NOT part of the moving
+          group below. Bleeds 6px past this container's own bottom edge
+          on purpose: `-mt-[Nvh]` and `h-[Nvh]` on the container above
+          are two independently-rounded viewport-unit values, and
+          Chromium can round each to a different sub-pixel, leaving a
+          hairline gap at their shared edge that reveals `body`'s own
+          background (--sky-bottom) — a different tone from this fill's
+          --shore-solid, glaring in dark mode where sky-bottom is navy.
+          Anchoring this rect's own bottom a few px *past* the container
+          (rather than flush with it) guarantees real, painted overlap
+          with About regardless of any such rounding. It stays out of
+          the `motion.div` below deliberately: a `transform` on a
+          fractional-edged solid rect promotes it to its own GPU
+          compositing layer, and *that* introduced the same hairline
+          symptom right at this rect's own bottom edge — a static rect
+          never hits that path in the first place. */}
+      <div
+        className="absolute inset-x-0"
+        style={{ top: "30%", bottom: "-6px", background: "var(--shore-solid)" }}
+      />
+
+      {/* The moving group: only the puffs drift, in their own layer —
+          isolating the transform to elements where a soft, irregular
+          edge makes any sub-pixel blending invisible by construction. */}
+      <motion.div style={{ y }} className="absolute inset-0">
+        {/* The puff cluster — irregular sizes/positions/overlaps so the
+            union reads as one uneven cloud-bank ridge, not a repeating
+            pattern. Diameter is `min(Xvh, Yvw)`: sized off the
+            viewport HEIGHT (so it's proportionate to this short band
+            regardless of screen width) but capped by a per-puff
+            viewport-WIDTH ceiling tuned so `left% + widthCap%` never
+            exceeds 100 — the guard that actually matters, since a
+            purely vh-sized puff would happily balloon past the right
+            edge on a narrow, tall phone screen where vh is large
+            relative to the available width. Bleed to the left of 0% is
+            left uncapped: unlike the right edge, overflow to the start
+            side of the viewport doesn't add scrollable width in
+            browsers, so it can't create horizontal scroll. */}
         {[
-          { x: -80, y: 20, s: 2.6, r: -4 },
-          { x: 300, y: -8, s: 2.1, r: 5 },
-          { x: 650, y: 24, s: 2.8, r: -3 },
-          { x: 1020, y: -6, s: 2.2, r: 6 },
-          { x: 1350, y: 20, s: 2.5, r: -5 },
-        ].map((s, i) => (
-          <use
+          { left: "-4%", d: 19, capVw: 22, top: "30%" },
+          { left: "14%", d: 22, capVw: 26, top: "12%" },
+          { left: "38%", d: 20, capVw: 24, top: "30%" },
+          { left: "58%", d: 23, capVw: 22, top: "6%" },
+          { left: "76%", d: 19, capVw: 17, top: "26%" },
+          { left: "92%", d: 14, capVw: 7, top: "34%" },
+        ].map((p, i) => (
+          <div
             key={i}
-            href="#transition-swoosh"
-            x={s.x}
-            y={s.y}
-            width={200 * s.s}
-            height={60 * s.s}
-            transform={`rotate(${s.r} ${s.x + 100 * s.s} ${s.y + 30 * s.s})`}
-            fill="var(--shore)"
+            className="absolute rounded-full"
+            style={{
+              left: p.left,
+              top: p.top,
+              width: `min(${p.d}vh, ${p.capVw}vw)`,
+              height: `min(${p.d}vh, ${p.capVw}vw)`,
+              background: "var(--shore-solid)",
+            }}
           />
         ))}
-      </motion.svg>
+      </motion.div>
     </div>
   );
 }
