@@ -295,46 +295,15 @@
 /* About — exploration cards                                           */
 /*                                                                      */
 /* Three uniform, editorial cards (same size, same --card-blue) — not   */
-/* generic SaaS feature tiles. The entrance choreography (cards         */
-/* emerging from behind one another) and the hover lift/scale are both  */
-/* handled by framer-motion (see about-section.tsx / exploration-       */
-/* card.tsx); what lives here is each card's own hover *personality* —  */
-/* the same idea as the old numbered-list treatment this replaced, just */
-/* now applied to a card's label/icon instead of a bare line of text.   */
+/* generic SaaS feature tiles. The entrance choreography (cluster →     */
+/* separate, scroll-driven) and the hover scale are both handled by     */
+/* framer-motion (see about-section.tsx / exploration-card.tsx); no     */
+/* per-card hover treatment lives here — all three must hover           */
+/* identically, so there is nothing left for this stylesheet to own.    */
 /* ------------------------------------------------------------------ */
 
 .exploration-card-label {
   display: inline-block;
-  transition:
-    letter-spacing 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    font-style 320ms ease,
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Storytelling — a film title card: tracking widens and the label
-   leans into the editorial serif's italic, like text settling into
-   frame rather than a hover state firing. */
-.card-storytelling:hover .exploration-card-label,
-.card-storytelling:focus-visible .exploration-card-label {
-  letter-spacing: 0.04em;
-  font-style: italic;
-}
-
-/* Prototyping + Motion — the label itself demonstrates the word: a
-   small, springy nudge on hover rather than a static line of text. */
-.card-motion:hover .exploration-card-label,
-.card-motion:focus-visible .exploration-card-label {
-  transform: translateY(-2px) rotate(-1deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .exploration-card-label {
-    transition: none;
-  }
-  .card-motion:hover .exploration-card-label,
-  .card-motion:focus-visible .exploration-card-label {
-    transform: none;
-  }
 }
 
 /* ------------------------------------------------------------------ */

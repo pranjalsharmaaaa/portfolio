@@ -243,10 +243,16 @@ export function AboutSection() {
               `cardsProgress` to run across. Collapses to the sticky
               child's own natural height whenever the scrub is
               inactive (mobile / reduced motion), so it costs nothing
-              in either scroll distance or layout in those cases. */}
+              in either scroll distance or layout in those cases.
+
+              `mt-4 sm:mt-6` — the exact same margin as the wrapper
+              above (the intro-paragraph → heading gap) — so the
+              heading → cards gap reuses that identical token rather
+              than an invented value; the two now measure the same at
+              every breakpoint. */}
           <div
             ref={cardsTrackRef}
-            className="mt-5 w-full sm:mt-6"
+            className="mt-4 w-full sm:mt-6"
             style={{ height: cardsScrubActive ? "160vh" : undefined }}
           >
             {/* Pinned for the track's full height (bar the sliver equal
@@ -255,8 +261,15 @@ export function AboutSection() {
                 distance, exactly like Hero stays pinned under About in
                 app/page.tsx. Static (no sticky, no offset) when the
                 scrub is inactive, so mobile/reduced-motion keep the
-                plain in-flow stacked layout they already had. */}
-            <div className={cardsScrubActive ? "sticky top-0 flex justify-center py-10" : "flex justify-center"}>
+                plain in-flow stacked layout they already had.
+
+                `pb-10`, not `py-10`: only the bottom half of the old
+                padding is kept (preserving the existing cards →
+                philosophy gap untouched); the top half is dropped
+                because it was stacking on top of this wrapper's own
+                margin-top above, which is what created the mismatch
+                with the intro → heading gap in the first place. */}
+            <div className={cardsScrubActive ? "sticky top-0 flex justify-center pb-10" : "flex justify-center"}>
               {/* gap-7 = 1.75rem = exactly 28px, the spec's required
                   final desktop gap between card edges — the grid alone
                   decides width/height/gap for every card; the scroll
