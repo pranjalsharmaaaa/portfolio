@@ -47,7 +47,7 @@ export function ExplorationCard({
       tabIndex={0}
       role="group"
       aria-label={`${label} — ${hint}`}
-      className={`exploration-card flex h-48 w-full cursor-default flex-col items-center justify-center gap-2 rounded-[1.75rem] px-6 py-7 text-center shadow-[0_18px_36px_-18px_rgb(20_30_50/45%)] sm:h-56 ${VARIANT_CLASS[variant]}`}
+      className={`exploration-card flex h-32 w-full cursor-default flex-col items-center justify-center rounded-[1.25rem] px-4 py-4 text-center shadow-[0_12px_24px_-14px_rgb(20_30_50/45%)] sm:h-36 ${VARIANT_CLASS[variant]}`}
       style={{ background: "var(--card-blue)" }}
       whileHover={
         prefersReducedMotion ? undefined : { y: -8, scale: 1.04, filter: "brightness(1.06)" }
@@ -58,17 +58,12 @@ export function ExplorationCard({
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
     >
       <span
-        className="exploration-card-label font-display text-2xl leading-[1.15] font-medium sm:text-[1.7rem]"
+        className="exploration-card-label font-display text-base leading-[1.2] font-medium sm:text-lg"
         style={{ color: "var(--card-ink)" }}
         aria-hidden="true"
       >
         {label}
       </span>
-      {variant === "empathy" && (
-        <span className="card-heart text-2xl" style={{ color: "var(--card-ink)" }} aria-hidden="true">
-          ♥
-        </span>
-      )}
     </motion.span>
   );
 }

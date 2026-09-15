@@ -104,15 +104,18 @@ export function AboutSection() {
       {/* Top padding stays deliberately small: the cloud above is what
           separates the hero from this content, so About shouldn't add
           a second, redundant gap on top of it. */}
-      <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-4 pb-16 sm:px-10 sm:pt-6 sm:pb-20 lg:px-12">
+      <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12 lg:px-12">
         {/* A quiet, centered opener — a concise personal introduction,
-            not the section's headline. */}
+            not the section's headline. Sized and margined to read as
+            one compact editorial composition with the label/cards/
+            belief below it, not four separately-spaced sections
+            requiring their own scroll. */}
         <motion.p
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
           variants={variants}
-          className="font-display mx-auto max-w-[34rem] text-center text-[clamp(1.05rem,1.7vw,1.5rem)] leading-[1.65] font-normal"
+          className="font-display mx-auto max-w-[28rem] text-center text-[clamp(0.95rem,1.3vw,1.15rem)] leading-[1.5] font-normal"
           style={{ color: "var(--paper-ink-muted)" }}
         >
           {about.intro}
@@ -122,7 +125,7 @@ export function AboutSection() {
             uniform cards, each the same size and the same blue,
             clustered together at rest and spreading into an exactly
             28px-gapped row as they come into view. */}
-        <div className="mt-10 flex flex-col items-center sm:mt-14">
+        <div className="mt-6 flex flex-col items-center sm:mt-8">
           <motion.p
             initial="hidden"
             whileInView="visible"
@@ -137,8 +140,12 @@ export function AboutSection() {
           {/* gap-7 = 1.75rem = exactly 28px, the spec's required
               final desktop gap between card edges — the grid's own gap
               is the single source of truth for that spacing, never the
-              entrance animation. */}
-          <div className="mt-8 grid w-full max-w-[52rem] grid-cols-1 gap-7 sm:mt-10 sm:grid-cols-3">
+              entrance animation. max-w-[44rem] (down from 52rem) is
+              what shrinks the cards themselves: three equal grid
+              columns divide whatever width this box has, so narrowing
+              the box narrows every card by the same amount without
+              touching the grid/gap mechanics. */}
+          <div className="mt-5 grid w-full max-w-[44rem] grid-cols-1 gap-7 sm:mt-6 sm:grid-cols-3">
             {explorationChips.map((card, i) => (
               <motion.div
                 key={card.label}
@@ -153,19 +160,23 @@ export function AboutSection() {
           </div>
         </div>
 
-        {/* The closing punch — centered, bold, and compact. A larger
-            gap than the one above the cards (spec: "slightly more
-            vertical space after the cards"), with the foreground
-            feeling coming from stacking order + a soft lifted shadow
-            on the type itself, not from crowding it against the cards
-            with a negative margin. No card/container behind it — a
-            manifesto line, not a paragraph in a box. */}
+        {/* The closing punch — centered, bold, and compact. Still a
+            visibly larger gap than the one above the cards (spec:
+            "slightly more vertical space after the cards"), with the
+            foreground feeling coming from stacking order + a soft
+            lifted shadow on the type itself, not from crowding it
+            against the cards with a negative margin — just both the
+            gap and the type scaled down together with everything else
+            in this section so the whole composition (intro through
+            belief) settles inside one desktop viewport. No
+            card/container behind it — a manifesto line, not a
+            paragraph in a box. */}
         <motion.p
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
           variants={variants}
-          className="font-display relative z-10 mx-auto mt-16 max-w-[38rem] text-center text-[clamp(1.85rem,3.6vw,2.9rem)] leading-[1.25] font-bold italic sm:mt-24"
+          className="font-display relative z-10 mx-auto mt-8 max-w-[30rem] text-center text-[clamp(1.15rem,1.8vw,1.5rem)] leading-[1.35] font-bold italic sm:mt-10"
           style={{ textShadow: "0 18px 32px rgb(23 23 23 / 12%)" }}
         >
           {about.belief}

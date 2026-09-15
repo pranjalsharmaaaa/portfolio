@@ -327,50 +327,13 @@
   transform: translateY(-2px) rotate(-1deg);
 }
 
-/* Design for Empathy — a small heart that's reserved (not just
-   invisible) at rest, scaling in with two quick beats on hover, like
-   a pulse rather than a generic icon fade. */
-.card-heart {
-  transform: scale(0);
-  transform-origin: center;
-  transition: transform 200ms ease;
-}
-.card-empathy:hover .card-heart,
-.card-empathy:focus-visible .card-heart {
-  animation: heartbeat 700ms ease-in-out 1;
-  transform: scale(1);
-}
-@keyframes heartbeat {
-  0% {
-    transform: scale(0);
-  }
-  35% {
-    transform: scale(1.25);
-  }
-  55% {
-    transform: scale(0.95);
-  }
-  75% {
-    transform: scale(1.15);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .exploration-card-label,
-  .card-heart {
+  .exploration-card-label {
     transition: none;
   }
   .card-motion:hover .exploration-card-label,
   .card-motion:focus-visible .exploration-card-label {
     transform: none;
-  }
-  .card-empathy:hover .card-heart,
-  .card-empathy:focus-visible .card-heart {
-    animation: none;
-    transform: scale(1);
   }
 }
 

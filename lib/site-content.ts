@@ -94,5 +94,5 @@ export type ExplorationChip = {
 export const explorationChips: ExplorationChip[] = [
   { label: "Storytelling", hint: "Told like a title card" },
   { label: "Prototyping + Motion", hint: "Built to move" },
-  { label: "Design for Empathy", hint: "Made with care" },
+  { label: "Design for AI", hint: "Exploring what's next" },
 ];
