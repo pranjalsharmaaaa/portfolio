@@ -57,18 +57,20 @@ function cardVariants(index: number, prefersReducedMotion: boolean | null): Vari
 
 /**
  * The foreground layer that rises up and over the hero's sky while
- * scrolling — not a normal section stacked underneath it. `-mt-[Nvh]`
- * pulls this section's own box up so it genuinely overlaps the hero's
- * lower portion, `z-10` makes sure it paints in front wherever they
- * overlap (Hero's own `isolate` + `overflow-hidden` only clip Hero's
- * *own* children, so a later, higher-stacking sibling rendered at the
- * same screen coordinates simply paints over it — no coordination with
- * Hero's own markup needed), and `AboutCloud` — an absolutely
- * positioned child anchored to this section's own top edge — is what
- * makes that overlap read as an organic cloud mass rather than a
- * straight edge. The cloud belongs to About, not to the hero: it lives
- * inside this section, moves with it, and is the section's own top
- * edge, not a separate component sitting between the two.
+ * scrolling. The scroll-coupled part of that (Hero pinned via `sticky`
+ * for one Hero-height of scrolling while this section's own
+ * `margin-top: -1 * HeroHeight` pulls it up to meet it) lives in
+ * app/page.tsx, not here — this component only needs `z-10` to make
+ * sure it paints in front of Hero wherever the two overlap (Hero's own
+ * `isolate` + `overflow-hidden` only clip Hero's *own* children, so a
+ * later, higher-stacking sibling rendered at the same screen
+ * coordinates simply paints over it regardless). `AboutCloud` — an
+ * absolutely positioned child anchored to this section's own top edge
+ * — is what makes that overlap read as an organic cloud mass rather
+ * than a straight edge. The cloud belongs to About, not to the hero:
+ * it lives inside this section, moves with it (including the page.tsx
+ * margin that repositions the section itself), and is the section's
+ * own top edge, not a separate component sitting between the two.
  *
  * Deliberately has no heading — no "A little about me.", no generic
  * substitute. The section introduces itself through composition and a
@@ -94,7 +96,7 @@ export function AboutSection() {
     <section
       id="about"
       aria-label="About"
-      className="relative z-10 -mt-[8vh] sm:-mt-[10vh]"
+      className="relative z-10"
       style={{ background: "var(--shore-solid)", color: "var(--paper-ink)" }}
     >
       <AboutCloud />
