@@ -1,7 +1,5 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-
 /**
  * Three uniform, editorial cards — same height, width, radius, padding,
  * and (spec: must never read as three different shades) the same
@@ -10,9 +8,11 @@ import { motion, useReducedMotion } from "framer-motion";
  * staying fixed like the rest of this "paper" section. The entrance
  * choreography (cards clustering together, then spreading into their
  * final row) lives one level up, in about-section.tsx, as a wrapping
- * motion.div per card — this component only owns the hover/focus
- * response, so its own transform stays free for that outer
- * choreography to drive.
+ * motion.div per card — that's the only Framer Motion involved
+ * anywhere in this composition; this component itself is a plain
+ * element with a plain CSS `:hover`/`:focus-visible` rule (see
+ * `.exploration-card` in globals.css), not a second, competing
+ * animation system.
  *
  * Text is centered both axes via flex, inside a fixed height, so a
  * one-line label ("Storytelling") and a two-line one ("Prototyping +
@@ -20,10 +20,10 @@ import { motion, useReducedMotion } from "framer-motion";
  * they wrap to — never top-anchored.
  *
  * Hover/focus is one identical, tiny scale on the card as a whole —
- * `transform: scale(...)` only, never width/height, so it can't
- * reflow the row's 28px gaps — with no per-variant differences: all
- * three cards (storytelling, motion, empathy) must behave exactly the
- * same on hover, not just look the same at rest.
+ * `transform: scale(...)` only, never width/height/opacity/font, so it
+ * can't reflow the row's 28px gaps — with no per-variant differences:
+ * all three cards (storytelling, motion, empathy) share the exact same
+ * CSS rule, not just the same look at rest.
  */
 export type CardVariant = "storytelling" | "motion" | "empathy";
 
@@ -32,17 +32,6 @@ const VARIANT_CLASS: Record<CardVariant, string> = {
   motion: "card-motion",
   empathy: "card-empathy",
 };
-
-/**
- * The one and only hover/focus effect for all three cards: a barely-
- * there whole-card scale (~1-2px of growth on a card this size), never
- * opacity, never a per-card/per-variant difference. Named and shared
- * (not three separate inline object literals) so there is exactly one
- * place this could ever be defined — nothing else in this file
- * declares a `whileHover`, a `whileFocus`, or a hover `transition`.
- */
-const CARD_HOVER_SCALE = { scale: 1.01 };
-const CARD_HOVER_TRANSITION = { duration: 0.3, ease: "easeOut" } as const;
 
 export function ExplorationCard({
   label,
@@ -53,25 +42,13 @@ export function ExplorationCard({
   hint: string;
   variant: CardVariant;
 }) {
-  const prefersReducedMotion = useReducedMotion();
-
   return (
-    <motion.span
+    <span
       tabIndex={0}
       role="group"
       aria-label={`${label} — ${hint}`}
       className={`exploration-card flex h-32 w-full cursor-default flex-col items-center justify-center rounded-[1.25rem] px-4 py-4 text-center shadow-[0_12px_24px_-14px_rgb(20_30_50/45%)] sm:h-36 ${VARIANT_CLASS[variant]}`}
       style={{ background: "var(--card-blue)" }}
-      // This lives on the card's own element, entirely separate from
-      // (and composes safely with, never overwrites) the scroll-driven
-      // x/y/rotate transform that about-section.tsx applies to this
-      // card's *wrapping* motion.div for the cluster→separate
-      // choreography — two different DOM nodes, so this hover scale
-      // and that scroll transform stack independently rather than one
-      // clobbering the other's `transform`.
-      whileHover={prefersReducedMotion ? undefined : CARD_HOVER_SCALE}
-      whileFocus={prefersReducedMotion ? undefined : CARD_HOVER_SCALE}
-      transition={CARD_HOVER_TRANSITION}
     >
       <span
         className="exploration-card-label font-display text-base leading-[1.2] font-medium sm:text-lg"
@@ -80,6 +57,6 @@ export function ExplorationCard({
       >
         {label}
       </span>
-    </motion.span>
+    </span>
   );
 }

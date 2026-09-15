@@ -295,15 +295,37 @@
 /* About — exploration cards                                           */
 /*                                                                      */
 /* Three uniform, editorial cards (same size, same --card-blue) — not   */
-/* generic SaaS feature tiles. The entrance choreography (cluster →     */
-/* separate, scroll-driven) and the hover scale are both handled by     */
-/* framer-motion (see about-section.tsx / exploration-card.tsx); no     */
-/* per-card hover treatment lives here — all three must hover           */
-/* identically, so there is nothing left for this stylesheet to own.    */
+/* generic SaaS feature tiles. The cluster → separate entrance is       */
+/* scroll-driven Framer Motion on each card's own *wrapping* element    */
+/* (about-section.tsx) — a different DOM node from `.exploration-card`  */
+/* below, so the two transforms compose instead of one clobbering the   */
+/* other. Hover/focus, by contrast, is plain CSS on `.exploration-card` */
+/* itself: one rule, no per-variant difference, and no dependency on    */
+/* Framer's hover state at all — not a second animation system layered */
+/* on top of the first, just two transforms on two different elements. */
 /* ------------------------------------------------------------------ */
 
 .exploration-card-label {
   display: inline-block;
+}
+
+.exploration-card {
+  transition: transform 300ms ease-out;
+}
+
+.exploration-card:hover,
+.exploration-card:focus-visible {
+  transform: scale(1.01);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exploration-card {
+    transition: none;
+  }
+  .exploration-card:hover,
+  .exploration-card:focus-visible {
+    transform: none;
+  }
 }
 
 /* ------------------------------------------------------------------ */

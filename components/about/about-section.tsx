@@ -260,18 +260,15 @@ export function AboutSection() {
               applied), so `mt-4` there reuses the intro → heading gap's
               own token directly, unmodified.
 
-              `sm:mt-10` (40px) is `sm:mt-6` (24px, the intro → heading
-              token) plus what card 1's own `y: -10` rotate+scale pose
-              (CARD_ENTRANCE below) visually eats into it at progress 0
-              — measured directly (not hand-derived from the raw -10,
-              since the card's own rotation/scale at that pose grows
-              its rendered bounding box a little beyond a plain
-              translate): the visible gap above the cluster's highest
-              point comes out to ~24.5px this way, matching within
-              well under a pixel. */}
+              `sm:mt-12` builds on that same measured baseline
+              (`sm:mt-10` landed the visible gap at ~24.5px, matching
+              the intro → heading gap exactly) plus one more step, so
+              the visible heading → cards gap now reads as *slightly*
+              larger than the paragraph → heading gap above it, by
+              design — not equal to it. */}
           <div
             ref={cardsTrackRef}
-            className="mt-4 w-full sm:mt-10"
+            className="mt-4 w-full sm:mt-12"
             style={{ height: cardsScrubActive ? "160vh" : undefined }}
           >
             {/* Pinned for the track's full height (bar the sliver equal
@@ -295,8 +292,16 @@ export function AboutSection() {
                   transform below only ever offsets *away* from that
                   resting position, reaching precisely x:"0%"/y:0/
                   rotate:0 (i.e. no transform, the grid's own geometry
-                  fully in charge) exactly when cardsProgress reaches 1. */}
-              <div className="grid w-full max-w-[44rem] grid-cols-1 gap-7 sm:grid-cols-3">
+                  fully in charge) exactly when cardsProgress reaches 1.
+
+                  `mx-auto` is explicit here (on top of the parent's
+                  own `justify-center`, which already centered this
+                  group) so the three-card group's own centering isn't
+                  implicit/inherited from a sibling relationship alone
+                  — measured: its center already lands exactly on the
+                  viewport center, same axis as the intro paragraph and
+                  the closing statement. */}
+              <div className="mx-auto grid w-full max-w-[44rem] grid-cols-1 gap-7 sm:grid-cols-3">
                 {explorationChips.map((card, i) => (
                   <ScrollDrivenCard
                     key={card.label}
