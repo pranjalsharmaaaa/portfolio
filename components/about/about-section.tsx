@@ -1,6 +1,14 @@
 "use client";
 
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+  type Variants,
+} from "framer-motion";
 import { about, explorationChips } from "@/lib/site-content";
 import { AboutCloud } from "@/components/about/about-cloud";
 import { ExplorationCard, type CardVariant } from "@/components/about/exploration-card";
@@ -19,47 +27,87 @@ const reducedReveal: Variants = {
 };
 
 /**
- * Per-card entrance variants for the exploration row (spec: cards begin
- * closer together / slightly clustered, then animate outward into
- * their final row — never flying in from off-screen, never changing
- * the grid's own layout). Built as transform/opacity only, so the
- * grid's 1/3-column layout — and its exact 28px gap, which comes
- * entirely from the grid's own `gap-7`, not from this animation — is
- * reserved from the very first paint. The "visible" target is always
- * `x: "0%"` / no transform at all: the grid alone ever decides each
- * card's resting x/y, this animation only offsets *away* from that on
- * the way in. All three cards' text stays in the accessibility tree
- * throughout regardless of where the animation currently is.
- *
- * The middle card (index 1) settles in first with a plain reveal; the
- * two side cards start translated toward the middle's own slot (as if
- * clustered against it) and spread out into their final positions with
- * a small stagger. Kept short (well under half a second, end to end)
- * so the row reaches its real, non-overlapping grid position almost as
- * soon as it scrolls into view — this row can become visible mid-scroll
- * (see AboutSection's own note on the sticky reveal above), so a long
- * settle time left a wide window where a reader arriving mid-animation
- * would see the clustered start as if it were the resting layout.
+ * True viewport-width media query (not `prefersReducedMotion`'s kind of
+ * capability check): gates the scroll-scrubbed cluster/separate effect
+ * to the same `sm:` breakpoint (640px) where the cards row itself
+ * switches from a single stacked column to a three-across row. Below
+ * that, cards never move horizontally at all, so scrubbing them apart
+ * would have nothing meaningful to animate and would only cost the
+ * reader extra scroll distance for no visual payoff. Starts `false`
+ * (matches the mobile, no-motion baseline) so there's nothing to
+ * reconcile between server and first client render.
  */
-function cardVariants(index: number, prefersReducedMotion: boolean | null): Variants {
-  if (prefersReducedMotion) {
-    return {
-      hidden: { opacity: 0 },
-      visible: { opacity: 1, transition: { duration: 0.22, delay: index * 0.04 } },
-    };
-  }
-  if (index === 1) {
-    return {
-      hidden: { opacity: 0, y: 12, scale: 0.96 },
-      visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.28, ease: EASE } },
-    };
-  }
-  const fromX = index === 0 ? "58%" : "-58%";
-  const delay = index === 0 ? 0.03 : 0.07;
-  return {
-    hidden: { opacity: 0, x: fromX, scale: 0.9 },
-    visible: { opacity: 1, x: "0%", scale: 1, transition: { duration: 0.3, ease: EASE, delay } },
-  };
+function useIsDesktop(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const update = () => setMatches(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, [query]);
+
+  return matches;
+}
+
+/**
+ * Each card's starting offset in the clustered stack (spec's own
+ * sketch: card 2 on top and centered, card 1 low-left, card 3
+ * low-right) — expressed as a scroll-progress-0 pose that eases to
+ * exactly `x:"0%", y:0, rotate:0` at progress 1, i.e. to *no* transform
+ * at all, so the grid's own `gap-7` (not this animation) is what's
+ * actually on screen once scrolling finishes. `x` is a percentage of
+ * each card's own width — not a fixed px amount — so "pull toward the
+ * middle column" scales correctly however wide the card renders at any
+ * viewport width. `z` keeps card 2 painting on top of the other two
+ * while they're stacked underneath it, matching the sketch.
+ */
+const CARD_ENTRANCE: { x: string; y: number; rotate: number; z: number }[] = [
+  { x: "58%", y: 14, rotate: -6, z: 20 },
+  { x: "0%", y: -10, rotate: 3, z: 30 },
+  { x: "-58%", y: 16, rotate: 5, z: 10 },
+];
+
+/**
+ * One card's position is a direct, un-eased function of `progress` (a
+ * scroll-fraction MotionValue owned by AboutSection, shared by all
+ * three) — no spring, no time-based transition. That's deliberate: the
+ * brief was for the cards' separation to be *continuously controlled*
+ * by scroll position, which a spring or duration-based tween would
+ * fight (either lagging behind the scroll or overshooting past it).
+ * `useTransform` is called here, at this component's own top level —
+ * not inline inside the parent's `.map()` — because a hook can't be
+ * called a variable number of times per the rules of hooks; splitting
+ * each card into its own component is what lets each one call
+ * `useTransform` unconditionally while still reading a per-index
+ * starting pose.
+ */
+function ScrollDrivenCard({
+  index,
+  progress,
+  active,
+  label,
+  hint,
+  variant,
+}: {
+  index: number;
+  progress: MotionValue<number>;
+  active: boolean;
+  label: string;
+  hint: string;
+  variant: CardVariant;
+}) {
+  const entrance = CARD_ENTRANCE[index];
+  const x = useTransform(progress, [0, 1], [entrance.x, "0%"]);
+  const y = useTransform(progress, [0, 1], [entrance.y, 0]);
+  const rotate = useTransform(progress, [0, 1], [entrance.rotate, 0]);
+
+  return (
+    <motion.div style={active ? { x, y, rotate, zIndex: entrance.z } : undefined}>
+      <ExplorationCard label={label} hint={hint} variant={variant} />
+    </motion.div>
+  );
 }
 
 /**
@@ -99,6 +147,42 @@ export function AboutSection() {
   const variants = prefersReducedMotion ? reducedReveal : reveal;
   const viewport = { once: true, margin: "-15% 0px -15% 0px" } as const;
 
+  /**
+   * The cards' cluster→separate motion is driven by how far the reader
+   * has scrolled through `cardsTrackRef`'s own box, not by whether it
+   * has merely entered the viewport once. `offset: ["start start", "end
+   * end"]` makes `cardsProgress` run 0→1 across exactly this track's
+   * height: 0 the instant its top reaches the top of the viewport, 1
+   * once its *bottom* reaches the viewport's *bottom* — not "end start"
+   * (bottom reaching the viewport's top), which would need a full
+   * extra viewport-height of *trailing* content after the track just
+   * to make that scroll position reachable at all. The sticky child
+   * pinned inside the track is short (roughly its own content height,
+   * nowhere near a full viewport), so it naturally un-sticks — track
+   * bottom scrolls above the pin point — well before progress reaches
+   * 1 under this formula; the cards simply sit at their now-settled
+   * rest pose for the remaining, still-pinned scroll, then scroll away
+   * normally once unstuck, with nothing left to animate. This is the
+   * same "tall box + sticky child" shape as the Hero/About reveal in
+   * app/page.tsx, just an independent instance scoped to this row
+   * alone (nothing here touches that file or its mechanism).
+   *
+   * `isDesktop` gates whether the track/sticky/transform machinery is
+   * live at all: below `sm:` the cards already stack in a single
+   * column with no horizontal separation to scrub, so the track
+   * collapses to auto-height and every card renders at its plain
+   * resting transform — no extra scroll distance spent for no visual
+   * payoff. Reduced motion does the same, per spec: the final
+   * separated layout, with no scroll-linked motion.
+   */
+  const cardsTrackRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: cardsProgress } = useScroll({
+    target: cardsTrackRef,
+    offset: ["start start", "end end"],
+  });
+  const isDesktop = useIsDesktop("(min-width: 640px)");
+  const cardsScrubActive = isDesktop && !prefersReducedMotion;
+
   return (
     <section
       id="about"
@@ -129,9 +213,11 @@ export function AboutSection() {
         </motion.p>
 
         {/* Exploration — a small centered label leading into three
-            uniform cards, each the same size and the same blue,
-            clustered together at rest and spreading into an exactly
-            28px-gapped row as they come into view. */}
+            uniform cards, each the same size and the same blue. They
+            begin clustered/overlapping and separate into an exactly
+            28px-gapped row as a direct, continuous function of scroll
+            position through the track below — not a one-time entrance
+            triggered by merely scrolling into view. */}
         <div className="mt-6 flex flex-col items-center sm:mt-8">
           <motion.p
             initial="hidden"
@@ -144,53 +230,58 @@ export function AboutSection() {
             {about.exploringLabel}
           </motion.p>
 
-          {/* gap-7 = 1.75rem = exactly 28px, the spec's required
-              final desktop gap between card edges — the grid's own gap
-              is the single source of truth for that spacing, never the
-              entrance animation. max-w-[44rem] (down from 52rem) is
-              what shrinks the cards themselves: three equal grid
-              columns divide whatever width this box has, so narrowing
-              the box narrows every card by the same amount without
-              touching the grid/gap mechanics.
-
-              `animate="visible"` (mount-triggered), not `whileInView`:
-              this row sits behind the still-sticky, fully-opaque Hero
-              for the entire first Hero-height of scroll (see this
-              component's own note above on the sticky reveal), so it
-              is never visible to a reader at the moment the page
-              mounts — the ~0.3s entrance therefore always finishes
-              long before any scroll can bring it on screen, and a
-              reader can never catch it mid-cluster. A scroll-linked
-              `whileInView` trigger can't offer that guarantee here,
-              because this row can start intersecting the viewport
-              (and firing) well before it's actually revealed from
-              under Hero, at a moment tied to scroll speed rather than
-              to page load. */}
-          <div className="mt-5 grid w-full max-w-[44rem] grid-cols-1 gap-7 sm:mt-6 sm:grid-cols-3">
-            {explorationChips.map((card, i) => (
-              <motion.div
-                key={card.label}
-                initial="hidden"
-                animate="visible"
-                variants={cardVariants(i, prefersReducedMotion)}
-              >
-                <ExplorationCard label={card.label} hint={card.hint} variant={CARD_VARIANTS[i]} />
-              </motion.div>
-            ))}
+          {/* The scroll track: real, extra document height (not just a
+              wrapper) so there's actual scroll distance for
+              `cardsProgress` to run across. Collapses to the sticky
+              child's own natural height whenever the scrub is
+              inactive (mobile / reduced motion), so it costs nothing
+              in either scroll distance or layout in those cases. */}
+          <div
+            ref={cardsTrackRef}
+            className="mt-5 w-full sm:mt-6"
+            style={{ height: cardsScrubActive ? "160vh" : undefined }}
+          >
+            {/* Pinned for the track's full height (bar the sliver equal
+                to its own height, right at the very end): the cards
+                stay put on screen while the reader scrolls through that
+                distance, exactly like Hero stays pinned under About in
+                app/page.tsx. Static (no sticky, no offset) when the
+                scrub is inactive, so mobile/reduced-motion keep the
+                plain in-flow stacked layout they already had. */}
+            <div className={cardsScrubActive ? "sticky top-0 flex justify-center py-10" : "flex justify-center"}>
+              {/* gap-7 = 1.75rem = exactly 28px, the spec's required
+                  final desktop gap between card edges — the grid alone
+                  decides width/height/gap for every card; the scroll
+                  transform below only ever offsets *away* from that
+                  resting position, reaching precisely x:"0%"/y:0/
+                  rotate:0 (i.e. no transform, the grid's own geometry
+                  fully in charge) exactly when cardsProgress reaches 1. */}
+              <div className="grid w-full max-w-[44rem] grid-cols-1 gap-7 sm:grid-cols-3">
+                {explorationChips.map((card, i) => (
+                  <ScrollDrivenCard
+                    key={card.label}
+                    index={i}
+                    progress={cardsProgress}
+                    active={cardsScrubActive}
+                    label={card.label}
+                    hint={card.hint}
+                    variant={CARD_VARIANTS[i]}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* The closing punch — centered, bold, and compact. Still a
-            visibly larger gap than the one above the cards (spec:
-            "slightly more vertical space after the cards"), with the
-            foreground feeling coming from stacking order + a soft
-            lifted shadow on the type itself, not from crowding it
-            against the cards with a negative margin — just both the
-            gap and the type scaled down together with everything else
-            in this section so the whole composition (intro through
-            belief) settles inside one desktop viewport. No
-            card/container behind it — a manifesto line, not a
-            paragraph in a box. */}
+        {/* The closing punch — centered, bold, and compact. A visibly
+            larger gap than the one above the cards (spec: "slightly
+            more vertical space after the cards"), with the foreground
+            feeling coming from stacking order + a soft lifted shadow
+            on the type itself, not from crowding it against the cards
+            with a negative margin. Sits in normal flow directly after
+            the cards' scroll track, so it scrolls into view right as
+            the cluster→separate scrub finishes. No card/container
+            behind it — a manifesto line, not a paragraph in a box. */}
         <motion.p
           initial="hidden"
           whileInView="visible"
