@@ -151,14 +151,27 @@ export function AboutSection() {
               what shrinks the cards themselves: three equal grid
               columns divide whatever width this box has, so narrowing
               the box narrows every card by the same amount without
-              touching the grid/gap mechanics. */}
+              touching the grid/gap mechanics.
+
+              `animate="visible"` (mount-triggered), not `whileInView`:
+              this row sits behind the still-sticky, fully-opaque Hero
+              for the entire first Hero-height of scroll (see this
+              component's own note above on the sticky reveal), so it
+              is never visible to a reader at the moment the page
+              mounts — the ~0.3s entrance therefore always finishes
+              long before any scroll can bring it on screen, and a
+              reader can never catch it mid-cluster. A scroll-linked
+              `whileInView` trigger can't offer that guarantee here,
+              because this row can start intersecting the viewport
+              (and firing) well before it's actually revealed from
+              under Hero, at a moment tied to scroll speed rather than
+              to page load. */}
           <div className="mt-5 grid w-full max-w-[44rem] grid-cols-1 gap-7 sm:mt-6 sm:grid-cols-3">
             {explorationChips.map((card, i) => (
               <motion.div
                 key={card.label}
                 initial="hidden"
-                whileInView="visible"
-                viewport={viewport}
+                animate="visible"
                 variants={cardVariants(i, prefersReducedMotion)}
               >
                 <ExplorationCard label={card.label} hint={card.hint} variant={CARD_VARIANTS[i]} />
