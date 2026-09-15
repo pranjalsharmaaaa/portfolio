@@ -33,6 +33,17 @@ const VARIANT_CLASS: Record<CardVariant, string> = {
   empathy: "card-empathy",
 };
 
+/**
+ * The one and only hover/focus effect for all three cards: a barely-
+ * there whole-card scale (~1-2px of growth on a card this size), never
+ * opacity, never a per-card/per-variant difference. Named and shared
+ * (not three separate inline object literals) so there is exactly one
+ * place this could ever be defined — nothing else in this file
+ * declares a `whileHover`, a `whileFocus`, or a hover `transition`.
+ */
+const CARD_HOVER_SCALE = { scale: 1.01 };
+const CARD_HOVER_TRANSITION = { duration: 0.3, ease: "easeOut" } as const;
+
 export function ExplorationCard({
   label,
   hint,
@@ -51,21 +62,16 @@ export function ExplorationCard({
       aria-label={`${label} — ${hint}`}
       className={`exploration-card flex h-32 w-full cursor-default flex-col items-center justify-center rounded-[1.25rem] px-4 py-4 text-center shadow-[0_12px_24px_-14px_rgb(20_30_50/45%)] sm:h-36 ${VARIANT_CLASS[variant]}`}
       style={{ background: "var(--card-blue)" }}
-      // A barely-there scale — ~1-2px of growth on a card this size —
-      // nothing else: no lift, no opacity, no filter, no per-variant
-      // difference. This lives on the card's own element, entirely
-      // separate from (and composes safely with, never overwrites) the
-      // scroll-driven x/y/rotate transform that about-section.tsx
-      // applies to this card's *wrapping* motion.div for the cluster→
-      // separate choreography — two different DOM nodes, so this
-      // hover scale and that scroll transform stack independently
-      // rather than one clobbering the other's `transform`. A tween
-      // (not the spring used elsewhere in this file's history) is
-      // what gives hover-in and the mouse-leave return the same fixed,
-      // smooth duration in both directions.
-      whileHover={prefersReducedMotion ? undefined : { scale: 1.01 }}
-      whileFocus={prefersReducedMotion ? undefined : { scale: 1.01 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      // This lives on the card's own element, entirely separate from
+      // (and composes safely with, never overwrites) the scroll-driven
+      // x/y/rotate transform that about-section.tsx applies to this
+      // card's *wrapping* motion.div for the cluster→separate
+      // choreography — two different DOM nodes, so this hover scale
+      // and that scroll transform stack independently rather than one
+      // clobbering the other's `transform`.
+      whileHover={prefersReducedMotion ? undefined : CARD_HOVER_SCALE}
+      whileFocus={prefersReducedMotion ? undefined : CARD_HOVER_SCALE}
+      transition={CARD_HOVER_TRANSITION}
     >
       <span
         className="exploration-card-label font-display text-base leading-[1.2] font-medium sm:text-lg"

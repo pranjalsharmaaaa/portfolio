@@ -245,14 +245,33 @@ export function AboutSection() {
               inactive (mobile / reduced motion), so it costs nothing
               in either scroll distance or layout in those cases.
 
-              `mt-4 sm:mt-6` — the exact same margin as the wrapper
-              above (the intro-paragraph → heading gap) — so the
-              heading → cards gap reuses that identical token rather
-              than an invented value; the two now measure the same at
-              every breakpoint. */}
+              Margin-top here is what has to produce a VISIBLE gap
+              matching the intro → heading gap above — not just an
+              equal margin value, because on desktop (`cardsScrubActive`)
+              the topmost card in the clustered stack (index 1, see
+              CARD_ENTRANCE) renders `y: -10` at scroll progress 0: it's
+              the only moment heading and cards are ever simultaneously
+              on screen (past that point the sticky-pinned cards hold
+              still while the heading itself scrolls away above), so
+              that pre-scroll cluster pose is the one that actually has
+              to match, not the fully-settled position the heading can
+              no longer be seen next to. Below `sm:`, cardsScrubActive
+              is always false (no clustering, no y offset ever
+              applied), so `mt-4` there reuses the intro → heading gap's
+              own token directly, unmodified.
+
+              `sm:mt-10` (40px) is `sm:mt-6` (24px, the intro → heading
+              token) plus what card 1's own `y: -10` rotate+scale pose
+              (CARD_ENTRANCE below) visually eats into it at progress 0
+              — measured directly (not hand-derived from the raw -10,
+              since the card's own rotation/scale at that pose grows
+              its rendered bounding box a little beyond a plain
+              translate): the visible gap above the cluster's highest
+              point comes out to ~24.5px this way, matching within
+              well under a pixel. */}
           <div
             ref={cardsTrackRef}
-            className="mt-4 w-full sm:mt-6"
+            className="mt-4 w-full sm:mt-10"
             style={{ height: cardsScrubActive ? "160vh" : undefined }}
           >
             {/* Pinned for the track's full height (bar the sliver equal
