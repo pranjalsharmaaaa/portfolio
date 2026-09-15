@@ -217,8 +217,16 @@ export function AboutSection() {
             begin clustered/overlapping and separate into an exactly
             28px-gapped row as a direct, continuous function of scroll
             position through the track below — not a one-time entrance
-            triggered by merely scrolling into view. */}
-        <div className="mt-6 flex flex-col items-center sm:mt-8">
+            triggered by merely scrolling into view.
+
+            This wrapper's own margin-top is the ONLY thing controlling
+            the intro-paragraph → heading gap (the heading is its first
+            child) — tightened slightly so the heading reads as
+            connected to the intro rather than a separate block, without
+            touching the heading → cards gap (a separate margin, further
+            down on the scroll-track wrapper) or anything about the
+            cards themselves. */}
+        <div className="mt-4 flex flex-col items-center sm:mt-6">
           <motion.p
             initial="hidden"
             whileInView="visible"

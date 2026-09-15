@@ -49,13 +49,16 @@ export function ExplorationCard({
       aria-label={`${label} — ${hint}`}
       className={`exploration-card flex h-32 w-full cursor-default flex-col items-center justify-center rounded-[1.25rem] px-4 py-4 text-center shadow-[0_12px_24px_-14px_rgb(20_30_50/45%)] sm:h-36 ${VARIANT_CLASS[variant]}`}
       style={{ background: "var(--card-blue)" }}
-      whileHover={
-        prefersReducedMotion ? undefined : { y: -8, scale: 1.04, filter: "brightness(1.06)" }
-      }
-      whileFocus={
-        prefersReducedMotion ? undefined : { y: -8, scale: 1.04, filter: "brightness(1.06)" }
-      }
-      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+      // A soft opacity fade only — no lift, no scale, no filter — so
+      // hover reads as a quiet editorial dim/restore rather than the
+      // card visibly moving or growing. `transition` here (not a
+      // spring) is what gives it a fixed ~1s duration in both
+      // directions: Framer reuses the same transition for the return
+      // to rest on pointer-leave/blur, so fading back out needs no
+      // separate declaration.
+      whileHover={prefersReducedMotion ? undefined : { opacity: 0.85 }}
+      whileFocus={prefersReducedMotion ? undefined : { opacity: 0.85 }}
+      transition={{ duration: 1, ease: "easeInOut" }}
     >
       <span
         className="exploration-card-label font-display text-base leading-[1.2] font-medium sm:text-lg"
