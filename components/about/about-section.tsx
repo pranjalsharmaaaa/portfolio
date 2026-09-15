@@ -260,15 +260,16 @@ export function AboutSection() {
               applied), so `mt-4` there reuses the intro → heading gap's
               own token directly, unmodified.
 
-              `sm:mt-12` builds on that same measured baseline
-              (`sm:mt-10` landed the visible gap at ~24.5px, matching
-              the intro → heading gap exactly) plus one more step, so
-              the visible heading → cards gap now reads as *slightly*
-              larger than the paragraph → heading gap above it, by
-              design — not equal to it. */}
+              `sm:mt-10` is the measured value that lands the visible
+              gap (heading → the clustered stack's highest point, the
+              only moment the two are ever on screen together — see
+              above) at ~24.5px, matching the intro → heading gap
+              almost exactly. A later round tried `sm:mt-12` for a
+              deliberately larger gap; this reverts to the balanced,
+              closely-matched value. */}
           <div
             ref={cardsTrackRef}
-            className="mt-4 w-full sm:mt-12"
+            className="mt-4 w-full sm:mt-10"
             style={{ height: cardsScrubActive ? "160vh" : undefined }}
           >
             {/* Pinned for the track's full height (bar the sliver equal
