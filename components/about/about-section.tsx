@@ -25,33 +25,40 @@ const reducedReveal: Variants = {
  * the grid's own layout). Built as transform/opacity only, so the
  * grid's 1/3-column layout — and its exact 28px gap, which comes
  * entirely from the grid's own `gap-7`, not from this animation — is
- * reserved from the very first paint. All three cards' text stays in
- * the accessibility tree throughout regardless of where the animation
- * currently is.
+ * reserved from the very first paint. The "visible" target is always
+ * `x: "0%"` / no transform at all: the grid alone ever decides each
+ * card's resting x/y, this animation only offsets *away* from that on
+ * the way in. All three cards' text stays in the accessibility tree
+ * throughout regardless of where the animation currently is.
  *
  * The middle card (index 1) settles in first with a plain reveal; the
  * two side cards start translated toward the middle's own slot (as if
  * clustered against it) and spread out into their final positions with
- * a small stagger.
+ * a small stagger. Kept short (well under half a second, end to end)
+ * so the row reaches its real, non-overlapping grid position almost as
+ * soon as it scrolls into view — this row can become visible mid-scroll
+ * (see AboutSection's own note on the sticky reveal above), so a long
+ * settle time left a wide window where a reader arriving mid-animation
+ * would see the clustered start as if it were the resting layout.
  */
 function cardVariants(index: number, prefersReducedMotion: boolean | null): Variants {
   if (prefersReducedMotion) {
     return {
       hidden: { opacity: 0 },
-      visible: { opacity: 1, transition: { duration: 0.4, delay: index * 0.08 } },
+      visible: { opacity: 1, transition: { duration: 0.22, delay: index * 0.04 } },
     };
   }
   if (index === 1) {
     return {
-      hidden: { opacity: 0, y: 18, scale: 0.96 },
-      visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.55, ease: EASE } },
+      hidden: { opacity: 0, y: 12, scale: 0.96 },
+      visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.28, ease: EASE } },
     };
   }
   const fromX = index === 0 ? "58%" : "-58%";
-  const delay = index === 0 ? 0.12 : 0.22;
+  const delay = index === 0 ? 0.03 : 0.07;
   return {
     hidden: { opacity: 0, x: fromX, scale: 0.9 },
-    visible: { opacity: 1, x: "0%", scale: 1, transition: { duration: 0.6, ease: EASE, delay } },
+    visible: { opacity: 1, x: "0%", scale: 1, transition: { duration: 0.3, ease: EASE, delay } },
   };
 }
 
