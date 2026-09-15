@@ -11,6 +11,19 @@ import {
 
 const DESIGNER_WHO = "Designer who";
 
+/**
+ * The rotating word's slot is sized to this — the widest of the three
+ * — rather than to whichever word is currently showing, so the slot's
+ * own box (and everything positioned relative to it: the cassette
+ * beside it, and the whole centered hero composition in hero.tsx) never
+ * changes size as the word cycles between "solves", "builds", and
+ * "vibe codes".
+ */
+const LONGEST_HEADLINE_WORD = headlineWords.reduce(
+  (longest, candidate) => (candidate.length > longest.length ? candidate : longest),
+  "",
+);
+
 const containerVariants: Variants = {
   initial: {},
   animate: { transition: { staggerChildren: 0.022, delayChildren: 0.01 } },
@@ -213,27 +226,36 @@ export function CyclingWord() {
       // one sentence in one typeface at rest — the hover transition
       // below then genuinely goes *from* that editorial serif *into*
       // the handwritten mark, not from the body's default sans.
-      className={`cycling-word font-display relative inline-block w-fit min-w-[1ch] cursor-default text-[clamp(3rem,7vw,6rem)] leading-[0.95] ${active ? "all-active" : ""}`}
+      className={`cycling-word font-display relative inline-block cursor-default text-[clamp(3rem,7vw,6rem)] leading-[0.95] ${active ? "all-active" : ""}`}
       style={{ color: "var(--hero-text)", textShadow: "0 4px 24px rgb(0 0 0 / 18%)", perspective: 600 }}
     >
-      {/* No reserved "longest word" box here on purpose: the cassette
-          sits flush beside this word, so its box must track whatever's
-          actually showing, not a phantom width sized for "vibe codes".
-          `popLayout` does exactly that — it pops the *exiting* word out
-          of flow for its exit animation, so the container's width
-          follows the incoming word immediately instead of holding open. */}
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span
-          key={word}
-          className="inline-block whitespace-nowrap"
-          variants={container}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-        >
-          <Letters word={word} variants={letter} letterClassName="cycling-letter" />
-        </motion.span>
-      </AnimatePresence>
+      {/* Invisible ghost sized to the longest word, kept in normal flow
+          so this span's own box (width AND height) is pinned to "vibe
+          codes" regardless of which word is actually showing — nothing
+          downstream (the cassette beside it, the centered hero group in
+          hero.tsx) ever sees a width change as the word cycles. */}
+      <span aria-hidden="true" className="invisible block whitespace-nowrap">
+        {LONGEST_HEADLINE_WORD}
+      </span>
+
+      {/* The real, animated word is absolutely positioned over the ghost
+          and centered inside its box, so it can freely change width as
+          it cycles without that change ever reaching the ghost's — and
+          therefore this span's — own layout size. */}
+      <span className="absolute inset-0 flex items-center justify-center">
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={word}
+            className="inline-block whitespace-nowrap"
+            variants={container}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <Letters word={word} variants={letter} letterClassName="cycling-letter" />
+          </motion.span>
+        </AnimatePresence>
+      </span>
     </span>
   );
 }
