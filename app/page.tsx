@@ -1,6 +1,7 @@
 import { AboutSection } from "@/components/about/about-section";
 import { Hero } from "@/components/hero/hero";
 import { LoadingScreen } from "@/components/ui/loading-screen";
+import { SelectedWork } from "@/components/work/selected-work";
 
 /**
  * Mirrors Hero's own `min-h-[100dvh] max-h-[1400px]` (see hero.tsx)
@@ -68,6 +69,8 @@ export default function Home() {
       <div style={{ marginTop: `calc(-1 * ${HERO_HEIGHT})` }}>
         <AboutSection />
       </div>
+
+      <SelectedWork />
     </>
   );
 }

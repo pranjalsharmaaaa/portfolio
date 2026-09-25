@@ -96,3 +96,59 @@ export const explorationChips: ExplorationChip[] = [
   { label: "Prototyping + Motion", hint: "Built to move" },
   { label: "Design for AI", hint: "Exploring what's next" },
 ];
+
+export type SelectedWorkProject = {
+  number: string;
+  title: string;
+  description: string;
+  href: string;
+  image: string;
+  imageAlt: string;
+  /** Which side the image sits on at the `md:` two-column breakpoint — mobile always stacks image-first regardless. */
+  imagePosition: "left" | "right";
+};
+
+/**
+ * Three large editorial rows, not a card grid — spec explicitly rejects
+ * forcing three projects into a grid meant for four. Order is fixed
+ * (01 Stack Up, 02 Sales Coach, 03 YANA) and `imagePosition` alternates
+ * per row for visual rhythm. None of these three case studies exist
+ * yet (spec: "do not create a fake case study") — each `href` route
+ * renders the same placeholder shell already used elsewhere in this
+ * codebase for not-yet-designed sections (see app/work, app/wrap).
+ */
+export const selectedWork = {
+  heading: "Selected Work",
+  projects: [
+    {
+      number: "01",
+      title: "Stack Up",
+      description: "Learning money by making decisions.",
+      href: "/stackup",
+      image: "/images/work/stack-up-cover.webp",
+      imageAlt:
+        "Stack Up app screens: onboarding, a practice wallet with virtual money, and a mutual funds explainer",
+      imagePosition: "left",
+    },
+    {
+      number: "02",
+      title: "Sales Coach",
+      description: "Turning customer context into better conversations.",
+      href: "/sales-coach",
+      image: "/images/work/sales-coach-cover.webp",
+      imageAlt:
+        "Sales Coach app screens: account context, a guided question prompt, and conversation preparation",
+      imagePosition: "right",
+    },
+    {
+      number: "03",
+      title: "YANA",
+      description: "Making mental wellbeing feel less alone.",
+      href: "/yana",
+      image: "/images/work/yana-cover.webp",
+      imageAlt:
+        "YANA app screens: mood relaxer suggestions, a therapist-matching form, and upcoming group therapy sessions",
+      imagePosition: "left",
+    },
+  ],
+} as const satisfies { heading: string; projects: SelectedWorkProject[] };
