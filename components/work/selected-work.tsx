@@ -7,18 +7,16 @@ import { selectedWork, type SelectedWorkProject } from "@/lib/site-content";
 
 /**
  * Same reveal shape as about-section.tsx's own `EASE`/`reveal`/
- * `reducedReveal` (duplicated here rather than imported/shared —
- * they're small, private constants in that file, not something this
- * section should couple itself to just to avoid repeating three
- * lines). Kept identical on purpose: rows should fade up the same way
- * the intro/heading/philosophy text already does, not introduce a new
- * animation idea into a page that already has one.
+ * `reducedReveal` (duplicated here rather than imported/shared — see
+ * that file's own note on why). A smaller `y` than About's own 32px:
+ * these are compact cards, not full editorial rows, so the same size
+ * entrance would read as oversized for what's moving.
  */
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 const reveal: Variants = {
-  hidden: { opacity: 0, y: 32 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
 };
 
 const reducedReveal: Variants = {
@@ -27,97 +25,74 @@ const reducedReveal: Variants = {
 };
 
 /**
- * One large editorial row: a dominant product image (~60% of the row
- * on desktop) beside a deliberately spare text block (number, title,
- * one line, a case-study link) — never a card, never boxed. The whole
- * row is a single `<Link>`, not a link nested inside a clickable card,
- * so the entire row — image included — is one clickable target with
- * one focus stop.
+ * One card: image, then number + name (always visible), then a
+ * description that exists in the DOM at all times but is invisible at
+ * rest — `group-hover`/`group-focus-within` fade it in rather than
+ * mounting/unmounting it, and its box has a *fixed* height (not
+ * auto-driven by its own text) so revealing it never changes the
+ * card's height or nudges its neighbors in the row. That fixed height
+ * is what makes "all three cards visually identical in structure"
+ * hold even though the three descriptions are different lengths.
  *
- * `imagePosition` only ever changes which grid column the image lands
- * in on desktop (`md:order-*`); the DOM order is always image-then-text,
- * which is exactly the order mobile needs too (image first, full width,
- * then the text stack) — no separate mobile markup, one layout that
- * degrades correctly.
+ * The whole card is one `<Link>` — image, name and description are
+ * all inside the same anchor, not a card shell with a separate link
+ * buried in it — so hover/focus/click all target one element with one
+ * tab stop.
  */
-function ProjectRow({ project }: { project: SelectedWorkProject }) {
+function ProjectCard({ project }: { project: SelectedWorkProject }) {
   const prefersReducedMotion = useReducedMotion();
   const variants = prefersReducedMotion ? reducedReveal : reveal;
-  const imageLeft = project.imagePosition === "left";
 
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-      variants={variants}
-    >
-      <Link
-        href={project.href}
-        className="group grid grid-cols-1 items-center gap-x-10 gap-y-6 md:grid-cols-[3fr_2fr] md:gap-x-12 lg:gap-x-16"
-      >
-        {/* `overflow-hidden` + rounded corners on this wrapper (not the
-            `<Image>` itself) is what lets the image scale slightly on
-            hover without spilling past the rounded edge — the classic
-            "clipped zoom" pattern, one radius value shared with the
-            cassette elsewhere in this codebase (`rounded-[1.75rem]`)
-            for a consistent "premium rounded surface" language. */}
-        <div
-          className={`overflow-hidden rounded-[1.75rem] shadow-[0_28px_56px_-28px_rgb(20_30_50/40%)] ${
-            imageLeft ? "md:order-1" : "md:order-2"
-          }`}
-        >
-          {/* All three covers share ~the same native aspect ratio
-              (1672:941 / 1671:941 — within a fraction of a percent of
-              each other), so one fixed ratio here shows every image at
-              its own true proportions with no visible crop or
-              stretch — `object-cover` never needs to trim anything
-              meaningful off any of the three. */}
-          <div className="relative aspect-[1672/941] w-full">
+    <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-10% 0px -10% 0px" }} variants={variants}>
+      <Link href={project.href} className="group block">
+        {/* `overflow-hidden` + rounded corners live on this wrapper
+            (not the `<Image>` itself) so the slight hover zoom clips
+            to the rounded edge instead of spilling past it — same
+            "clipped zoom" pattern as before, same radius token
+            (`rounded-[1.75rem]`) as the cassette elsewhere in this
+            codebase. `aspect-[4/3]` is a fixed container shared by all
+            three cards regardless of each cover's own native ratio —
+            `object-cover` fills it identically for every project, per
+            spec ("EXACTLY the same dimensions and aspect ratio"). */}
+        <div className="overflow-hidden rounded-[1.75rem] shadow-[0_20px_40px_-22px_rgb(20_30_50/38%)]">
+          <div className="relative aspect-[4/3] w-full">
             <Image
               src={project.image}
               alt={project.imageAlt}
               fill
-              sizes="(min-width: 768px) 60vw, 100vw"
-              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+              className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02] group-focus-within:scale-[1.02]"
             />
           </div>
         </div>
 
-        <div className={`flex flex-col items-start gap-3 ${imageLeft ? "md:order-2" : "md:order-1"}`}>
-          <span
-            className="font-display text-sm tracking-[0.15em]"
-            style={{ color: "var(--paper-ink-muted)" }}
-          >
-            {project.number}
-          </span>
+        <div className="mt-4 flex flex-col items-start gap-1">
+          <div className="flex items-baseline gap-2">
+            <span className="font-display text-xs tracking-[0.1em]" style={{ color: "var(--paper-ink-muted)" }}>
+              {project.number}
+            </span>
+            <h3 className="font-display text-xl leading-tight font-semibold" style={{ color: "var(--paper-ink)" }}>
+              {project.title}
+            </h3>
+            <span
+              aria-hidden="true"
+              className="inline-block text-base opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100"
+              style={{ color: "var(--paper-ink)" }}
+            >
+              ↗
+            </span>
+          </div>
 
-          <h3
-            className="font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1.05] font-semibold"
-            style={{ color: "var(--paper-ink)" }}
-          >
-            {project.title}
-          </h3>
-
+          {/* Fixed height, always rendered, opacity/translate-only —
+              never `hidden`/height-driven — so it never reflows the
+              card or its row. */}
           <p
-            className="max-w-sm text-base leading-relaxed"
+            className="h-[4.25rem] translate-y-1 text-sm leading-relaxed opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
             style={{ color: "var(--paper-ink-muted)" }}
           >
             {project.description}
           </p>
-
-          <span
-            className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium"
-            style={{ color: "var(--accent)" }}
-          >
-            View case study
-            <span
-              aria-hidden="true"
-              className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1"
-            >
-              →
-            </span>
-          </span>
         </div>
       </Link>
     </motion.div>
@@ -125,12 +100,11 @@ function ProjectRow({ project }: { project: SelectedWorkProject }) {
 }
 
 /**
- * Three large full-width rows, not a card grid — a grid built for four
- * projects would leave this one's three feeling like a gap, not a
- * choice. Sits directly after AboutSection on the same `--shore-solid`
- * cream surface (no new background, no seam), so the page reads as one
- * continuous "paper" world from the intro through here rather than a
- * new section starting over visually.
+ * A compact 3/2/1-column grid — three uniform cards, not editorial
+ * full-width rows (an earlier version of this section). Sits directly
+ * after AboutSection on the same `--shore-solid` cream surface, no new
+ * background, minimal padding so it reads as a tight continuation of
+ * the page rather than a new section starting over.
  */
 export function SelectedWork() {
   return (
@@ -139,20 +113,14 @@ export function SelectedWork() {
       className="relative"
       style={{ background: "var(--shore-solid)", color: "var(--paper-ink)" }}
     >
-      <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-4 pb-20 sm:px-10 sm:pb-28 lg:px-12">
-        <p
-          className="text-xs font-semibold tracking-[0.25em] uppercase"
-          style={{ color: "var(--paper-ink-muted)" }}
-        >
+      <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-0 pb-16 sm:px-10 sm:pb-20 lg:px-12">
+        <p className="text-xs font-semibold tracking-[0.25em] uppercase" style={{ color: "var(--paper-ink)" }}>
           {selectedWork.heading}
         </p>
 
-        {/* Generous, deliberately uneven-feeling gaps between rows —
-            each project reads as its own piece of work, not a row in a
-            table. */}
-        <div className="mt-16 flex flex-col gap-24 sm:mt-20 sm:gap-32 lg:gap-40">
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:mt-8 md:grid-cols-2 lg:grid-cols-3">
           {selectedWork.projects.map((project) => (
-            <ProjectRow key={project.title} project={project} />
+            <ProjectCard key={project.title} project={project} />
           ))}
         </div>
       </div>

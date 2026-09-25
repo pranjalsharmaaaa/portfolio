@@ -104,18 +104,16 @@ export type SelectedWorkProject = {
   href: string;
   image: string;
   imageAlt: string;
-  /** Which side the image sits on at the `md:` two-column breakpoint — mobile always stacks image-first regardless. */
-  imagePosition: "left" | "right";
 };
 
 /**
- * Three large editorial rows, not a card grid — spec explicitly rejects
- * forcing three projects into a grid meant for four. Order is fixed
- * (01 Stack Up, 02 Sales Coach, 03 YANA) and `imagePosition` alternates
- * per row for visual rhythm. None of these three case studies exist
- * yet (spec: "do not create a fake case study") — each `href` route
- * renders the same placeholder shell already used elsewhere in this
- * codebase for not-yet-designed sections (see app/work, app/wrap).
+ * Three uniform cards in one grid — order fixed (01 Stack Up, 02 Sales
+ * Coach, 03 YANA). `description` stays out of the card's default
+ * state entirely (rendered but invisible until hover/focus — see
+ * selected-work.tsx) rather than shown as permanent copy. None of
+ * these three case studies exist yet — each `href` route renders the
+ * same placeholder shell already used elsewhere in this codebase for
+ * not-yet-designed sections (see app/work, app/wrap).
  */
 export const selectedWork = {
   heading: "Selected Work",
@@ -123,32 +121,32 @@ export const selectedWork = {
     {
       number: "01",
       title: "Stack Up",
-      description: "Learning money by making decisions.",
+      description:
+        "An app for first-time investors to build investing confidence and manage their money for a stronger financial future.",
       href: "/stackup",
       image: "/images/work/stack-up-cover.webp",
       imageAlt:
         "Stack Up app screens: onboarding, a practice wallet with virtual money, and a mutual funds explainer",
-      imagePosition: "left",
     },
     {
       number: "02",
       title: "Sales Coach",
-      description: "Turning customer context into better conversations.",
+      description:
+        "An AI-powered voice assistant and practice simulator that simplifies meeting briefs and saves sales teams time.",
       href: "/sales-coach",
       image: "/images/work/sales-coach-cover.webp",
       imageAlt:
         "Sales Coach app screens: account context, a guided question prompt, and conversation preparation",
-      imagePosition: "right",
     },
     {
       number: "03",
       title: "YANA",
-      description: "Making mental wellbeing feel less alone.",
+      description:
+        "A mental well-being platform that helps people find the right support, from self-care to individual and group therapy.",
       href: "/yana",
       image: "/images/work/yana-cover.webp",
       imageAlt:
         "YANA app screens: mood relaxer suggestions, a therapist-matching form, and upcoming group therapy sessions",
-      imagePosition: "left",
     },
   ],
 } as const satisfies { heading: string; projects: SelectedWorkProject[] };
