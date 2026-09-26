@@ -107,24 +107,22 @@ export type SelectedWorkProject = {
 };
 
 /**
- * Stack Up is the featured project (large, centered image); Sales
+ * Stack Up is the featured project (larger, centered image); Sales
  * Coach and YANA follow as two smaller, equal cards below it. Order is
  * fixed. `description` stays out of each card's default state
- * entirely (rendered but invisible until hover/focus — see
- * selected-work.tsx) rather than shown as permanent copy. None of
- * these three case studies exist yet — each `href` route renders the
- * same placeholder shell already used elsewhere in this codebase for
- * not-yet-designed sections (see app/work, app/wrap).
+ * entirely (rendered but invisible until hover/focus, as an overlay on
+ * the image itself — see selected-work.tsx) rather than shown as
+ * permanent copy. None of these three case studies exist yet — each
+ * `href` route renders the same placeholder shell already used
+ * elsewhere in this codebase for not-yet-designed sections (see
+ * app/work, app/wrap).
  *
- * `featured.image` is a *crop* of the original three-screen
- * `stack-up-cover.webp` — the left screen (a generic onboarding splash)
- * removed to isolate the two more informative, feature-specific
- * screens (the home dashboard, and the Mutual Funds explainer), at the
- * source image's own native resolution. No upscaling, no invented
- * pixels: this repo has no higher-resolution or individual per-screen
- * source assets to reconstruct from, so a straight crop of the
- * existing cover is the only way to get a genuine 2-screen composition
- * without fabricating anything inside the phone screens.
+ * `featured.image` is the original three-screen cover at its own
+ * native resolution (1672×941) — this repo has no higher-resolution or
+ * individual per-screen source asset to reconstruct from, so this
+ * flattened cover already *is* the best available source; an earlier
+ * round's 2-screen crop of it has been dropped in favor of showing all
+ * three screens again.
  */
 export const selectedWork = {
   heading: "Selected Work",
@@ -134,9 +132,9 @@ export const selectedWork = {
     description:
       "An app for first-time investors to build investing confidence and manage their money for a stronger financial future.",
     href: "/stackup",
-    image: "/images/work/stack-up-cover-featured.webp",
+    image: "/images/work/stack-up-cover.webp",
     imageAlt:
-      "Stack Up app screens: the home dashboard with a practice wallet balance, and a mutual funds explainer",
+      "Stack Up app screens: onboarding, a practice wallet with virtual money, and a mutual funds explainer",
   },
   secondary: [
     {
