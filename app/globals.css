@@ -1,0 +1,495 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/*                                                                      */
+/* Light and dark are defined together, from the start (spec §07A),    */
+/* as two moods of the same sky rather than two separate skins.        */
+/* ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light;
+
+  /* Sky gradient stops — a daytime blue with real saturation, not a
+     pastel wash: the hero typography sits directly on this and is
+     fixed white in both themes (see --hero-text below), so the sky
+     itself has to carry the contrast rather than a pale wash near the
+     middle of the gradient. */
+  --sky-top: #4a9de4;
+  --sky-mid: #6fb3ec;
+  --sky-bottom: #fdf1dc;
+
+  /* Text */
+  --ink: #1c2230;
+  --ink-muted: #4d5768;
+  --ink-quiet: #6b7688;
+
+  /* Hero typography sitting directly on the sky — fixed white in both
+     themes on purpose (the sky provides the contrast, not a theme
+     swap), so these live only in :root and are never redefined in
+     .dark. */
+  --hero-text: #fffaf2;
+  --hero-text-quiet: rgb(255 250 242 / 78%);
+
+  /* Bottom-edge decorative pattern — fixed cream in both themes, same
+     idea as --hero-text: one consistent motif whether it's sitting on
+     the day gradient or the night horizon, not a re-tinted skin. */
+  --shore: rgb(255 250 242 / 88%);
+  /* Opaque twin of --shore — the About section's own surface, and the
+     foreground cloud mass at its top edge (about-cloud.tsx). Solid,
+     not semi-transparent like --shore: the cloud's puffs overlap each
+     other and the section's own background, and stacking alpha fills
+     on top of each other would compound into a visible band of
+     double-darkened color where they overlap. */
+  --shore-solid: #fffaf2;
+
+  /* "Paper" ink — fixed, theme-independent text colors for content
+     that sits on the fixed --shore-solid cream (the cloud transition
+     and the About section it leads into). Declared only in :root and
+     never redefined in .dark, same pattern as --hero-text: the About
+     surface is one continuous cream "page" regardless of the theme
+     toggle, not a themed panel that flips navy at night. */
+  --paper-ink: #171717;
+  --paper-ink-muted: #6b6b6b;
+
+  /* Exploration cards — ONE consistent blue across all three cards
+     (spec: they must never read as three different shades), reacting
+     to the theme toggle like the hero above rather than staying fixed
+     like the rest of this "paper" section: a light, airy blue that
+     matches the daytime sky in Light mode. White text is warmed to
+     match --hero-text/--shore-solid's cream rather than a cold pure
+     white. */
+  --card-blue: #4f8fce;
+  --card-ink: #fbf5ea;
+
+  /* Surfaces */
+  --surface: #fffdf9;
+  --nav-bg: rgb(255 255 255 / 55%);
+  --nav-border: rgb(255 255 255 / 65%);
+  --nav-shadow: rgb(28 34 48 / 10%);
+
+  /* Accent — warm, editorial, used sparingly */
+  --accent: #c7791f;
+  --accent-strong: #1c2230;
+  --accent-on-strong: #fbf3e6;
+
+  /* Sun — layered warm discs, not a hatched illustration */
+  --sun-core: #ffdf94;
+  --sun-mid: #ffb84d;
+  --sun-ray: rgb(255 200 120 / 45%);
+  --sun-glow: rgb(255 197 120 / 40%);
+
+  /* Moon — present in tokens even though unused in light, so nothing
+     is undefined; visibility is toggled per-theme in the component CSS. */
+  --moon-body: #f5efdd;
+  --moon-shade: rgb(60 60 90 / 14%);
+  --moon-glow: rgb(210 220 255 / 0%);
+
+  /* Clouds at three depths, white and softening toward the horizon */
+  --cloud-near: rgb(255 255 255 / 92%);
+  --cloud-mid: rgb(255 255 255 / 74%);
+  --cloud-far: rgb(255 255 255 / 48%);
+  --cloud-shadow: rgb(94 128 168 / 16%);
+
+  --star: transparent;
+  --hill: transparent;
+
+  --focus-ring: #1c2230;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --sky-top: #050810;
+  --sky-mid: #0b1226;
+  --sky-bottom: #1b2340;
+
+  --ink: #f3efe6;
+  --ink-muted: #b7c0d1;
+  --ink-quiet: #8891a3;
+
+  --surface: #0c1120;
+  --nav-bg: rgb(12 17 32 / 55%);
+  --nav-border: rgb(255 255 255 / 10%);
+  --nav-shadow: rgb(0 0 0 / 35%);
+
+  --accent: #f0b65c;
+  --accent-strong: #f3efe6;
+  --accent-on-strong: #0c1120;
+
+  /* Sun tokens stay defined (unused, hidden) so the pair is symmetric */
+  --sun-core: #ffdf94;
+  --sun-mid: #ffb84d;
+  --sun-ray: rgb(255 200 120 / 0%);
+  --sun-glow: rgb(255 197 120 / 0%);
+
+  --moon-body: #eef0f7;
+  --moon-shade: rgb(30 34 58 / 30%);
+  --moon-glow: rgb(150 175 255 / 30%);
+
+  /* Denser, richer blue for the exploration cards at night — distinct
+     from the near-black sky behind them so they still read as cards,
+     not a lighter tint of the same daytime blue. */
+  --card-blue: #204a75;
+
+  /* Muted, dark cloud strata — present, not just darkened white */
+  --cloud-near: rgb(130 150 200 / 14%);
+  --cloud-mid: rgb(110 130 180 / 10%);
+  --cloud-far: rgb(90 110 160 / 7%);
+  --cloud-shadow: rgb(0 0 0 / 0%);
+
+  --star: rgb(255 255 255 / 85%);
+  --hill: #0a0e1e;
+
+  --focus-ring: #f0b65c;
+}
+
+@theme inline {
+  --color-sky-top: var(--sky-top);
+  --color-sky-mid: var(--sky-mid);
+  --color-sky-bottom: var(--sky-bottom);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-quiet: var(--ink-quiet);
+
+  --color-surface: var(--surface);
+  --color-nav-bg: var(--nav-bg);
+  --color-nav-border: var(--nav-border);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-on-strong: var(--accent-on-strong);
+
+  --font-display: var(--font-lora);
+  --font-sans: var(--font-inter);
+
+  --animate-twinkle: twinkle 4.5s ease-in-out infinite;
+  --animate-drift-slow: drift 70s ease-in-out infinite;
+  --animate-drift-slower: drift 100s ease-in-out infinite reverse;
+  --animate-spin-slow: spin 5s linear infinite;
+  --animate-float-slow: float-slow 6s ease-in-out infinite;
+  --animate-shooting-star: shooting-star 23s linear infinite;
+  --animate-reel-idle: spin 34s linear infinite;
+  --animate-reel-awake: spin 5s linear infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Very slow horizontal breathing so the sky never sits perfectly still —
+   barely perceptible, reads as atmosphere rather than motion. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3%);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The audio placeholder drifts as if suspended in the sky. */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* A shooting star: mostly invisible, crosses the sky once per long
+   cycle so it reads as a discovery rather than a constant effect.
+   Night-only (gated by --star being transparent by day). */
+@keyframes shooting-star {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  2% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0;
+    transform: translate(-220px, 130px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-220px, 130px);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero typography — per-letter hover                                  */
+/*                                                                      */
+/* "Designer who" and the cycling word both inherit --hero-text (white) */
+/* from their container, so resting letters need no rule of their own — */
+/* only the exact letter under the cursor is targeted here, never the   */
+/* word or the line. Keyboard/touch can't aim at one letter, so those    */
+/* flip `.all-active` on the ancestor instead, which this same rule      */
+/* picks up to light every letter at once — a deliberate whole-line      */
+/* fallback, not a second attempt at doing the same thing per letter.    */
+/* ------------------------------------------------------------------ */
+
+.letter-char {
+  display: inline-block;
+  transition: color 200ms ease;
+}
+.letter-char:hover,
+.all-active .letter-char {
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cycling word — whole-word hover treatment                           */
+/*                                                                      */
+/* A deliberately different mechanic from .letter-char above: hovering */
+/* anywhere on the word shifts every one of its letters together from  */
+/* the editorial Lora serif into a warm handwritten mark (--font-      */
+/* caveat), not just a color change — "the font transformation should  */
+/* be clearly noticeable". Grouped at the word level rather than per   */
+/* letter on purpose: a font swap can change a letter's own width, and */
+/* doing that independently per letter would visibly jostle its        */
+/* neighbors mid-word every time the cursor crossed a boundary.        */
+/* ------------------------------------------------------------------ */
+
+.cycling-letter {
+  display: inline-block;
+  transition:
+    color 220ms ease,
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cycling-word:hover .cycling-letter,
+.cycling-word.all-active .cycling-letter {
+  color: var(--accent);
+  font-family: var(--font-caveat), cursive;
+  transform: translateY(-0.05em);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cycling-letter {
+    transition: color 220ms ease;
+  }
+  .cycling-word:hover .cycling-letter,
+  .cycling-word.all-active .cycling-letter {
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* About — exploration cards                                           */
+/*                                                                      */
+/* Three uniform, editorial cards (same size, same --card-blue) — not   */
+/* generic SaaS feature tiles. The cluster → separate entrance is       */
+/* scroll-driven Framer Motion on each card's own *wrapping* element    */
+/* (about-section.tsx) — a different DOM node from `.exploration-card`  */
+/* below, so the two transforms compose instead of one clobbering the   */
+/* other. Hover/focus, by contrast, is plain CSS on `.exploration-card` */
+/* itself: one rule, no per-variant difference, and no dependency on    */
+/* Framer's hover state at all — not a second animation system layered */
+/* on top of the first, just two transforms on two different elements. */
+/* ------------------------------------------------------------------ */
+
+.exploration-card-label {
+  display: inline-block;
+}
+
+.exploration-card {
+  transition: transform 300ms ease-out;
+}
+
+.exploration-card:hover,
+.exploration-card:focus-visible {
+  transform: scale(1.01);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exploration-card {
+    transition: none;
+  }
+  .exploration-card:hover,
+  .exploration-card:focus-visible {
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Cassette                                                             */
+/* ------------------------------------------------------------------ */
+
+.cassette-reel {
+  animation: var(--animate-reel-idle);
+}
+.cassette:hover .cassette-reel,
+.cassette:focus-within .cassette-reel {
+  animation: var(--animate-reel-awake);
+}
+
+/* A brief, honest "not yet" shake on the play control — feedback
+   without pretending playback happened. */
+@keyframes cassette-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-3px);
+  }
+  40% {
+    transform: translateX(3px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+.cassette-nudge {
+  animation: cassette-nudge 0.4s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cassette-reel {
+    animation: none;
+  }
+  .cassette-nudge {
+    animation: none;
+  }
+}
+
+/* Sun/moon crossfade between themes — same position, two states of
+   one world, per the sky illustration in components/hero/sky-background.tsx */
+.sun-layer {
+  opacity: 1;
+}
+.dark .sun-layer {
+  opacity: 0;
+}
+.moon-layer {
+  opacity: 0;
+}
+.dark .moon-layer {
+  opacity: 1;
+}
+
+/* Cursor parallax — `--px`/`--py` (roughly -1..1) come from
+   sky-stage.tsx and default to 0 wherever it never attaches a
+   listener (reduced motion, touch/coarse pointers), so these layers
+   simply hold still there rather than needing their own media query. */
+.parallax-near {
+  transform: translate(calc(var(--px, 0) * 14px), calc(var(--py, 0) * 9px));
+  transition: transform 0.2s ease-out;
+}
+.parallax-glow {
+  transform: translate(calc(var(--px, 0) * 6px), calc(var(--py, 0) * 4px));
+  /* Both listed explicitly in one rule, rather than layering this
+     class's transform transition on top of a separate Tailwind
+     transition-opacity utility — two rules each owning a shorthand
+     `transition` on the same element is exactly the kind of thing
+     that silently drops one of them. */
+  transition:
+    opacity 0.7s ease,
+    transform 0.3s ease-out;
+}
+
+/* Loading screen — a warm dot "eating" its way across a row of marks. */
+@keyframes loader-eat {
+  0% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  15% {
+    opacity: 0.08;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 0.08;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes loader-slide {
+  0% {
+    transform: translate(-10px, -50%);
+  }
+  100% {
+    transform: translate(130px, -50%);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                 */
+/* ------------------------------------------------------------------ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--sky-bottom);
+  color: var(--ink);
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
+}
+
+/* Visible, deliberate focus states everywhere (spec §12). */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Utility for screen-reader-only content (skip link target label,
+   the static equivalent of the animated headline, etc). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:focus {
+  position: fixed;
+  z-index: 100;
+  top: 1rem;
+  left: 1rem;
+  width: auto;
+  height: auto;
+  padding: 0.75rem 1.25rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 20px var(--nav-shadow);
+}
