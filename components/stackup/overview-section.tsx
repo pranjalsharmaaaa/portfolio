@@ -1,14 +1,15 @@
 import Image from "next/image";
 import { stackupOverview } from "@/lib/stackup-content";
+import { Container } from "@/components/stackup/container";
 
 export function OverviewSection() {
   return (
     <section
-      className="relative"
+      className="relative py-20 sm:py-24 lg:py-28"
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Project overview"
     >
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 py-20 sm:px-10 lg:flex-row lg:items-center lg:gap-16 lg:px-16 lg:py-28">
+      <Container className="flex flex-col gap-12 lg:flex-row lg:items-center lg:gap-16">
         <div className="flex-1">
           <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
             {stackupOverview.label}
@@ -17,7 +18,7 @@ export function OverviewSection() {
             {stackupOverview.headingPlain}
             <span style={{ color: "var(--stackup-green)" }}>{stackupOverview.headingAccent}</span>
           </h2>
-          <p className="mt-5 text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-ink)" }}>
+          <p className="mt-4 text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-ink)" }}>
             {stackupOverview.body}
           </p>
 
@@ -48,7 +49,7 @@ export function OverviewSection() {
             className="object-contain"
           />
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -1,15 +1,16 @@
 import Image from "next/image";
 import { stackupProblem } from "@/lib/stackup-content";
+import { Container } from "@/components/stackup/container";
 
 export function ProblemSection() {
   return (
     <section
-      className="relative"
+      className="relative py-20 sm:py-24 lg:py-28"
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Understanding the problem"
     >
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
-        <div>
+      <Container className="flex flex-col gap-8">
+        <div className="w-full max-w-2xl">
           <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
             {stackupProblem.label}
           </p>
@@ -31,7 +32,7 @@ export function ProblemSection() {
           />
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full max-w-2xl flex-col gap-4">
           {stackupProblem.paragraphs.map((segments, i) => (
             <p key={i} className="text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-ink)" }}>
               {segments.map((segment, j) => (
@@ -42,7 +43,7 @@ export function ProblemSection() {
             </p>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
