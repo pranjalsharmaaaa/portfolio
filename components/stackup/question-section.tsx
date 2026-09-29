@@ -1,4 +1,5 @@
 import { stackupQuestion } from "@/lib/stackup-content";
+import { Container } from "@/components/stackup/container";
 
 /**
  * The concentric-rings background from the reference is a flat radial
@@ -8,7 +9,7 @@ import { stackupQuestion } from "@/lib/stackup-content";
 export function QuestionSection() {
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden py-20 sm:py-24 lg:py-28"
       style={{ background: "var(--stackup-bg)" }}
       aria-label="It all started with a question"
     >
@@ -21,17 +22,19 @@ export function QuestionSection() {
         }}
       />
 
-      <div className="relative mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-6 py-24 text-center sm:px-10 sm:py-32">
-        <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
-          {stackupQuestion.label}
-        </p>
-        <p className="text-3xl sm:text-4xl" style={{ color: "var(--stackup-ink)" }}>
-          {stackupQuestion.lineOne}
-        </p>
-        <p className="text-4xl font-extrabold sm:text-6xl" style={{ color: "var(--stackup-green)" }}>
-          {stackupQuestion.lineTwo}
-        </p>
-      </div>
+      <Container className="relative flex flex-col items-center gap-6 text-center">
+        <div className="mx-auto max-w-2xl">
+          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+            {stackupQuestion.label}
+          </p>
+          <p className="mt-6 text-3xl sm:text-4xl" style={{ color: "var(--stackup-ink)" }}>
+            {stackupQuestion.lineOne}
+          </p>
+          <p className="mt-2 text-4xl font-extrabold sm:text-6xl" style={{ color: "var(--stackup-green)" }}>
+            {stackupQuestion.lineTwo}
+          </p>
+        </div>
+      </Container>
     </section>
   );
 }

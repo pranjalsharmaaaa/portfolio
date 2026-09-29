@@ -1,14 +1,15 @@
 import Image from "next/image";
 import { stackupHypothesis } from "@/lib/stackup-content";
+import { Container } from "@/components/stackup/container";
 
 export function HypothesisSection() {
   return (
     <section
-      className="relative"
+      className="relative py-20 sm:py-24 lg:py-28"
       style={{ background: "var(--stackup-bg)" }}
       aria-label="An initial hypothesis"
     >
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+      <Container className="flex flex-col gap-10">
         <div>
           <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
             {stackupHypothesis.label}
@@ -41,7 +42,7 @@ export function HypothesisSection() {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
