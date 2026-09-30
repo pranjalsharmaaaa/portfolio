@@ -21,20 +21,26 @@ import { Container } from "@/components/stackup/container";
  * cards instead of floating phones. Clipping to a rounded corner and
  * shadowing the clipped container instead reads as a phone, not a box.
  *
- * "confidence-jar" and "wallet" are cropped exactly as far as the
- * source screenshot itself shows them — the reference frame cuts the
- * first off at its own right edge and the second at its own bottom
- * edge, so there is no more of either phone to recover without a
- * fresh export. "confidence-jar" was re-cropped tight to its actual
- * right edge (was previously a much wider box padded out with dead
- * background space plus a stray scrollbar artifact from the source
- * screenshot).
+ * Every crop is now pixel-tight to the phone's own bezel on all four
+ * sides — found by scanning the source screenshot for the bezel's
+ * actual dark pixels (not just "anything that differs from the page
+ * background", which also catches each phone's soft drop shadow and
+ * so would have left a crop padded with shadow-tail background). There
+ * is zero background margin left inside any of these four images.
+ *
+ * "confidence-jar" and "wallet" are still cropped exactly as far as
+ * the source screenshot itself shows them — the reference frame cuts
+ * the first off at its own right edge and the second at its own
+ * bottom edge (confirmed by inspecting the pixels right at each
+ * screenshot edge: real phone bezel right up to the last row/column,
+ * not fading background), so there is no more of either phone to
+ * recover without a fresh export.
  */
 const PHONES = [
-  { src: "/images/stackup/cover-phone-onboarding.webp", box: { left: 0, top: 16.5, width: 29.9, height: 64.2 }, z: 3 },
-  { src: "/images/stackup/cover-phone-starting-point.webp", box: { left: 30.5, top: 0, width: 29.4, height: 50.1 }, z: 2 },
-  { src: "/images/stackup/cover-phone-confidence-jar.webp", box: { left: 63.3, top: 19.0, width: 23.2, height: 60.5 }, z: 1 },
-  { src: "/images/stackup/cover-phone-wallet.webp", box: { left: 30.5, top: 58.1, width: 29.4, height: 41.9 }, z: 2 },
+  { src: "/images/stackup/cover-phone-onboarding.webp", box: { left: 0, top: 16.1, width: 32.6, height: 63.1 }, z: 3 },
+  { src: "/images/stackup/cover-phone-starting-point.webp", box: { left: 35.7, top: 0, width: 32.9, height: 48.8 }, z: 2 },
+  { src: "/images/stackup/cover-phone-confidence-jar.webp", box: { left: 72.1, top: 15.9, width: 27.9, height: 63.1 }, z: 1 },
+  { src: "/images/stackup/cover-phone-wallet.webp", box: { left: 35.8, top: 57.7, width: 32.4, height: 42.3 }, z: 2 },
 ] as const;
 
 export function CoverSection() {
@@ -93,7 +99,7 @@ export function CoverSection() {
           </p>
         </div>
 
-        <div className="relative z-10 aspect-[885/818] w-full max-w-md sm:max-w-lg lg:max-w-none lg:flex-1">
+        <div className="relative z-10 aspect-[754/807] w-full max-w-md sm:max-w-lg lg:max-w-none lg:flex-1">
           {PHONES.map((phone) => (
             <div
               key={phone.src}
