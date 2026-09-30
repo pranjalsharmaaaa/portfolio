@@ -1,5 +1,5 @@
 import { stackupQuestion } from "@/lib/stackup-content";
-import { Container } from "@/components/stackup/container";
+import { Container, SECTION_Y } from "@/components/stackup/container";
 
 /**
  * The concentric-rings background from the reference is a flat radial
@@ -9,7 +9,7 @@ import { Container } from "@/components/stackup/container";
 export function QuestionSection() {
   return (
     <section
-      className="relative overflow-hidden py-20 sm:py-24 lg:py-28"
+      className={`relative overflow-hidden ${SECTION_Y}`}
       style={{ background: "var(--stackup-bg)" }}
       aria-label="It all started with a question"
     >
