@@ -22,10 +22,23 @@ import { Container } from "@/components/stackup/container";
  * channel, a plain CSS `drop-shadow` filter correctly follows the
  * phone's silhouette instead of shadowing a rectangular bounding box.
  *
- * "confidence-jar" and "wallet" are still cropped exactly as far as
- * the source screenshot itself shows them — it cuts the first off at
- * its own right edge and the second at its own bottom edge, so there
- * is no more of either phone to recover without a fresh export.
+ * "confidence-jar" is still cropped exactly as far as the source
+ * screenshot itself shows it — its bezel's own right edge simply isn't
+ * captured (the visible card content already runs flush to the
+ * screenshot's edge, no border drawn), so its mask only rounds the two
+ * corners that have a real curve to follow (left side) and leaves the
+ * right side square rather than carving a fake curve through real text.
+ *
+ * "wallet"'s crop was previously taken all the way down to where the
+ * source screenshot itself ends, well past the phone's own frame —
+ * that tail was blank canvas plus the first sliver of a second,
+ * unrelated card bleeding in behind it, and the rounded-rect mask was
+ * being applied to that whole (wrong) box, so its bottom corners cut
+ * straight through that second card's icon instead of closing off a
+ * blank area. The crop now stops right after the wallet card's own
+ * visible text, before any of that trailing content begins, so the
+ * mask's rounded corners fall on clean background and the phone reads
+ * as one complete, self-contained screen.
  *
  * The cluster's own wrapper is capped with `lg:max-w-[30rem]` rather
  * than left to grow via `flex-1`: this bounding box's aspect ratio
@@ -39,7 +52,7 @@ const PHONES = [
   { src: "/images/stackup/phone-onboarding-cutout.webp", box: { left: 0, top: 16.1, width: 32.6, height: 63.1 }, z: 3 },
   { src: "/images/stackup/phone-starting-point-cutout.webp", box: { left: 35.7, top: 0, width: 32.9, height: 48.8 }, z: 2 },
   { src: "/images/stackup/phone-confidence-jar-cutout.webp", box: { left: 72.1, top: 15.9, width: 27.9, height: 63.1 }, z: 1 },
-  { src: "/images/stackup/phone-wallet-cutout.webp", box: { left: 35.8, top: 57.7, width: 32.4, height: 42.3 }, z: 2 },
+  { src: "/images/stackup/phone-wallet-cutout.webp", box: { left: 35.8, top: 57.7, width: 32.4, height: 36.1 }, z: 2 },
 ] as const;
 
 export function CoverSection() {
@@ -51,18 +64,27 @@ export function CoverSection() {
     >
       {/* Decorative bottom-left rings from the reference cover — plain
           CSS circles, not an image, since they're flat solid shapes.
-          Kept deliberately small and pushed well below the section's
-          own content edge so they clear the text column's tallest
-          wrap at any breakpoint. */}
+          Both are anchored to the exact same corner point (bottom-0
+          left-0) and pulled out by a `translate` expressed as a
+          percentage of each circle's OWN size, not a fixed pixel
+          offset. A fixed offset (e.g. -160px) shared between two
+          different-sized circles broke this: the smaller circle's own
+          diameter was less than the offset, pushing it entirely past
+          the section's overflow-hidden edge (0px visible), while the
+          larger circle showed only a paper-thin sliver instead of a
+          clean quarter-circle bleeding from the corner. A -50%/-50%
+          translate always leaves exactly one quarter of each circle
+          visible, regardless of its size, so they nest concentrically
+          and read as one intentional two-tone shape in the corner. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-40 -left-16 h-48 w-48 rounded-full"
-        style={{ background: "#3a3a3a" }}
+        className="pointer-events-none absolute bottom-0 left-0 h-48 w-48 rounded-full"
+        style={{ background: "#3a3a3a", transform: "translate(-50%, 50%)" }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-40 -left-16 h-36 w-36 rounded-full"
-        style={{ background: "var(--stackup-green)" }}
+        className="pointer-events-none absolute bottom-0 left-0 h-36 w-36 rounded-full"
+        style={{ background: "var(--stackup-green)", transform: "translate(-50%, 50%)" }}
       />
 
       <Container className="relative flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16 xl:gap-24">
