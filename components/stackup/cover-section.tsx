@@ -12,41 +12,40 @@ import { Container } from "@/components/stackup/container";
  * composition at any width instead of drifting apart on smaller
  * screens.
  *
- * Each phone renders inside a rounded, clipped, `overflow-hidden`
- * frame with its own `box-shadow` rather than a CSS `drop-shadow`
- * filter on the raw image: these source crops are fully opaque
- * (no alpha channel), so a `drop-shadow` filter shadows the entire
- * rectangular bounding box, not the phone's silhouette — which is
- * exactly what made the earlier version look like flat rectangular
- * cards instead of floating phones. Clipping to a rounded corner and
- * shadowing the clipped container instead reads as a phone, not a box.
- *
- * Every crop is now pixel-tight to the phone's own bezel on all four
- * sides — found by scanning the source screenshot for the bezel's
- * actual dark pixels (not just "anything that differs from the page
- * background", which also catches each phone's soft drop shadow and
- * so would have left a crop padded with shadow-tail background). There
- * is zero background margin left inside any of these four images.
+ * Each asset (`phone-*-cutout.webp`) is a genuine alpha-transparent
+ * cutout, not an opaque rectangle relying on a CSS border-radius mask
+ * to hide its background: the phone was cropped pixel-tight to its own
+ * bezel from the source screenshot, then everything outside a
+ * rounded-rect matching that bezel's own curvature was made fully
+ * transparent (verified by compositing onto a contrasting color —
+ * zero background pixels remain). Because there's now a real alpha
+ * channel, a plain CSS `drop-shadow` filter correctly follows the
+ * phone's silhouette instead of shadowing a rectangular bounding box.
  *
  * "confidence-jar" and "wallet" are still cropped exactly as far as
- * the source screenshot itself shows them — the reference frame cuts
- * the first off at its own right edge and the second at its own
- * bottom edge (confirmed by inspecting the pixels right at each
- * screenshot edge: real phone bezel right up to the last row/column,
- * not fading background), so there is no more of either phone to
- * recover without a fresh export.
+ * the source screenshot itself shows them — it cuts the first off at
+ * its own right edge and the second at its own bottom edge, so there
+ * is no more of either phone to recover without a fresh export.
+ *
+ * The cluster's own wrapper is capped with `lg:max-w-[30rem]` rather
+ * than left to grow via `flex-1`: this bounding box's aspect ratio
+ * (754:807) is nearly square, so letting it consume whatever width a
+ * wide page grid leaves over inflates its *height* just as much,
+ * which is what previously forced the whole cover well past one
+ * viewport. Capping its width keeps the composition — and the
+ * section's overall height — proportional at any page width.
  */
 const PHONES = [
-  { src: "/images/stackup/cover-phone-onboarding.webp", box: { left: 0, top: 16.1, width: 32.6, height: 63.1 }, z: 3 },
-  { src: "/images/stackup/cover-phone-starting-point.webp", box: { left: 35.7, top: 0, width: 32.9, height: 48.8 }, z: 2 },
-  { src: "/images/stackup/cover-phone-confidence-jar.webp", box: { left: 72.1, top: 15.9, width: 27.9, height: 63.1 }, z: 1 },
-  { src: "/images/stackup/cover-phone-wallet.webp", box: { left: 35.8, top: 57.7, width: 32.4, height: 42.3 }, z: 2 },
+  { src: "/images/stackup/phone-onboarding-cutout.webp", box: { left: 0, top: 16.1, width: 32.6, height: 63.1 }, z: 3 },
+  { src: "/images/stackup/phone-starting-point-cutout.webp", box: { left: 35.7, top: 0, width: 32.9, height: 48.8 }, z: 2 },
+  { src: "/images/stackup/phone-confidence-jar-cutout.webp", box: { left: 72.1, top: 15.9, width: 27.9, height: 63.1 }, z: 1 },
+  { src: "/images/stackup/phone-wallet-cutout.webp", box: { left: 35.8, top: 57.7, width: 32.4, height: 42.3 }, z: 2 },
 ] as const;
 
 export function CoverSection() {
   return (
     <section
-      className="relative overflow-hidden py-20 sm:py-24 lg:py-28"
+      className="relative overflow-hidden py-14 sm:py-16 lg:py-20"
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Stack Up cover"
     >
@@ -54,12 +53,7 @@ export function CoverSection() {
           CSS circles, not an image, since they're flat solid shapes.
           Kept deliberately small and pushed well below the section's
           own content edge so they clear the text column's tallest
-          wrap at any breakpoint, including the awkward viewport widths
-          right at the stacked/side-by-side layout boundary where the
-          text block is at its widest (and thus shortest) while the
-          circles' own container is still using the larger, non-`lg:`
-          layout. A single fixed size avoids the breakpoint-dependent
-          growth that used to let them grow into the text. */}
+          wrap at any breakpoint. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -bottom-40 -left-16 h-48 w-48 rounded-full"
@@ -71,7 +65,7 @@ export function CoverSection() {
         style={{ background: "var(--stackup-green)" }}
       />
 
-      <Container className="relative flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-8">
+      <Container className="relative flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16 xl:gap-24">
         <div className="relative z-10 flex max-w-md flex-col items-center text-center lg:items-start lg:text-left">
           <Image
             src="/images/stackup/logo.webp"
@@ -99,11 +93,11 @@ export function CoverSection() {
           </p>
         </div>
 
-        <div className="relative z-10 aspect-[754/807] w-full max-w-md sm:max-w-lg lg:max-w-none lg:flex-1">
+        <div className="relative z-10 aspect-[754/807] w-full max-w-xs sm:max-w-sm lg:max-w-[30rem]">
           {PHONES.map((phone) => (
             <div
               key={phone.src}
-              className="absolute overflow-hidden rounded-[1.75rem] shadow-[0_24px_48px_-16px_rgb(20_30_20/45%)] sm:rounded-[2.25rem]"
+              className="absolute"
               style={{
                 left: `${phone.box.left}%`,
                 top: `${phone.box.top}%`,
@@ -112,7 +106,14 @@ export function CoverSection() {
                 zIndex: phone.z,
               }}
             >
-              <Image src={phone.src} alt="" fill sizes="40vw" className="object-cover" />
+              <Image
+                src={phone.src}
+                alt=""
+                fill
+                sizes="20rem"
+                className="object-contain"
+                style={{ filter: "drop-shadow(0 20px 32px rgb(20 30 20 / 40%))" }}
+              />
             </div>
           ))}
         </div>
