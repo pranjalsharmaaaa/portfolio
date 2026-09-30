@@ -40,7 +40,7 @@ export function OverviewSection() {
           </div>
         </div>
 
-        <div className="relative aspect-[590/395] w-full flex-1">
+        <div className="relative aspect-[590/395] w-full max-w-md lg:max-w-lg">
           <Image
             src="/images/stackup/illustration-steps.webp"
             alt="Illustration: a person climbing steps labeled Understand, Practise, and Build Confidence toward a flag reading A More Confident You"
