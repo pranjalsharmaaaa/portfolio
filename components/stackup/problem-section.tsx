@@ -9,8 +9,8 @@ export function ProblemSection() {
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Understanding the problem"
     >
-      <Container className="flex flex-col items-center gap-8">
-        <div className="w-full max-w-2xl">
+      <Container className="flex flex-col gap-8">
+        <div className="w-full">
           <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
             {stackupProblem.label}
           </p>
@@ -22,7 +22,7 @@ export function ProblemSection() {
           </p>
         </div>
 
-        <div className="relative aspect-[495/325] w-full max-w-md">
+        <div className="relative mx-auto aspect-[495/325] w-full max-w-md">
           <Image
             src="/images/stackup/illustration-stressed.webp"
             alt="Illustration: a person overwhelmed at a laptop, surrounded by speech bubbles of financial app names and confusing terms, captioned 'Too much information, so little clarity'"
