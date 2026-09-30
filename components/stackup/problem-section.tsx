@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { stackupProblem } from "@/lib/stackup-content";
-import { Container } from "@/components/stackup/container";
+import { Container, SECTION_Y } from "@/components/stackup/container";
 
 export function ProblemSection() {
   return (
     <section
-      className="relative py-20 sm:py-24 lg:py-28"
+      className={`relative ${SECTION_Y}`}
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Understanding the problem"
     >

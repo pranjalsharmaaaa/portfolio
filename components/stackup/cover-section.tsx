@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { stackupCover } from "@/lib/stackup-content";
-import { Container } from "@/components/stackup/container";
+import { Container, SECTION_Y } from "@/components/stackup/container";
 
 /**
  * The four onboarding-flow screens from the reference cover, positioned
@@ -58,7 +58,7 @@ const PHONES = [
 export function CoverSection() {
   return (
     <section
-      className="relative overflow-hidden py-14 sm:py-16 lg:py-20"
+      className={`relative overflow-hidden ${SECTION_Y}`}
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Stack Up cover"
     >

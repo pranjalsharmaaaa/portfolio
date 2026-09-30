@@ -26,3 +26,16 @@ export function Container({
     </div>
   );
 }
+
+/**
+ * The one vertical rhythm every Stack Up section shares, applied to the
+ * `<section>` element itself (padding-top/bottom, not a margin — margins
+ * on adjacent sections would collapse/stack unpredictably).
+ *
+ * Every section owns exactly this much inset above and below its own
+ * content, so two adjacent sections are always separated by exactly
+ * `2 × 60px = 120px` at desktop — not a random per-section value that
+ * happened to be typed differently in each file, and not doubled by an
+ * extra margin stacked on top of this padding.
+ */
+export const SECTION_Y = "py-10 sm:py-14 lg:py-[60px]";
