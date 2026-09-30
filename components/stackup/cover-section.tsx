@@ -87,7 +87,7 @@ export function CoverSection() {
         style={{ background: "var(--stackup-green)", transform: "translate(-50%, 50%)" }}
       />
 
-      <Container className="relative flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-center lg:gap-16 xl:gap-24">
+      <Container className="relative flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
         <div className="relative z-10 flex max-w-md flex-col items-center text-center lg:items-start lg:text-left">
           <Image
             src="/images/stackup/logo.webp"
