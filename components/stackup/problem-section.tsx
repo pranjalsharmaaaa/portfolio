@@ -32,7 +32,7 @@ export function ProblemSection() {
           />
         </div>
 
-        <div className="flex w-full max-w-2xl flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           {stackupProblem.paragraphs.map((segments, i) => (
             <p key={i} className="text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-ink)" }}>
               {segments.map((segment, j) => (
