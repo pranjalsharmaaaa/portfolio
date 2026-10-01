@@ -70,3 +70,112 @@ export const stackupHypothesis = {
     { title: "Experience", image: "/images/stackup/illustration-experience.webp" },
   ],
 } as const;
+
+export const stackupEcosystem = {
+  label: "Exploring the Ecosystem",
+  intro:
+    "Beyond features, I wanted to understand what each product assumed about its users and how it presented financial information.",
+  cards: [
+    { title: "Investments", description: "How investing is introduced to users." },
+    { title: "Payments", description: "How everyday financial behaviour is prioritised." },
+    { title: "Credit Cards", description: "How spending, debt and rewards are communicated." },
+    { title: "Net Worth", description: "How overall financial health is presented and explained." },
+    { title: "Paper Trading", description: "How do they teach investing without financial risk?" },
+  ],
+  outro:
+    "This exploration helped me build a broad understanding of today's financial ecosystem before narrowing my research into representative products.",
+} as const;
+
+export type BenchmarkProduct = { name: string; logo: string; description: string };
+
+export const stackupBenchmark = {
+  label: "Narrowing the Benchmark",
+  body: "Every product informed the research. The applications shown here are the ones referenced throughout the case study to explain the key findings and design decisions.",
+  left: [
+    { name: "Groww", logo: "/images/stackup/logo-groww.webp", description: "Popular investing platform for beginners" },
+    { name: "Kuvera", logo: "/images/stackup/logo-kuvera.webp", description: "Mutual fund focused for long term investing" },
+    { name: "IND Money", logo: "/images/stackup/logo-indmoney.webp", description: "Combines investment with net worth tracking and financial overview" },
+  ] satisfies BenchmarkProduct[],
+  right: [
+    { name: "Frontpage", logo: "/images/stackup/logo-frontpage.webp", description: "Let users learn market and invest in virtual stocks" },
+    { name: "Money Bhai", logo: "/images/stackup/logo-moneybhai.webp", description: "Gamified paper trading application to practice trading strategies" },
+  ] satisfies BenchmarkProduct[],
+} as const;
+
+export type InsightShot = { src: string; alt: string; aspect: number; caption?: string };
+export type InsightExample = { name: string; logo: string; shots: InsightShot[]; caption?: string };
+export type InsightCard = { label: string; heading: string; body: string };
+
+export const stackupBenchmarkInsights = [
+  {
+    index: "01",
+    headline: "Existing Products are built for investment-ready users",
+    subheading: "Most investing platforms move quickly towards discovering, selecting and investing in financial products",
+    examples: [
+      {
+        name: "Groww",
+        logo: "/images/stackup/logo-groww.webp",
+        shots: [{ src: "/images/stackup/benchmark-groww-investready.webp", alt: "Groww mutual funds screen prompting account setup to start investing", aspect: 173 / 227, caption: "Fund discovery and start investing becomes the primary thing" }],
+      },
+      {
+        name: "IND Money",
+        logo: "/images/stackup/logo-indmoney.webp",
+        shots: [{ src: "/images/stackup/benchmark-indmoney-investready.webp", alt: "IND Money screen prompting mutual fund account setup and SIP actions", aspect: 176 / 233, caption: "Users are shown actions first thing on the page" }],
+      },
+      {
+        name: "Kuvera",
+        logo: "/images/stackup/logo-kuvera.webp",
+        shots: [{ src: "/images/stackup/benchmark-kuvera-investready.webp", alt: "Kuvera mutual fund collections and most-bought funds screen", aspect: 153 / 239, caption: "Assumes users already know how to invest." }],
+      },
+    ] satisfies InsightExample[],
+    observed: { label: "What I Observed", heading: "Investment comes first.", body: "Portfolios, returns, fund discovery and investment actions form the core experience across most platforms studied." },
+    opportunity: { label: "The Opportunity", heading: "But what about users who aren't ready to invest yet?", body: "Create a space where beginners can understand and practise financial decisions before putting real money at risk." },
+  },
+  {
+    index: "02",
+    headline: "Learning, when available, sits outside the investing journey.",
+    subheading: "Across investment platforms, learning often sits separately from financial actions.",
+    examples: [
+      {
+        name: "Kuvera",
+        logo: "/images/stackup/logo-kuvera.webp",
+        shots: [{ src: "/images/stackup/benchmark-kuvera-learning.webp", alt: "Kuvera FAQ screen answering mutual fund questions", aspect: 163 / 218, caption: "Learning is down in FAQ which are not part of the journey" }],
+      },
+      {
+        name: "IND Money",
+        logo: "/images/stackup/logo-indmoney.webp",
+        shots: [{ src: "/images/stackup/benchmark-indmoney-learning.webp", alt: "IND Money dedicated finance course screen", aspect: 179 / 215, caption: "Education exists, but as a separate learning destination wherein user are expected to complete course" }],
+      },
+      {
+        name: "Groww",
+        logo: "/images/stackup/logo-groww.webp",
+        shots: [],
+        caption: "No dedicated learning experience identified",
+      },
+    ] satisfies InsightExample[],
+    observed: { label: "What I Observed", heading: "Learning is separated from action.", body: "Users can access educational resources, but they often have to intentionally seek them out rather than encountering guidance while making a financial decision." },
+    opportunity: { label: "The Opportunity", heading: "What if learning happened while users were doing?", body: "Embed guidance within financial actions, allowing beginners to understand concepts in context and practise them before making decisions independently." },
+  },
+  {
+    index: "03",
+    headline: "Practice platforms remove the money risk, not the complexity.",
+    subheading: "Simulation platforms remove real-money risk, but still expect users to understand finance before they begin.",
+    examples: [
+      {
+        name: "Money Bhai",
+        logo: "/images/stackup/logo-moneybhai.webp",
+        shots: [{ src: "/images/stackup/benchmark-moneybhai-practice.webp", alt: "Money Bhai gamified paper-trading portfolio dashboard", aspect: 348 / 249, caption: "Even if it is risk free practice it still assumes prior knowledge which give a lot of cognitive load" }],
+      },
+      {
+        name: "Frontpage",
+        logo: "/images/stackup/logo-frontpage.webp",
+        shots: [
+          { src: "/images/stackup/benchmark-frontpage-practice-1.webp", alt: "Frontpage community feed with market discussion posts", aspect: 133 / 274, caption: "Through community feature with different experience between users gets overwhelming for someone to learn" },
+          { src: "/images/stackup/benchmark-frontpage-practice-2.webp", alt: "Frontpage watchlist screen with live stock prices", aspect: 128 / 255, caption: "Information is provided without any guidance leaving the user to figure out themselves the first step." },
+        ],
+      },
+    ] satisfies InsightExample[],
+    observed: { label: "What I Observed", heading: "Practice still assumes prior knowledge.", body: "Virtual money removes the consequence of making a wrong decision, but users still need to understand what to buy, why to buy it and how the interface works." },
+    opportunity: { label: "The Opportunity", heading: "What if practice simplified the decision itself?", body: "Introduce concepts progressively and let beginners practise one financial decision at a time, before exposing them to the complexity of real investing." },
+  },
+] as const;

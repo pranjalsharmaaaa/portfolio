@@ -4,6 +4,10 @@ import { OverviewSection } from "@/components/stackup/overview-section";
 import { QuestionSection } from "@/components/stackup/question-section";
 import { ProblemSection } from "@/components/stackup/problem-section";
 import { HypothesisSection } from "@/components/stackup/hypothesis-section";
+import { EcosystemSection } from "@/components/stackup/ecosystem-section";
+import { BenchmarkSection } from "@/components/stackup/benchmark-section";
+import { BenchmarkInsightSection } from "@/components/stackup/benchmark-insight-section";
+import { stackupBenchmarkInsights } from "@/lib/stackup-content";
 
 /**
  * The Stack Up case study — reproduced section-by-section from Figma
@@ -12,9 +16,9 @@ import { HypothesisSection } from "@/components/stackup/hypothesis-section";
  * (--paper-ink, --accent, etc.): they belong to Stack Up's own brand,
  * scoped to this page only via the --stackup-* custom properties below.
  *
- * This is the first of several batches of sections (cover through "An
- * initial hypothesis"); later sections are appended as their own
- * components once their reference screens are provided.
+ * Sections are appended in batches as their reference screens arrive:
+ * cover through "An initial hypothesis" first, then the ecosystem
+ * exploration through the three benchmark-insight pages.
  */
 export default function StackUpPage() {
   return (
@@ -42,6 +46,11 @@ export default function StackUpPage() {
       <QuestionSection />
       <ProblemSection />
       <HypothesisSection />
+      <EcosystemSection />
+      <BenchmarkSection />
+      {stackupBenchmarkInsights.map((insight) => (
+        <BenchmarkInsightSection key={insight.index} {...insight} />
+      ))}
     </main>
   );
 }
