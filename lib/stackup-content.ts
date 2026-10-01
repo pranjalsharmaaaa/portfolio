@@ -102,7 +102,16 @@ export const stackupBenchmark = {
   ] satisfies BenchmarkProduct[],
 } as const;
 
-export type InsightShot = { src: string; alt: string; aspect: number; caption?: string };
+/**
+ * `displayWidth` (px, desktop) caps how large a shot renders, independent
+ * of however wide its flex column is. These screenshots are cropped
+ * straight from a 1920x1080 reference capture, so each one's native
+ * pixel width is small (the widest here, Money Bhai, is 348px); letting
+ * a shot stretch to fill a wide column can upscale it 3x+ and look soft.
+ * Left unset, a shot just fills its column (the pages-01/02 behavior,
+ * where every example's column is already a similar width).
+ */
+export type InsightShot = { src: string; alt: string; aspect: number; caption?: string; displayWidth?: number };
 export type InsightExample = { name: string; logo: string; shots: InsightShot[]; caption?: string };
 export type InsightCard = { label: string; heading: string; body: string };
 
@@ -164,14 +173,14 @@ export const stackupBenchmarkInsights = [
       {
         name: "Money Bhai",
         logo: "/images/stackup/logo-moneybhai.webp",
-        shots: [{ src: "/images/stackup/benchmark-moneybhai-practice.webp", alt: "Money Bhai gamified paper-trading portfolio dashboard", aspect: 348 / 249, caption: "Even if it is risk free practice it still assumes prior knowledge which give a lot of cognitive load" }],
+        shots: [{ src: "/images/stackup/benchmark-moneybhai-practice.webp", alt: "Money Bhai gamified paper-trading portfolio dashboard", aspect: 348 / 249, caption: "Even if it is risk free practice it still assumes prior knowledge which give a lot of cognitive load", displayWidth: 420 }],
       },
       {
         name: "Frontpage",
         logo: "/images/stackup/logo-frontpage.webp",
         shots: [
-          { src: "/images/stackup/benchmark-frontpage-practice-1.webp", alt: "Frontpage community feed with market discussion posts", aspect: 133 / 274, caption: "Through community feature with different experience between users gets overwhelming for someone to learn" },
-          { src: "/images/stackup/benchmark-frontpage-practice-2.webp", alt: "Frontpage watchlist screen with live stock prices", aspect: 128 / 255, caption: "Information is provided without any guidance leaving the user to figure out themselves the first step." },
+          { src: "/images/stackup/benchmark-frontpage-practice-1.webp", alt: "Frontpage community feed with market discussion posts", aspect: 133 / 274, caption: "Through community feature with different experience between users gets overwhelming for someone to learn", displayWidth: 190 },
+          { src: "/images/stackup/benchmark-frontpage-practice-2.webp", alt: "Frontpage watchlist screen with live stock prices", aspect: 128 / 255, caption: "Information is provided without any guidance leaving the user to figure out themselves the first step.", displayWidth: 190 },
         ],
       },
     ] satisfies InsightExample[],
