@@ -31,6 +31,7 @@ export function ProductLogo({
       alt={`${name} logo`}
       width={dims.width}
       height={dims.height}
+      quality={100}
       className={`rounded-lg object-contain ${className}`}
     />
   );

@@ -42,22 +42,29 @@ export function BenchmarkInsightSection({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
-          {examples.map((example) => (
-            <div key={example.name} className="flex flex-col items-center gap-4 text-center">
-              <div className="flex items-center gap-2">
-                <ProductLogo src={example.logo} name={example.name} className="h-8 w-auto" />
-                <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
-                  {example.name}
-                </h3>
-              </div>
+        {examples.length === 2 ? (
+          // Two examples means one wide screenshot beside one product with
+          // two phones (currently only "Practice platforms..." / page 10) —
+          // the reference composes this as two genuinely different-width
+          // visual areas, not a 3-up grid with one cell left empty. The
+          // narrower example's shot fills its own column at closer to its
+          // native size instead of being squeezed into the same fixed
+          // thumbnail width as a tall phone screenshot.
+          <div className="flex flex-col items-start gap-10 lg:flex-row lg:justify-between">
+            {examples.map((example) => (
+              <div key={example.name} className="flex w-full flex-col items-start gap-4 lg:w-auto">
+                <div className="flex items-center gap-2">
+                  <ProductLogo src={example.logo} name={example.name} className="h-8 w-auto" />
+                  <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
+                    {example.name}
+                  </h3>
+                </div>
 
-              {example.shots.length > 0 ? (
-                <div className="flex flex-row flex-wrap items-start justify-center gap-4">
+                <div className="flex w-full flex-row flex-wrap items-start gap-6">
                   {example.shots.map((shot) => (
-                    <div key={shot.src} className="flex w-32 flex-col gap-2">
+                    <div key={shot.src} className="flex flex-col gap-2" style={{ width: shot.displayWidth ? `${shot.displayWidth}px` : "10rem", maxWidth: "100%" }}>
                       <div className="relative w-full overflow-hidden rounded-lg shadow-[0_2px_10px_-4px_rgb(0_0_0/15%)]" style={{ aspectRatio: shot.aspect }}>
-                        <Image src={shot.src} alt={shot.alt} fill sizes="10rem" className="object-contain" />
+                        <Image src={shot.src} alt={shot.alt} fill sizes={shot.displayWidth ? `${shot.displayWidth}px` : "10rem"} quality={100} className="object-contain" />
                       </div>
                       {shot.caption ? (
                         <p className="text-xs leading-snug" style={{ color: "var(--stackup-muted)" }}>
@@ -67,14 +74,44 @@ export function BenchmarkInsightSection({
                     </div>
                   ))}
                 </div>
-              ) : (
-                <p className="text-sm leading-relaxed" style={{ color: "var(--stackup-muted)" }}>
-                  {example.caption}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+            {examples.map((example) => (
+              <div key={example.name} className="flex flex-col items-center gap-4 text-center">
+                <div className="flex items-center gap-2">
+                  <ProductLogo src={example.logo} name={example.name} className="h-8 w-auto" />
+                  <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
+                    {example.name}
+                  </h3>
+                </div>
+
+                {example.shots.length > 0 ? (
+                  <div className="flex flex-row flex-wrap items-start justify-center gap-4">
+                    {example.shots.map((shot) => (
+                      <div key={shot.src} className="flex w-32 flex-col gap-2">
+                        <div className="relative w-full overflow-hidden rounded-lg shadow-[0_2px_10px_-4px_rgb(0_0_0/15%)]" style={{ aspectRatio: shot.aspect }}>
+                          <Image src={shot.src} alt={shot.alt} fill sizes="10rem" quality={100} className="object-contain" />
+                        </div>
+                        {shot.caption ? (
+                          <p className="text-xs leading-snug" style={{ color: "var(--stackup-muted)" }}>
+                            {shot.caption}
+                          </p>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--stackup-muted)" }}>
+                    {example.caption}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InsightCardView card={observed} background="#f1f1ef" />
