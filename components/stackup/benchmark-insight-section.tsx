@@ -51,31 +51,45 @@ export function BenchmarkInsightSection({
           // native size instead of being squeezed into the same fixed
           // thumbnail width as a tall phone screenshot.
           <div className="flex flex-col items-start gap-10 lg:flex-row lg:justify-between">
-            {examples.map((example) => (
-              <div key={example.name} className="flex w-full flex-col items-start gap-4 lg:w-auto">
-                <div className="flex items-center gap-2">
-                  <ProductLogo src={example.logo} name={example.name} className="h-8 w-auto" />
-                  <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
-                    {example.name}
-                  </h3>
-                </div>
+            {examples.map((example) => {
+              // An example with more than one shot (Frontpage) pairs each
+              // phone with its own caption beside its lower portion, side
+              // by side with the other pair — not stacked image-then-
+              // caption like a single-shot example (Money Bhai) is.
+              const pairShots = example.shots.length > 1;
+              return (
+                <div key={example.name} className="flex w-full flex-col items-start gap-4 lg:w-auto">
+                  <div className="flex items-center gap-2">
+                    <ProductLogo src={example.logo} name={example.name} className="h-8 w-auto" />
+                    <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
+                      {example.name}
+                    </h3>
+                  </div>
 
-                <div className="flex w-full flex-row flex-wrap items-start gap-6">
-                  {example.shots.map((shot) => (
-                    <div key={shot.src} className="flex flex-col gap-2" style={{ width: shot.displayWidth ? `${shot.displayWidth}px` : "10rem", maxWidth: "100%" }}>
-                      <div className="relative w-full overflow-hidden rounded-lg shadow-[0_2px_10px_-4px_rgb(0_0_0/15%)]" style={{ aspectRatio: shot.aspect }}>
-                        <Image src={shot.src} alt={shot.alt} fill sizes={shot.displayWidth ? `${shot.displayWidth}px` : "10rem"} quality={100} className="object-contain" />
+                  <div className={`flex w-full flex-row flex-wrap gap-6 ${pairShots ? "items-end justify-between" : "items-start"}`}>
+                    {example.shots.map((shot) => (
+                      <div
+                        key={shot.src}
+                        className={pairShots ? "flex flex-row items-end gap-3" : "flex flex-col gap-2"}
+                        style={pairShots ? undefined : { width: shot.displayWidth ? `${shot.displayWidth}px` : "10rem", maxWidth: "100%" }}
+                      >
+                        <div
+                          className="relative shrink-0 overflow-hidden rounded-lg shadow-[0_2px_10px_-4px_rgb(0_0_0/15%)]"
+                          style={{ width: pairShots ? (shot.displayWidth ? `${shot.displayWidth}px` : "10rem") : "100%", aspectRatio: shot.aspect }}
+                        >
+                          <Image src={shot.src} alt={shot.alt} fill sizes={shot.displayWidth ? `${shot.displayWidth}px` : "10rem"} quality={100} className="object-contain" />
+                        </div>
+                        {shot.caption ? (
+                          <p className={pairShots ? "max-w-[8rem] text-xs leading-snug" : "text-xs leading-snug"} style={{ color: "var(--stackup-muted)" }}>
+                            {shot.caption}
+                          </p>
+                        ) : null}
                       </div>
-                      {shot.caption ? (
-                        <p className="text-xs leading-snug" style={{ color: "var(--stackup-muted)" }}>
-                          {shot.caption}
-                        </p>
-                      ) : null}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
