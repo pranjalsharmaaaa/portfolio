@@ -1,147 +1,93 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { Children, useLayoutEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 /**
- * Scroll distance (in vh) allotted to one page's entrance — how far the
- * user scrolls while the incoming page slides from translateY(100%) to
- * translateY(0%) and covers the page beneath it. Deliberately short: a
- * few normal wheel/trackpad ticks should visibly move the incoming page,
- * not land entirely inside a "nothing happens yet" zone.
+ * Smallest width (design px) a screen's composition is ever laid out
+ * at in the page-stack. At this width every section is in its full
+ * desktop (Figma) arrangement — notably Benchmark Insight 03's
+ * Frontpage pair stays side by side instead of wrapping — so a
+ * narrower viewport scales the whole composition down rather than
+ * reflowing it into a different one.
  */
-const TRAVEL_VH = 45;
+const DESIGN_MIN_WIDTH = 1280;
 
 /**
- * Scroll distance (in vh) a page rests, fully settled, before the next
- * page begins its own entrance. Purely a pacing choice — give each page
- * a brief beat before the next one starts covering it, rather than
- * transitions running back to back with no pause. Kept short for the
- * same reason as TRAVEL_VH: a long rest reads as "scrolling stopped
- * doing anything."
+ * Smallest height (design px) a screen's canvas is ever given: the
+ * 16:9 height of a 1440px frame, matching the Figma frames' own aspect.
+ * The tallest section at any canvas width >= DESIGN_MIN_WIDTH is well
+ * under this, so a viewport shorter than this scales every screen down
+ * uniformly instead of letting any of them overflow.
  */
-const REST_VH = 15;
+const DESIGN_MIN_HEIGHT = 810;
 
 /**
- * Wraps one Stack Up section so it participates in the full-screen
- * page-stack: every page renders `position: fixed; inset: 0` (always at
- * the viewport's full size, in the same screen position — not `sticky`:
- * a sticky element unavoidably disengages a bit before its own track
- * ends, which leaves no way for it to stay "stuck" long enough to cover
- * the *next* page's whole entrance using only its own track; `fixed`
- * sidesteps that by keying every page's position purely off scroll
- * position, computed independently per page, with no engage/disengage
- * edge cases to fight). Later pages (higher z-index) physically cover
- * earlier ones by sliding up from below as the user scrolls through a
- * plain spacer element — pure scroll-distance bookkeeping, no visible
- * content of its own — placed in normal document flow before the fixed
- * layer. Reversing the scroll reverses the same transform for free: it
- * is a pure function of the current scroll position, not a one-way
- * animation or state machine.
+ * The Stack Up page-stack: every screen is a `position: sticky; top: 0`
+ * sibling exactly one viewport (100svh) tall, all inside one ordinary
+ * block in normal document flow. The document itself is just N
+ * viewports tall and the browser's own scroll is the only scroll
+ * context — no fixed layers, no spacers, no scroll listeners. Each
+ * screen sticks to the top once reached and stays stuck until the
+ * stack's own bottom edge (the end of the page), so the next sibling,
+ * arriving in normal flow directly beneath it, rises from the bottom
+ * of the viewport and covers it; later siblings paint over earlier
+ * ones by DOM order. Scrolling up simply reverses the same geometry.
  *
- * Below the `sm` breakpoint none of this applies: every element falls
- * back to a plain, unstyled block so the existing mobile composition
- * (already measured to run well past one viewport on several pages) is
- * completely unaffected — scrolling stays the normal, single in-flow
- * document it already is today.
+ * Fitting a screen into its viewport is done by scaling, never by
+ * reflowing or trimming the composition: each screen's content is laid
+ * out on a canvas at least DESIGN_MIN_WIDTH x DESIGN_MIN_HEIGHT design
+ * px (and otherwise exactly the viewport's size), then that whole
+ * canvas is scaled uniformly to fill the viewport. The scale factor is
+ * the one value CSS can't derive on its own (it's a ratio of two
+ * lengths), so it's measured here — on resize only, never on scroll.
+ * Sections respond to the canvas's width through container queries
+ * (`@min-[640px]:` / `@min-[1024px]:` rather than `sm:` / `lg:`), so
+ * the layout they pick always matches the width they're actually laid
+ * out at, regardless of how far the canvas is scaled.
  *
- * `prefers-reduced-motion` keeps the same page-stack structure (pages
- * still cover each other, scroll-position driven) but swaps instantly
- * at each page's boundary instead of interpolating the slide — still
- * computed from scroll position, just without the motion.
+ * The screen clips with `overflow: clip`, which unlike `hidden`/`auto`
+ * does not create a scroll container: it only keeps the (unscaled,
+ * wider) canvas's layout box from widening the document, and the
+ * decorative corner shapes inside their own bounds.
+ *
+ * Below `sm` none of this applies: screens and canvases fall back to
+ * plain blocks, and the page scrolls as one normal top-to-bottom
+ * document using the existing mobile composition.
  */
-export function StackPage({
-  index,
-  total,
-  children,
-}: {
-  index: number;
-  total: number;
-  children: ReactNode;
-}) {
-  const spacerRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const isFirst = index === 0;
-  const isLast = index === total - 1;
+export function PageStack({ children }: { children: ReactNode }) {
+  const rootRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // The first page never animates — it's visible from the start, and
-    // never needs to be repositioned.
-    if (isFirst) return;
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    const screen = root?.firstElementChild;
+    if (!root || !screen) return;
 
-    const spacer = spacerRef.current;
-    const content = contentRef.current;
-    if (!spacer || !content) return;
-
-    const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let frame = 0;
-
-    function update() {
-      frame = 0;
-      if (window.innerWidth < 640) {
-        // Mobile falls back to plain flow — make sure no stale inline
-        // transform lingers from a wider viewport before a resize.
-        content!.style.transform = "";
-        return;
-      }
-      const travelPx = (TRAVEL_VH / 100) * window.innerHeight;
-      // The spacer's own position in the document is exactly this
-      // page's assigned scroll range start (spacers sit end to end in
-      // normal flow), so its live rect.top tells us how far into that
-      // range the user has scrolled, with no cumulative offsets to
-      // track or pass down separately.
-      const rect = spacer!.getBoundingClientRect();
-      const rawProgress = -rect.top / travelPx;
-      const progress = reduceMotionQuery.matches ? (rawProgress > 0 ? 1 : 0) : Math.min(1, Math.max(0, rawProgress));
-      content!.style.transform = `translateY(${(1 - progress) * 100}%)`;
-    }
-    function schedule() {
-      if (!frame) frame = requestAnimationFrame(update);
-    }
-
-    update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, [isFirst]);
-
-  // Page 0 needs no entrance distance of its own; every other page
-  // reserves its own TRAVEL_VH. Every page but the last also reserves a
-  // REST_VH beat before the next page's entrance begins. The spacer is
-  // the only thing that occupies this space in document flow — the
-  // fixed content layer renders independently of it.
-  //
-  // The last page reserves TRAVEL_VH + 100 instead of TRAVEL_VH + REST:
-  // a page's fixed layer isn't itself part of document flow, so nothing
-  // after the final spacer provides the scroll room a browser needs to
-  // keep scrolling once the document's bottom reaches the viewport's
-  // bottom — without this, the very last transition could never reach
-  // translateY(0), capping out partway through.
-  const spacerHeight = `${(isFirst ? 0 : TRAVEL_VH) + (isLast ? 100 : REST_VH)}svh`;
+    const observer = new ResizeObserver(() => {
+      const { clientWidth: width, clientHeight: height } = screen;
+      const scale = Math.min(1, width / DESIGN_MIN_WIDTH, height / DESIGN_MIN_HEIGHT);
+      root.style.setProperty("--stack-scale", String(scale));
+      root.style.setProperty("--stack-canvas-w", `${width / scale}px`);
+      root.style.setProperty("--stack-canvas-h", `${height / scale}px`);
+    });
+    observer.observe(screen);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <>
-      <div ref={spacerRef} className="hidden sm:block" style={{ height: spacerHeight }} />
-      <div
-        ref={contentRef}
-        // overflow-y is `auto`, not `hidden`: every page is trimmed to
-        // fit 100svh, but a handful (the Benchmark Insight pages, whose
-        // Frontpage/Money Bhai screenshots have a fixed height that
-        // can't shrink without changing that composition) can still
-        // exceed an unusually short real browser viewport. `auto` means
-        // that content is reachable by scrolling *within* the page
-        // instead of being silently, permanently clipped — the one
-        // thing the brief explicitly rules out — while still clipping
-        // the not-yet-arrived page horizontally and (via the transform)
-        // vertically before its turn.
-        className={`sm:fixed sm:inset-0 sm:overflow-x-hidden sm:overflow-y-auto ${isFirst ? "" : "sm:[transform:translateY(100%)] sm:motion-reduce:![transform:translateY(0)]"}`}
-        style={{ zIndex: index + 1, background: "var(--stackup-bg)" }}
-      >
-        {children}
-      </div>
-    </>
+    <div
+      ref={rootRef}
+      // Fallbacks before the first measurement: an unscaled canvas
+      // filling its screen, identical to the measured result whenever
+      // the viewport is already at least the design minimum.
+      style={{ "--stack-scale": "1", "--stack-canvas-w": "100%", "--stack-canvas-h": "100%" } as CSSProperties}
+    >
+      {Children.map(children, (child) => (
+        <div className="relative sm:sticky sm:top-0 sm:h-svh sm:overflow-clip" style={{ background: "var(--stackup-bg)" }}>
+          <div className="@container sm:absolute sm:top-0 sm:left-0 sm:flex sm:h-[var(--stack-canvas-h)] sm:w-[var(--stack-canvas-w)] sm:origin-top-left sm:scale-[var(--stack-scale)] sm:flex-col sm:justify-center">
+            {child}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

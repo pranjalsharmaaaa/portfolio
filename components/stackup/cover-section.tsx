@@ -40,7 +40,7 @@ import { Container, SECTION_Y } from "@/components/stackup/container";
  * mask's rounded corners fall on clean background and the phone reads
  * as one complete, self-contained screen.
  *
- * The cluster's own wrapper is capped with `lg:max-w-[30rem]` rather
+ * The cluster's own wrapper is capped with `@min-[1024px]:max-w-[30rem]` rather
  * than left to grow via `flex-1`: this bounding box's aspect ratio
  * (754:807) is nearly square, so letting it consume whatever width a
  * wide page grid leaves over inflates its *height* just as much,
@@ -58,7 +58,7 @@ const PHONES = [
 export function CoverSection() {
   return (
     <section
-      className={`relative overflow-hidden ${SECTION_Y}`}
+      className={`relative overflow-clip ${SECTION_Y}`}
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Stack Up cover"
     >
@@ -87,35 +87,35 @@ export function CoverSection() {
         style={{ background: "var(--stackup-green)", transform: "translate(-50%, 50%)" }}
       />
 
-      <Container className="relative flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
-        <div className="relative z-10 flex max-w-md flex-col items-center text-center lg:items-start lg:text-left">
+      <Container className="relative flex flex-col items-center gap-10 @min-[1024px]:flex-row @min-[1024px]:items-center @min-[1024px]:justify-between @min-[1024px]:gap-16">
+        <div className="relative z-10 flex max-w-md flex-col items-center text-center @min-[1024px]:items-start @min-[1024px]:text-left">
           <Image
             src="/images/stackup/logo.webp"
             alt="Stack Up"
             width={176}
             height={80}
-            className="h-16 w-auto sm:h-20"
+            className="h-16 w-auto @min-[640px]:h-20"
           />
 
-          <h1 className="mt-8 text-4xl font-bold sm:text-5xl" style={{ color: "var(--stackup-ink)" }}>
+          <h1 className="mt-8 text-4xl font-bold @min-[640px]:text-5xl" style={{ color: "var(--stackup-ink)" }}>
             {stackupCover.eyebrow}
           </h1>
           <div
-            className="mt-2 inline-block rounded-2xl px-6 py-2 text-4xl font-extrabold text-white sm:text-5xl"
+            className="mt-2 inline-block rounded-2xl px-6 py-2 text-4xl font-extrabold text-white @min-[640px]:text-5xl"
             style={{ background: "var(--stackup-green)" }}
           >
             {stackupCover.headline}
           </div>
 
-          <p className="mt-8 text-lg font-semibold sm:text-xl" style={{ color: "var(--stackup-ink)" }}>
+          <p className="mt-8 text-lg font-semibold @min-[640px]:text-xl" style={{ color: "var(--stackup-ink)" }}>
             {stackupCover.subhead}
           </p>
-          <p className="mt-3 text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-muted)" }}>
+          <p className="mt-3 text-base leading-relaxed @min-[640px]:text-lg" style={{ color: "var(--stackup-muted)" }}>
             {stackupCover.body}
           </p>
         </div>
 
-        <div className="relative z-10 aspect-[754/807] w-full max-w-xs sm:max-w-sm lg:max-w-[30rem]">
+        <div className="relative z-10 aspect-[754/807] w-full max-w-xs @min-[640px]:max-w-sm @min-[1024px]:max-w-[30rem]">
           {PHONES.map((phone) => (
             <div
               key={phone.src}

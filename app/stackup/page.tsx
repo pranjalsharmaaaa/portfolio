@@ -7,7 +7,7 @@ import { HypothesisSection } from "@/components/stackup/hypothesis-section";
 import { EcosystemSection } from "@/components/stackup/ecosystem-section";
 import { BenchmarkSection } from "@/components/stackup/benchmark-section";
 import { BenchmarkInsightSection } from "@/components/stackup/benchmark-insight-section";
-import { StackPage } from "@/components/stackup/stack-page";
+import { PageStack } from "@/components/stackup/stack-page";
 import { stackupBenchmarkInsights } from "@/lib/stackup-content";
 
 /**
@@ -42,20 +42,18 @@ export default function StackUpPage() {
         ← Back home
       </Link>
 
-      {[
-        <CoverSection key="cover" />,
-        <OverviewSection key="overview" />,
-        <QuestionSection key="question" />,
-        <ProblemSection key="problem" />,
-        <HypothesisSection key="hypothesis" />,
-        <EcosystemSection key="ecosystem" />,
-        <BenchmarkSection key="benchmark" />,
-        ...stackupBenchmarkInsights.map((insight) => <BenchmarkInsightSection key={insight.index} {...insight} />),
-      ].map((page, index, pages) => (
-        <StackPage key={page.key} index={index} total={pages.length}>
-          {page}
-        </StackPage>
-      ))}
+      <PageStack>
+        <CoverSection />
+        <OverviewSection />
+        <QuestionSection />
+        <ProblemSection />
+        <HypothesisSection />
+        <EcosystemSection />
+        <BenchmarkSection />
+        {stackupBenchmarkInsights.map((insight) => (
+          <BenchmarkInsightSection key={insight.index} {...insight} />
+        ))}
+      </PageStack>
     </main>
   );
 }

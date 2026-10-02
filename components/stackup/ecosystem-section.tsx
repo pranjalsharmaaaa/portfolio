@@ -4,7 +4,7 @@ import { Container, SECTION_Y } from "@/components/stackup/container";
 export function EcosystemSection() {
   return (
     <section
-      className={`relative overflow-hidden ${SECTION_Y}`}
+      className={`relative overflow-clip ${SECTION_Y}`}
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Exploring the ecosystem"
     >
@@ -25,15 +25,15 @@ export function EcosystemSection() {
 
       <Container className="relative flex flex-col gap-8">
         <div className="w-full">
-          <p className="text-xl font-bold tracking-wide uppercase sm:text-2xl lg:text-3xl" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-xl font-bold tracking-wide uppercase @min-[640px]:text-2xl @min-[1024px]:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupEcosystem.label}
           </p>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-ink)" }}>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed @min-[640px]:text-lg" style={{ color: "var(--stackup-ink)" }}>
             {stackupEcosystem.intro}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 @min-[640px]:grid-cols-2 @min-[1024px]:grid-cols-3">
           {stackupEcosystem.cards.map((card) => (
             <div
               key={card.title}
@@ -50,7 +50,7 @@ export function EcosystemSection() {
           ))}
         </div>
 
-        <p className="max-w-3xl text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-ink)" }}>
+        <p className="max-w-3xl text-base leading-relaxed @min-[640px]:text-lg" style={{ color: "var(--stackup-ink)" }}>
           {stackupEcosystem.outro}
         </p>
       </Container>
