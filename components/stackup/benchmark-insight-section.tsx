@@ -29,7 +29,15 @@ export function BenchmarkInsightSection({
 }) {
   return (
     <section className={`relative ${SECTION_Y}`} style={{ background: "var(--stackup-bg)" }} aria-label={`Benchmark insight ${index}`}>
-      <Container className="flex flex-col gap-10">
+      {/* gap-10 on mobile (unchanged), tightened to gap-4 from `sm:` up —
+          at that breakpoint the page-stack wrapper constrains this
+          section to one viewport, and these three blocks' own content
+          (label+heading+subheading, the example screenshots, the two
+          insight cards) already use most of that height on a common
+          laptop screen; trimming this one gap is what keeps Insight 03
+          (the tallest of the three) inside 100svh without touching its
+          typography or images. */}
+      <Container className="flex flex-col gap-10 sm:gap-4">
         <div className="w-full">
           <p className="text-base font-bold tracking-wide uppercase sm:text-lg" style={{ color: "var(--stackup-label)" }}>
             {index} / Benchmark Insight
