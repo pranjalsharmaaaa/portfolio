@@ -11,7 +11,7 @@ export function ProblemSection() {
     >
       <Container className="flex flex-col gap-8">
         <div className="w-full">
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-xl font-bold tracking-wide uppercase sm:text-2xl lg:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupProblem.label}
           </p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: "var(--stackup-ink)" }}>
@@ -22,12 +22,13 @@ export function ProblemSection() {
           </p>
         </div>
 
-        <div className="relative mx-auto aspect-[495/325] w-full max-w-md">
+        <div className="relative mx-auto aspect-[1112/723] w-full max-w-md">
           <Image
             src="/images/stackup/illustration-stressed.webp"
             alt="Illustration: a person overwhelmed at a laptop, surrounded by speech bubbles of financial app names and confusing terms, captioned 'Too much information, so little clarity'"
             fill
             sizes="(min-width: 640px) 28rem, 90vw"
+            quality={95}
             className="object-contain"
           />
         </div>

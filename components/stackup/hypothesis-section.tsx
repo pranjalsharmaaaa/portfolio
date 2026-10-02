@@ -11,7 +11,7 @@ export function HypothesisSection() {
     >
       <Container className="flex flex-col gap-10">
         <div>
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-xl font-bold tracking-wide uppercase sm:text-2xl lg:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupHypothesis.label}
           </p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: "var(--stackup-ink)" }}>

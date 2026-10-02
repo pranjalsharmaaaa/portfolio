@@ -23,7 +23,7 @@ export function BenchmarkSection() {
     <section className={`relative ${SECTION_Y}`} style={{ background: "var(--stackup-bg)" }} aria-label="Narrowing the benchmark">
       <Container className="flex flex-col gap-10">
         <div className="w-full">
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-xl font-bold tracking-wide uppercase sm:text-2xl lg:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupBenchmark.label}
           </p>
           <p className="mt-4 max-w-3xl text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-ink)" }}>

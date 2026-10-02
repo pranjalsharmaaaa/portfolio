@@ -25,7 +25,7 @@ export function EcosystemSection() {
 
       <Container className="relative flex flex-col gap-8">
         <div className="w-full">
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-xl font-bold tracking-wide uppercase sm:text-2xl lg:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupEcosystem.label}
           </p>
           <p className="mt-4 max-w-3xl text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-ink)" }}>

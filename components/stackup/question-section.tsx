@@ -24,7 +24,7 @@ export function QuestionSection() {
 
       <Container className="relative flex flex-col items-center gap-6 text-center">
         <div className="mx-auto max-w-2xl">
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-xl font-bold tracking-wide uppercase sm:text-2xl lg:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupQuestion.label}
           </p>
           <p className="mt-6 text-3xl sm:text-4xl" style={{ color: "var(--stackup-ink)" }}>

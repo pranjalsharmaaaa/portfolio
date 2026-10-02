@@ -31,7 +31,7 @@ export function BenchmarkInsightSection({
     <section className={`relative ${SECTION_Y}`} style={{ background: "var(--stackup-bg)" }} aria-label={`Benchmark insight ${index}`}>
       <Container className="flex flex-col gap-10">
         <div className="w-full">
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-base font-bold tracking-wide uppercase sm:text-lg" style={{ color: "var(--stackup-label)" }}>
             {index} / Benchmark Insight
           </p>
           <h2 className="mt-3 max-w-4xl text-2xl font-bold sm:text-3xl" style={{ color: "var(--stackup-ink)" }}>

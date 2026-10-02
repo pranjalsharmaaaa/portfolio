@@ -124,17 +124,17 @@ export const stackupBenchmarkInsights = [
       {
         name: "Groww",
         logo: "/images/stackup/logo-groww.webp",
-        shots: [{ src: "/images/stackup/benchmark-groww-investready.webp", alt: "Groww mutual funds screen prompting account setup to start investing", aspect: 173 / 227, caption: "Fund discovery and start investing becomes the primary thing" }],
+        shots: [{ src: "/images/stackup/benchmark-groww-investready.webp", alt: "Groww mutual funds screen prompting account setup to start investing", aspect: 455 / 786, caption: "Fund discovery and start investing becomes the primary thing" }],
       },
       {
         name: "IND Money",
         logo: "/images/stackup/logo-indmoney.webp",
-        shots: [{ src: "/images/stackup/benchmark-indmoney-investready.webp", alt: "IND Money screen prompting mutual fund account setup and SIP actions", aspect: 176 / 233, caption: "Users are shown actions first thing on the page" }],
+        shots: [{ src: "/images/stackup/benchmark-indmoney-investready.webp", alt: "IND Money screen prompting mutual fund account setup and SIP actions", aspect: 469 / 778, caption: "Users are shown actions first thing on the page" }],
       },
       {
         name: "Kuvera",
         logo: "/images/stackup/logo-kuvera.webp",
-        shots: [{ src: "/images/stackup/benchmark-kuvera-investready.webp", alt: "Kuvera mutual fund collections and most-bought funds screen", aspect: 153 / 239, caption: "Assumes users already know how to invest." }],
+        shots: [{ src: "/images/stackup/benchmark-kuvera-investready.webp", alt: "Kuvera mutual fund collections and most-bought funds screen", aspect: 423 / 807, caption: "Assumes users already know how to invest." }],
       },
     ] satisfies InsightExample[],
     observed: { label: "What I Observed", heading: "Investment comes first.", body: "Portfolios, returns, fund discovery and investment actions form the core experience across most platforms studied." },
@@ -148,12 +148,12 @@ export const stackupBenchmarkInsights = [
       {
         name: "Kuvera",
         logo: "/images/stackup/logo-kuvera.webp",
-        shots: [{ src: "/images/stackup/benchmark-kuvera-learning.webp", alt: "Kuvera FAQ screen answering mutual fund questions", aspect: 163 / 218, caption: "Learning is down in FAQ which are not part of the journey" }],
+        shots: [{ src: "/images/stackup/benchmark-kuvera-learning.webp", alt: "Kuvera FAQ screen answering mutual fund questions", aspect: 420 / 762, caption: "Learning is down in FAQ which are not part of the journey" }],
       },
       {
         name: "IND Money",
         logo: "/images/stackup/logo-indmoney.webp",
-        shots: [{ src: "/images/stackup/benchmark-indmoney-learning.webp", alt: "IND Money dedicated finance course screen", aspect: 179 / 215, caption: "Education exists, but as a separate learning destination wherein user are expected to complete course" }],
+        shots: [{ src: "/images/stackup/benchmark-indmoney-learning.webp", alt: "IND Money dedicated finance course screen", aspect: 442 / 766, caption: "Education exists, but as a separate learning destination wherein user are expected to complete course" }],
       },
       {
         name: "Groww",
