@@ -5,17 +5,21 @@ import { useEffect, useRef, type ReactNode } from "react";
 /**
  * Scroll distance (in vh) allotted to one page's entrance — how far the
  * user scrolls while the incoming page slides from translateY(100%) to
- * translateY(0%) and covers the page beneath it.
+ * translateY(0%) and covers the page beneath it. Deliberately short: a
+ * few normal wheel/trackpad ticks should visibly move the incoming page,
+ * not land entirely inside a "nothing happens yet" zone.
  */
-const TRAVEL_VH = 70;
+const TRAVEL_VH = 45;
 
 /**
  * Scroll distance (in vh) a page rests, fully settled, before the next
  * page begins its own entrance. Purely a pacing choice — give each page
- * a beat before the next one starts covering it, rather than transitions
- * running back to back with no pause.
+ * a brief beat before the next one starts covering it, rather than
+ * transitions running back to back with no pause. Kept short for the
+ * same reason as TRAVEL_VH: a long rest reads as "scrolling stopped
+ * doing anything."
  */
-const REST_VH = 50;
+const REST_VH = 15;
 
 /**
  * Wraps one Stack Up section so it participates in the full-screen
@@ -123,7 +127,17 @@ export function StackPage({
       <div ref={spacerRef} className="hidden sm:block" style={{ height: spacerHeight }} />
       <div
         ref={contentRef}
-        className={`sm:fixed sm:inset-0 sm:overflow-hidden ${isFirst ? "" : "sm:[transform:translateY(100%)] sm:motion-reduce:![transform:translateY(0)]"}`}
+        // overflow-y is `auto`, not `hidden`: every page is trimmed to
+        // fit 100svh, but a handful (the Benchmark Insight pages, whose
+        // Frontpage/Money Bhai screenshots have a fixed height that
+        // can't shrink without changing that composition) can still
+        // exceed an unusually short real browser viewport. `auto` means
+        // that content is reachable by scrolling *within* the page
+        // instead of being silently, permanently clipped — the one
+        // thing the brief explicitly rules out — while still clipping
+        // the not-yet-arrived page horizontally and (via the transform)
+        // vertically before its turn.
+        className={`sm:fixed sm:inset-0 sm:overflow-x-hidden sm:overflow-y-auto ${isFirst ? "" : "sm:[transform:translateY(100%)] sm:motion-reduce:![transform:translateY(0)]"}`}
         style={{ zIndex: index + 1, background: "var(--stackup-bg)" }}
       >
         {children}

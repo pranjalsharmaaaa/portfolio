@@ -1,15 +1,15 @@
 import Image from "next/image";
 import { stackupProblem } from "@/lib/stackup-content";
-import { Container, SECTION_Y } from "@/components/stackup/container";
+import { Container, SECTION_Y_COMPACT } from "@/components/stackup/container";
 
 export function ProblemSection() {
   return (
     <section
-      className={`relative ${SECTION_Y}`}
+      className={`relative ${SECTION_Y_COMPACT}`}
       style={{ background: "var(--stackup-bg)" }}
       aria-label="Understanding the problem"
     >
-      <Container className="flex flex-col gap-8">
+      <Container className="flex flex-col gap-8 sm:gap-4">
         <div className="w-full">
           <p className="text-xl font-bold tracking-wide uppercase sm:text-2xl lg:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupProblem.label}

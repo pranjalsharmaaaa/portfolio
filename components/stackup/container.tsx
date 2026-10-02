@@ -39,3 +39,16 @@ export function Container({
  * extra margin stacked on top of this padding.
  */
 export const SECTION_Y = "py-10 sm:py-14 lg:py-[60px]";
+
+/**
+ * A smaller vertical inset for the handful of sections whose own
+ * content (independent of this padding) is tall enough to exceed one
+ * viewport once the page-stack wrapper constrains them to 100svh —
+ * Understanding the Problem and the three Benchmark Insight pages.
+ * Mobile is untouched (still py-10, identical to SECTION_Y there,
+ * since the page-stack constraint doesn't apply below `sm`); only the
+ * `sm:`/`lg:` inset shrinks, and only on these specific pages — the
+ * other six already fit at the full 60px Figma-matched rhythm and
+ * keep it unchanged.
+ */
+export const SECTION_Y_COMPACT = "py-10 sm:py-6 lg:py-8";

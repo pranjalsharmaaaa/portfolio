@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { InsightCard, InsightExample } from "@/lib/stackup-content";
-import { Container, SECTION_Y } from "@/components/stackup/container";
+import { Container, SECTION_Y_COMPACT } from "@/components/stackup/container";
 import { ProductLogo } from "@/components/stackup/product-logo";
 
 /**
@@ -28,16 +28,20 @@ export function BenchmarkInsightSection({
   opportunity: InsightCard;
 }) {
   return (
-    <section className={`relative ${SECTION_Y}`} style={{ background: "var(--stackup-bg)" }} aria-label={`Benchmark insight ${index}`}>
-      {/* gap-10 on mobile (unchanged), tightened to gap-4 from `sm:` up —
+    <section className={`relative ${SECTION_Y_COMPACT}`} style={{ background: "var(--stackup-bg)" }} aria-label={`Benchmark insight ${index}`}>
+      {/* gap-10 on mobile (unchanged), tightened to gap-3 from `sm:` up —
           at that breakpoint the page-stack wrapper constrains this
           section to one viewport, and these three blocks' own content
           (label+heading+subheading, the example screenshots, the two
           insight cards) already use most of that height on a common
-          laptop screen; trimming this one gap is what keeps Insight 03
-          (the tallest of the three) inside 100svh without touching its
-          typography or images. */}
-      <Container className="flex flex-col gap-10 sm:gap-4">
+          laptop screen; trimming this gap (plus SECTION_Y_COMPACT's
+          smaller top/bottom inset and the insight cards' own tighter
+          padding below) is what keeps Insight 03 — the tallest of the
+          three, and the one carrying the Frontpage phone screenshots,
+          whose own height isn't negotiable — as close to 100svh as
+          reachable without touching its typography, images, or the
+          Frontpage/Money Bhai composition itself. */}
+      <Container className="flex flex-col gap-10 sm:gap-3">
         <div className="w-full">
           <p className="text-base font-bold tracking-wide uppercase sm:text-lg" style={{ color: "var(--stackup-label)" }}>
             {index} / Benchmark Insight
@@ -146,7 +150,7 @@ export function BenchmarkInsightSection({
 
 function InsightCardView({ card, background }: { card: InsightCard; background: string }) {
   return (
-    <div className="rounded-2xl p-6" style={{ background }}>
+    <div className="rounded-2xl p-6 sm:p-4" style={{ background }}>
       <p className="text-xs font-bold tracking-wide uppercase" style={{ color: "var(--stackup-muted)" }}>
         {card.label}
       </p>

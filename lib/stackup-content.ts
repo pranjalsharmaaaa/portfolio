@@ -173,14 +173,14 @@ export const stackupBenchmarkInsights = [
       {
         name: "Money Bhai",
         logo: "/images/stackup/logo-moneybhai.webp",
-        shots: [{ src: "/images/stackup/benchmark-moneybhai-practice.webp", alt: "Money Bhai gamified paper-trading portfolio dashboard", aspect: 348 / 249, caption: "Even if it is risk free practice it still assumes prior knowledge which give a lot of cognitive load", displayWidth: 420 }],
+        shots: [{ src: "/images/stackup/benchmark-moneybhai-practice.webp", alt: "Money Bhai gamified paper-trading portfolio dashboard", aspect: 348 / 249, caption: "Even if it is risk free practice it still assumes prior knowledge which give a lot of cognitive load", displayWidth: 348 }],
       },
       {
         name: "Frontpage",
         logo: "/images/stackup/logo-frontpage.webp",
         shots: [
-          { src: "/images/stackup/benchmark-frontpage-practice-1.webp", alt: "Frontpage community feed with market discussion posts", aspect: 133 / 274, caption: "Through community feature with different experience between users gets overwhelming for someone to learn", displayWidth: 190 },
-          { src: "/images/stackup/benchmark-frontpage-practice-2.webp", alt: "Frontpage watchlist screen with live stock prices", aspect: 128 / 255, caption: "Information is provided without any guidance leaving the user to figure out themselves the first step.", displayWidth: 190 },
+          { src: "/images/stackup/benchmark-frontpage-practice-1.webp", alt: "Frontpage community feed with market discussion posts", aspect: 133 / 274, caption: "Through community feature with different experience between users gets overwhelming for someone to learn", displayWidth: 133 },
+          { src: "/images/stackup/benchmark-frontpage-practice-2.webp", alt: "Frontpage watchlist screen with live stock prices", aspect: 128 / 255, caption: "Information is provided without any guidance leaving the user to figure out themselves the first step.", displayWidth: 128 },
         ],
       },
     ] satisfies InsightExample[],
