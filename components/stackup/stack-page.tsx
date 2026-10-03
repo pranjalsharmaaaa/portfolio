@@ -50,9 +50,15 @@ const DESIGN_MIN_HEIGHT = 810;
  * wider) canvas's layout box from widening the document, and the
  * decorative corner shapes inside their own bounds.
  *
- * Below `sm` none of this applies: screens and canvases fall back to
- * plain blocks, and the page scrolls as one normal top-to-bottom
- * document using the existing mobile composition.
+ * All of this is gated on `sm:[@media(min-height:520px)]:` — a viewport
+ * at least 640px wide AND 520px tall — not on width alone. A phone in
+ * landscape (or in "request desktop site" mode) is 640px+ wide but
+ * only ~390-430px tall; gated on width alone it got the full desktop
+ * canvas scaled to ~0.48, i.e. ~8px text. Any desktop or tablet window
+ * clears both thresholds, so its behavior is unchanged. Outside the
+ * gate, screens and canvases fall back to plain blocks and the page
+ * scrolls as one normal top-to-bottom document, each section laid out
+ * at the viewport's real width by its own container queries.
  */
 export function PageStack({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -82,8 +88,8 @@ export function PageStack({ children }: { children: ReactNode }) {
       style={{ "--stack-scale": "1", "--stack-canvas-w": "100%", "--stack-canvas-h": "100%" } as CSSProperties}
     >
       {Children.map(children, (child) => (
-        <div className="relative sm:sticky sm:top-0 sm:h-svh sm:overflow-clip" style={{ background: "var(--stackup-bg)" }}>
-          <div className="@container sm:absolute sm:top-0 sm:left-0 sm:flex sm:h-[var(--stack-canvas-h)] sm:w-[var(--stack-canvas-w)] sm:origin-top-left sm:scale-[var(--stack-scale)] sm:flex-col sm:justify-center">
+        <div className="relative sm:[@media(min-height:520px)]:sticky sm:[@media(min-height:520px)]:top-0 sm:[@media(min-height:520px)]:h-svh sm:[@media(min-height:520px)]:overflow-clip" style={{ background: "var(--stackup-bg)" }}>
+          <div className="@container sm:[@media(min-height:520px)]:absolute sm:[@media(min-height:520px)]:top-0 sm:[@media(min-height:520px)]:left-0 sm:[@media(min-height:520px)]:flex sm:[@media(min-height:520px)]:h-[var(--stack-canvas-h)] sm:[@media(min-height:520px)]:w-[var(--stack-canvas-w)] sm:[@media(min-height:520px)]:origin-top-left sm:[@media(min-height:520px)]:scale-[var(--stack-scale)] sm:[@media(min-height:520px)]:flex-col sm:[@media(min-height:520px)]:justify-center">
             {child}
           </div>
         </div>

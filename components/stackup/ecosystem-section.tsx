@@ -14,12 +14,12 @@ export function EcosystemSection() {
           its corner regardless of the two circles' different sizes. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 bottom-0 h-48 w-48 rounded-full"
+        className="pointer-events-none absolute right-0 bottom-0 h-32 w-32 rounded-full @min-[640px]:h-48 @min-[640px]:w-48"
         style={{ background: "#3a3a3a", transform: "translate(50%, 50%)" }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 bottom-0 h-36 w-36 rounded-full"
+        className="pointer-events-none absolute right-0 bottom-0 h-24 w-24 rounded-full @min-[640px]:h-36 @min-[640px]:w-36"
         style={{ background: "var(--stackup-green)", transform: "translate(50%, 50%)" }}
       />
 
@@ -50,7 +50,7 @@ export function EcosystemSection() {
           ))}
         </div>
 
-        <p className="max-w-3xl text-base leading-relaxed @min-[640px]:text-lg" style={{ color: "var(--stackup-ink)" }}>
+        <p className="mb-12 max-w-3xl text-base leading-relaxed @min-[640px]:mb-0 @min-[640px]:text-lg" style={{ color: "var(--stackup-ink)" }}>
           {stackupEcosystem.outro}
         </p>
       </Container>

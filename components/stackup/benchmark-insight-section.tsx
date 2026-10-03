@@ -57,7 +57,9 @@ export function BenchmarkInsightSection({
               // An example with more than one shot (Frontpage) pairs each
               // phone with its own caption beside its lower portion, side
               // by side with the other pair — not stacked image-then-
-              // caption like a single-shot example (Money Bhai) is.
+              // caption like a single-shot example (Money Bhai) is. Below
+              // a 640px canvas (phones) each pair stacks instead — phone,
+              // then its own caption — and the pairs stack one per row.
               const pairShots = example.shots.length > 1;
               return (
                 <div key={example.name} className="flex w-full flex-col items-start gap-4 @min-[1024px]:w-auto">
@@ -68,11 +70,11 @@ export function BenchmarkInsightSection({
                     </h3>
                   </div>
 
-                  <div className={`flex w-full flex-row flex-wrap gap-6 ${pairShots ? "items-end justify-between" : "items-start"}`}>
+                  <div className={`flex w-full flex-col items-start gap-8 @min-[640px]:flex-row @min-[640px]:flex-wrap @min-[640px]:gap-6 ${pairShots ? "@min-[640px]:items-end @min-[640px]:justify-between" : ""}`}>
                     {example.shots.map((shot) => (
                       <div
                         key={shot.src}
-                        className={pairShots ? "flex flex-row items-end gap-3" : "flex flex-col gap-2"}
+                        className={pairShots ? "flex flex-col items-start gap-2 @min-[640px]:flex-row @min-[640px]:items-end @min-[640px]:gap-3" : "flex flex-col gap-2"}
                         style={pairShots ? undefined : { width: shot.displayWidth ? `${shot.displayWidth}px` : "10rem", maxWidth: "100%" }}
                       >
                         <div
@@ -82,7 +84,7 @@ export function BenchmarkInsightSection({
                           <Image src={shot.src} alt={shot.alt} fill sizes={shot.displayWidth ? `${shot.displayWidth}px` : "10rem"} quality={100} className="object-contain" />
                         </div>
                         {shot.caption ? (
-                          <p className={pairShots ? "max-w-[8rem] text-xs leading-snug" : "text-xs leading-snug"} style={{ color: "var(--stackup-muted)" }}>
+                          <p className={pairShots ? "max-w-xs text-sm leading-snug @min-[640px]:max-w-[8rem] @min-[640px]:text-xs" : "text-sm leading-snug @min-[640px]:text-xs"} style={{ color: "var(--stackup-muted)" }}>
                             {shot.caption}
                           </p>
                         ) : null}
@@ -107,12 +109,12 @@ export function BenchmarkInsightSection({
                 {example.shots.length > 0 ? (
                   <div className="flex flex-row flex-wrap items-start justify-center gap-4">
                     {example.shots.map((shot) => (
-                      <div key={shot.src} className="flex w-32 flex-col gap-2">
+                      <div key={shot.src} className="flex w-[12.5rem] flex-col gap-2 @min-[640px]:w-32">
                         <div className="relative w-full overflow-hidden rounded-lg shadow-[0_2px_10px_-4px_rgb(0_0_0/15%)]" style={{ aspectRatio: shot.aspect }}>
-                          <Image src={shot.src} alt={shot.alt} fill sizes="10rem" quality={100} className="object-contain" />
+                          <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 639px) 12.5rem, 10rem" quality={100} className="object-contain" />
                         </div>
                         {shot.caption ? (
-                          <p className="text-xs leading-snug" style={{ color: "var(--stackup-muted)" }}>
+                          <p className="text-sm leading-snug @min-[640px]:text-xs" style={{ color: "var(--stackup-muted)" }}>
                             {shot.caption}
                           </p>
                         ) : null}

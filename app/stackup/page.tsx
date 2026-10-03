@@ -35,12 +35,23 @@ export default function StackUpPage() {
         } as React.CSSProperties
       }
     >
-      <Link
-        href="/"
-        className="fixed top-4 left-4 z-20 rounded-full bg-white/90 px-4 py-2 text-xs font-medium text-neutral-700 shadow-sm backdrop-blur transition-colors hover:bg-white sm:top-6 sm:left-6"
+      {/* Outside the page-stack (phones, incl. landscape) the link sits
+          in its own sticky, opaque top bar that occupies real space in
+          the flow, so it never floats over a section's content. Where
+          the page-stack is active (same gate as stack-page.tsx) the bar
+          collapses (`display: contents`) and the link is the original
+          floating pill. */}
+      <div
+        className="sticky top-0 z-20 px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 sm:[@media(min-height:520px)]:contents"
+        style={{ background: "var(--stackup-bg)" }}
       >
-        ← Back home
-      </Link>
+        <Link
+          href="/"
+          className="inline-block rounded-full bg-white/90 px-4 py-2 text-xs font-medium text-neutral-700 shadow-sm backdrop-blur transition-colors hover:bg-white sm:[@media(min-height:520px)]:fixed sm:[@media(min-height:520px)]:top-6 sm:[@media(min-height:520px)]:left-6 sm:[@media(min-height:520px)]:z-20"
+        >
+          ← Back home
+        </Link>
+      </div>
 
       <PageStack>
         <CoverSection />

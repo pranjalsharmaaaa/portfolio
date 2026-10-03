@@ -5,8 +5,8 @@ import { ProductLogo } from "@/components/stackup/product-logo";
 function ProductRow({ product }: { product: BenchmarkProduct }) {
   return (
     <div className="flex items-center gap-4">
-      <ProductLogo src={product.logo} name={product.name} className="h-[4.5rem] w-auto shrink-0" />
-      <div>
+      <ProductLogo src={product.logo} name={product.name} className="h-[4.5rem] w-auto max-w-[40%] shrink-0 @min-[640px]:max-w-none" />
+      <div className="min-w-0">
         <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
           {product.name}
         </h3>

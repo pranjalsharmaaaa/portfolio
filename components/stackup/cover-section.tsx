@@ -78,12 +78,12 @@ export function CoverSection() {
           and read as one intentional two-tone shape in the corner. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-0 h-48 w-48 rounded-full"
+        className="pointer-events-none absolute bottom-0 left-0 h-32 w-32 rounded-full @min-[640px]:h-48 @min-[640px]:w-48"
         style={{ background: "#3a3a3a", transform: "translate(-50%, 50%)" }}
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-0 h-36 w-36 rounded-full"
+        className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-full @min-[640px]:h-36 @min-[640px]:w-36"
         style={{ background: "var(--stackup-green)", transform: "translate(-50%, 50%)" }}
       />
 
@@ -115,7 +115,7 @@ export function CoverSection() {
           </p>
         </div>
 
-        <div className="relative z-10 aspect-[754/807] w-full max-w-xs @min-[640px]:max-w-sm @min-[1024px]:max-w-[30rem]">
+        <div className="relative z-10 aspect-[754/807] w-full max-w-[24rem] @min-[640px]:max-w-sm @min-[1024px]:max-w-[30rem]">
           {PHONES.map((phone) => (
             <div
               key={phone.src}
