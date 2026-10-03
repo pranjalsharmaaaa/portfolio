@@ -7,6 +7,13 @@ import { HypothesisSection } from "@/components/stackup/hypothesis-section";
 import { EcosystemSection } from "@/components/stackup/ecosystem-section";
 import { BenchmarkSection } from "@/components/stackup/benchmark-section";
 import { BenchmarkInsightSection } from "@/components/stackup/benchmark-insight-section";
+import { ResearchIntroSection } from "@/components/stackup/research-intro-section";
+import { ConversationsSection } from "@/components/stackup/conversations-section";
+import { InsightsSection } from "@/components/stackup/insights-section";
+import { ProblemStatementSection } from "@/components/stackup/problem-statement-section";
+import { DesignOpportunitySection } from "@/components/stackup/design-opportunity-section";
+import { ResearchToDesignSection } from "@/components/stackup/research-to-design-section";
+import { VisualLanguageSection } from "@/components/stackup/visual-language-section";
 import { PageStack } from "@/components/stackup/stack-page";
 import { stackupBenchmarkInsights } from "@/lib/stackup-content";
 
@@ -19,7 +26,9 @@ import { stackupBenchmarkInsights } from "@/lib/stackup-content";
  *
  * Sections are appended in batches as their reference screens arrive:
  * cover through "An initial hypothesis" first, then the ecosystem
- * exploration through the three benchmark-insight pages.
+ * exploration through the three benchmark-insight pages, then the
+ * research screens (11-17), which reproduce fixed 16:9 frames — see
+ * components/stackup/slide.tsx.
  */
 export default function StackUpPage() {
   return (
@@ -64,6 +73,13 @@ export default function StackUpPage() {
         {stackupBenchmarkInsights.map((insight) => (
           <BenchmarkInsightSection key={insight.index} {...insight} />
         ))}
+        <ResearchIntroSection />
+        <ConversationsSection />
+        <InsightsSection />
+        <ProblemStatementSection />
+        <DesignOpportunitySection />
+        <ResearchToDesignSection />
+        <VisualLanguageSection />
       </PageStack>
     </main>
   );

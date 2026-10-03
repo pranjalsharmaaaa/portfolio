@@ -1,0 +1,115 @@
+/*
+ * Fixed-composition ("slide") layout for the research screens (11-17),
+ * which reproduce 16:9 Figma frames element-for-element rather than
+ * flowing like screens 1-10.
+ *
+ * Everything here is gated on exactly the same media query as the
+ * page-stack itself (stack-page.tsx: `sm:[@media(min-height:520px)]:`),
+ * so it only ever applies where each screen is a full-viewport sticky
+ * panel. Outside it (phones, landscape phones, very short windows) none
+ * of these rules exist and the same elements fall back to their plain
+ * Tailwind flow layout.
+ *
+ * Positions and sizes are the PDF frame's own coordinates in CSS px at
+ * 1440x810, passed per element as unitless custom properties (--x, --y,
+ * --w, --h, --fs, --lh) and multiplied by --u: the size of one design px
+ * when a 1440x810 frame is fitted (contained) into the screen. --u is
+ * derived from container query units of `.screen`, a size container, so
+ * it is pure CSS — no measurement, no flash before hydration. At a
+ * 1440x810 canvas --u is exactly 1px.
+ */
+/* Elements that only exist in the fixed composition. Declared before
+   the media block so the slide rule below wins inside it. */
+.slideOnly {
+  display: none;
+}
+
+@media (min-width: 40rem) and (min-height: 520px) {
+  /* --u is declared here, on the size container, so the corner rings
+     (siblings of .frame) can use it too. Unregistered custom properties
+     are substituted where they are used, so its cq units always resolve
+     against .screen. */
+  .screen {
+    --u: calc(min(100cqw, 100cqh * 1440 / 810) / 1440);
+    container-type: size;
+    position: relative;
+    flex: 1 1 auto;
+    align-self: stretch;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .frame {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(1440 * var(--u));
+    height: calc(810 * var(--u));
+    translate: -50% -50%;
+  }
+
+  /* Wrappers between the frame and its positioned children (the shared
+     Container, grids) must not become containing blocks themselves. */
+  .frame > * {
+    position: static;
+    padding: 0;
+  }
+
+  .abs {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top: calc(var(--y) * var(--u));
+    margin: 0;
+    padding: 0;
+    translate: none;
+  }
+
+  .w {
+    width: calc(var(--w) * var(--u));
+    max-width: none;
+  }
+
+  .h {
+    height: calc(var(--h) * var(--u));
+  }
+
+  .type {
+    font-size: calc(var(--fs) * var(--u));
+    line-height: calc(var(--lh) * var(--u));
+  }
+
+  /* One PDF line of text: kept on one line exactly as the frame breaks
+     it. In flow mode lines are inline and simply wrap. */
+  .line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .slideOnly {
+    display: block;
+  }
+
+  .flowOnly {
+    display: none;
+  }
+
+  /* Bottom-right two-tone corner rings, anchored to the screen's own
+     corner (not the frame's), at the frame's scale. Their shared centre
+     sits 3.4 design px below the bottom edge, as in the PDF. */
+  .cornerOuter,
+  .cornerInner {
+    right: 0;
+    bottom: 0;
+    translate: 50% calc(50% + 3.4 * var(--u));
+  }
+
+  .cornerOuter {
+    width: calc(508.5 * var(--u));
+    height: calc(508.5 * var(--u));
+  }
+
+  .cornerInner {
+    width: calc(388.6 * var(--u));
+    height: calc(388.6 * var(--u));
+  }
+}
