@@ -24,8 +24,12 @@ const stackUpResearchInter = localFont({
 
 export { styles as slide };
 
-/** Frame geometry (CSS px at 1440x810) as the custom properties slide.module.css reads. */
-export function at(geometry: { x?: number; y?: number; w?: number; h?: number; fs?: number; lh?: number }): CSSProperties {
+/**
+ * Frame geometry (CSS px at 1440x810) as the custom properties
+ * slide.module.css reads. `f` is the element's share (0-1) of any spare
+ * width on canvases wider than the frame — see slide.module.css.
+ */
+export function at(geometry: { x?: number; y?: number; w?: number; h?: number; fs?: number; lh?: number; f?: number }): CSSProperties {
   const style: Record<string, number> = {};
   if (geometry.x !== undefined) style["--x"] = geometry.x;
   if (geometry.y !== undefined) style["--y"] = geometry.y;
@@ -33,6 +37,7 @@ export function at(geometry: { x?: number; y?: number; w?: number; h?: number; f
   if (geometry.h !== undefined) style["--h"] = geometry.h;
   if (geometry.fs !== undefined) style["--fs"] = geometry.fs;
   if (geometry.lh !== undefined) style["--lh"] = geometry.lh;
+  if (geometry.f !== undefined) style["--f"] = geometry.f;
   return style as CSSProperties;
 }
 

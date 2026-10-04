@@ -12,11 +12,24 @@
  *
  * Positions and sizes are the PDF frame's own coordinates in CSS px at
  * 1440x810, passed per element as unitless custom properties (--x, --y,
- * --w, --h, --fs, --lh) and multiplied by --u: the size of one design px
- * when a 1440x810 frame is fitted (contained) into the screen. --u is
- * derived from container query units of `.screen`, a size container, so
- * it is pure CSS — no measurement, no flash before hydration. At a
- * 1440x810 canvas --u is exactly 1px.
+ * --w, --h, --fs, --lh) and multiplied by --u: the size of one design px.
+ * --u is derived from container query units of `.screen`, a size
+ * container, so it is pure CSS — no measurement, no flash before
+ * hydration.
+ *
+ * The frame sits on the same horizontal grid as screens 1-10 (the shared
+ * Container: a fixed 60px inset at any width) rather than being centred:
+ * design x=60 always lands exactly 60px from the screen's left edge.
+ * Like screens 1-10 it never scales up — --u is capped at 1px — and only
+ * scales down when the 1320px-wide content box (design 60..1380) or the
+ * 810px height doesn't fit. Vertically the frame is centred.
+ *
+ * On a canvas wider than the frame, the room left over between design
+ * x=1380 and the 60px right margin is --extra. Elements opt in to a
+ * share of it with --f (0 = stay put, 1 = move by all of it): the
+ * multi-column layouts (12, 13) use it to spread their columns so the
+ * last one ends on the right margin, without resizing anything. Every
+ * other element ignores it.
  */
 /* Elements that only exist in the fixed composition. Declared before
    the media block so the slide rule below wins inside it. */
@@ -30,7 +43,8 @@
      are substituted where they are used, so its cq units always resolve
      against .screen. */
   .screen {
-    --u: calc(min(100cqw, 100cqh * 1440 / 810) / 1440);
+    --u: min(1px, calc((100cqw - 120px) / 1320), calc(100cqh / 810));
+    --extra: calc(100cqw - 120px - 1320 * var(--u));
     container-type: size;
     position: relative;
     flex: 1 1 auto;
@@ -41,11 +55,10 @@
 
   .frame {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: calc(60px - 60 * var(--u));
+    top: calc((100cqh - 810 * var(--u)) / 2);
     width: calc(1440 * var(--u));
     height: calc(810 * var(--u));
-    translate: -50% -50%;
   }
 
   /* Wrappers between the frame and its positioned children (the shared
@@ -57,7 +70,7 @@
 
   .abs {
     position: absolute;
-    left: calc(var(--x) * var(--u));
+    left: calc(var(--x) * var(--u) + var(--f, 0) * var(--extra));
     top: calc(var(--y) * var(--u));
     margin: 0;
     padding: 0;

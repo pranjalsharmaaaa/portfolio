@@ -2,16 +2,21 @@ import { stackupConversations } from "@/lib/stackup-content";
 import { Container } from "@/components/stackup/container";
 import { Slide, Lines, at, slide } from "@/components/stackup/slide";
 
-/** Card origins (CSS px at 1440x810) — a 3 + 3 + 2 grid of 414x136.8 cards, as placed in the PDF. */
+/**
+ * Card origins (CSS px at 1440x810) — a 3 + 3 + 2 grid of 414x136.8 cards,
+ * as placed in the PDF. `f` is each column's share of spare width on wide
+ * canvases (0 / 0.5 / 1), so the columns spread to the 60px right margin
+ * while every card keeps its PDF size.
+ */
 const CARDS = [
-  { x: 60, y: 150 },
-  { x: 512.4, y: 150 },
-  { x: 964.8, y: 150 },
-  { x: 60, y: 334.8 },
-  { x: 512.4, y: 334.8 },
-  { x: 964.8, y: 334.8 },
-  { x: 60, y: 519.6 },
-  { x: 514.2, y: 519.6 },
+  { x: 60, y: 150, f: 0 },
+  { x: 512.4, y: 150, f: 0.5 },
+  { x: 964.8, y: 150, f: 1 },
+  { x: 60, y: 334.8, f: 0 },
+  { x: 512.4, y: 334.8, f: 0.5 },
+  { x: 964.8, y: 334.8, f: 1 },
+  { x: 60, y: 519.6, f: 0 },
+  { x: 514.2, y: 519.6, f: 0.5 },
 ] as const;
 
 /** Screen 12 — "23 User Conversations". */

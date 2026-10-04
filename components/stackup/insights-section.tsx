@@ -6,7 +6,9 @@ import { Slide, Lines, at, slide } from "@/components/stackup/slide";
 /**
  * Per-pattern frame geometry (CSS px at 1440x810): each illustration's
  * full (transparent-margined) image box exactly as the PDF places it,
- * and the horizontal centre + first-line top of its label. In flow
+ * and the horizontal centre + first-line top of its label. On canvases
+ * wider than the frame each column takes an i/3 share of the spare width,
+ * so the four columns spread across the 60px content frame. In flow
  * layout every illustration gets the same 3:2 box so labels line up.
  */
 const PATTERN_GEOMETRY = [
@@ -47,7 +49,7 @@ export function InsightsSection() {
               <figure key={pattern.image} className="flex flex-col items-center gap-3 text-center">
                 <div
                   className={`relative w-full max-w-[22rem] ${slide.abs} ${slide.w} ${slide.h}`}
-                  style={{ aspectRatio: "3 / 2", ...at(g.img) }}
+                  style={{ aspectRatio: "3 / 2", ...at({ ...g.img, f: i / 3 }) }}
                 >
                   <Image
                     src={pattern.image}
@@ -60,7 +62,7 @@ export function InsightsSection() {
                 </div>
                 <figcaption
                   className={`text-sm font-bold @min-[640px]:text-base ${slide.abs} ${slide.w} ${slide.type}`}
-                  style={{ color: "#3a3a3a", ...at({ x: g.label.cx - 160, y: g.label.y, w: 320, fs: 24, lh: 36 }) }}
+                  style={{ color: "#3a3a3a", ...at({ x: g.label.cx - 160, y: g.label.y, w: 320, fs: 24, lh: 36, f: i / 3 }) }}
                 >
                   {pattern.lines.map((line, j) => (
                     <span key={j} className={slide.line}>
