@@ -22,7 +22,10 @@
  * design x=60 always lands exactly 60px from the screen's left edge.
  * Like screens 1-10 it never scales up — --u is capped at 1px — and only
  * scales down when the 1320px-wide content box (design 60..1380) or the
- * 810px height doesn't fit. Vertically the frame is centred.
+ * 810px height doesn't fit. Vertically the frame is centred. A screen
+ * whose PDF page is shorter than 810 (Screen 18) sets --frame-h to its own
+ * height: the frame is centred at the same --u, so its type and spacing
+ * match every other screen.
  *
  * On a canvas wider than the frame, the room left over between design
  * x=1380 and the 60px right margin is --extra. Elements opt in to a
@@ -56,9 +59,9 @@
   .frame {
     position: absolute;
     left: calc(60px - 60 * var(--u));
-    top: calc((100cqh - 810 * var(--u)) / 2);
+    top: calc((100cqh - var(--frame-h, 810) * var(--u)) / 2);
     width: calc(1440 * var(--u));
-    height: calc(810 * var(--u));
+    height: calc(var(--frame-h, 810) * var(--u));
   }
 
   /* Wrappers between the frame and its positioned children (the shared

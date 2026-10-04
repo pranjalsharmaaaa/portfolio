@@ -44,24 +44,27 @@ export function at(geometry: { x?: number; y?: number; w?: number; h?: number; f
 /**
  * One research screen: the <section> (a size container in the
  * page-stack, a normal padded block elsewhere) and its 1440x810 frame.
- * `flowClassName` is the section's own phone/flow-mode spacing.
+ * `flowClassName` is the section's own phone/flow-mode spacing;
+ * `frameHeight` is the PDF page's height (CSS px) when it isn't 810.
  */
 export function Slide({
   label,
   corner = false,
   flowClassName = "py-10 @min-[640px]:py-14",
+  frameHeight,
   children,
 }: {
   label: string;
   corner?: boolean;
   flowClassName?: string;
+  frameHeight?: number;
   children: ReactNode;
 }) {
   return (
     <section
       aria-label={label}
       className={`relative overflow-clip ${flowClassName} ${stackUpResearchInter.className} ${styles.screen}`}
-      style={{ background: "var(--stackup-bg)" }}
+      style={{ background: "var(--stackup-bg)", ...(frameHeight ? { "--frame-h": frameHeight } : {}) } as CSSProperties}
     >
       {corner ? <Corner /> : null}
       <div className={`relative ${styles.frame}`}>{children}</div>
@@ -90,15 +93,17 @@ function Corner() {
 /**
  * Text set as the PDF's own lines: each line is one block, unbroken, in
  * the slide; in flow mode the lines are inline and wrap naturally.
+ * `boldClassName` is the weight bold segments use (the walkthrough
+ * screens' PDF sets them in semibold).
  */
-export function Lines({ lines }: { lines: readonly RichLine[] }) {
+export function Lines({ lines, boldClassName = "font-bold" }: { lines: readonly RichLine[]; boldClassName?: string }) {
   return lines.map((line, i) => (
     <span key={i}>
       <span className={styles.line}>
         {line.map((segment, j) => (
           <span
             key={j}
-            className={segment.bold ? "font-bold" : undefined}
+            className={segment.bold ? boldClassName : undefined}
             style={segment.accent ? { color: "var(--stackup-green)" } : undefined}
           >
             {segment.text}

@@ -14,6 +14,13 @@ import { ProblemStatementSection } from "@/components/stackup/problem-statement-
 import { DesignOpportunitySection } from "@/components/stackup/design-opportunity-section";
 import { ResearchToDesignSection } from "@/components/stackup/research-to-design-section";
 import { VisualLanguageSection } from "@/components/stackup/visual-language-section";
+import { PrototypeSection } from "@/components/stackup/prototype-section";
+import { OnboardingSection } from "@/components/stackup/onboarding-section";
+import { JourneySection } from "@/components/stackup/journey-section";
+import { RecommendationSection } from "@/components/stackup/recommendation-section";
+import { FundSelectionSection } from "@/components/stackup/fund-selection-section";
+import { FirstInvestmentSection } from "@/components/stackup/first-investment-section";
+import { PortfolioSection } from "@/components/stackup/portfolio-section";
 import { PageStack } from "@/components/stackup/stack-page";
 import { stackupBenchmarkInsights } from "@/lib/stackup-content";
 
@@ -27,8 +34,8 @@ import { stackupBenchmarkInsights } from "@/lib/stackup-content";
  * Sections are appended in batches as their reference screens arrive:
  * cover through "An initial hypothesis" first, then the ecosystem
  * exploration through the three benchmark-insight pages, then the
- * research screens (11-17), which reproduce fixed 16:9 frames — see
- * components/stackup/slide.tsx.
+ * research screens (11-17) and the product walkthrough (18-24), which
+ * reproduce fixed 16:9 frames — see components/stackup/slide.tsx.
  */
 export default function StackUpPage() {
   return (
@@ -80,6 +87,13 @@ export default function StackUpPage() {
         <DesignOpportunitySection />
         <ResearchToDesignSection />
         <VisualLanguageSection />
+        <PrototypeSection />
+        <OnboardingSection />
+        <JourneySection />
+        <RecommendationSection />
+        <FundSelectionSection />
+        <FirstInvestmentSection />
+        <PortfolioSection />
       </PageStack>
     </main>
   );

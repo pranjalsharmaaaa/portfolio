@@ -304,3 +304,108 @@ export const stackupVisualLanguage = {
   heading: "Building Stack Up's visual language",
   pills: ["Bold Heading", "Calm Interfaces", "Hero Illustrations"],
 } as const;
+
+/*
+ * Screens 18-24 — the product walkthrough (third reference PDF). Copy is
+ * verbatim from the PDF, split into its own lines; phone screenshots are
+ * the PDF's embedded images, listed left to right.
+ */
+export const stackupPrototype = {
+  label: "See Stackup in Action",
+  body: [
+    [{ text: "A guided financial journey designed to help first-time earners understand, practise, and build confidence before" }],
+    [{ text: "investing real money." }],
+  ] satisfies RichLine[],
+  cta: "Open Interactive Prototype",
+  href: "https://l1nq.com/wu5tgqc",
+} as const;
+
+export const stackupOnboarding = {
+  label: "Onboarding Experience",
+  body: [
+    [{ text: "The onboarding gradually introduces the core ideas behind Stack Up from " }, { text: "understanding the user's confidence", bold: true }],
+    [{ text: "level", bold: true }, { text: " to " }, { text: "creating a safe space for practice.", bold: true }],
+  ] satisfies RichLine[],
+  phones: [
+    "Welcome screen: Stack Up logo, a photo of a smiling woman at a laptop, 'Finances Made Easy' and a Get Started button",
+    "Know You Better: 'When it comes to money, which feels most like you?' with the options 'I'm still building my confidence' and 'I'm confident with money'",
+    "Learn Without Risk: investing can feel risky, so your first decisions happen without real money",
+    "Meet Your Practice Wallet: virtual money to explore investments without risking real money",
+    "You're All Set: a Practice Wallet balance of ₹25,000 and a Let's Begin Journey button",
+  ],
+  captions: ["Welcome", "Understand You", "Learn Safely", "Practice Wallet", "Start Journey"],
+} as const;
+
+export const stackupJourney = {
+  label: "Your Journey Begins",
+  body: [
+    [{ text: "After onboarding, users enter a " }, { text: "guided journey", bold: true }, { text: " where financial concepts are introduced progressively through" }],
+    [{ text: "learning and decision-making.", bold: true }],
+  ] satisfies RichLine[],
+  phones: [
+    "Home screen: a ₹25,000 practice wallet and a 'First Step Starts Here' journey card",
+    "First Move: the easiest way to start growing your money is with a Mutual Fund, shown as an unlocked card",
+    "Mutual Funds explained: a mutual fund spreads your money across many companies, tagged Beginner Friendly, Many Companies and Lower Risk",
+    "Question: 'How do you feel about changes in your investment value?' with three comfort options",
+    "Question: 'How long would you feel comfortable leaving this money invested?' with less than 3, 3–7 and more than 7 years",
+  ],
+  captions: ["single guided journey", "one financial concept at a time", "discover the right choice through guided questions"],
+} as const;
+
+export const stackupRecommendation = {
+  label: "Personalised Recommendation",
+  body: [
+    [{ text: "Based on users' responses, the app recommends a " }, { text: "beginner-friendly mutual fund type", bold: true }, { text: " and explains the" }],
+    [{ text: "reasoning behind every recommendation.", bold: true }],
+  ] satisfies RichLine[],
+  phones: [
+    "Loading screen: 'Finding your best starting point…' matching your preferences to a Mutual Fund category",
+    "Best Starting Point: a Hybrid Mutual Fund card listing why it matches your answers",
+    "Why Hybrid?: part of your money aims for growth while another part focuses on stability, with growth, stability and risk ratings",
+    "Meet the Three Categories: Equity, Hybrid (recommended) and Debt, with a Continue button",
+  ],
+  captions: ["finding a match", "recommendation", "understanding the recommendation", "explore alternatives"],
+} as const;
+
+export const stackupFundSelection = {
+  label: "Mutual Fund Selection",
+  body: [
+    [{ text: "Users receive a " }, { text: "personalized recommendation", bold: true }, { text: ", but can " }, { text: "compare alternatives", bold: true }, { text: " before making their decision." }],
+  ] satisfies RichLine[],
+  phones: [
+    "Choose Mutual Fund: ICICI Prudential Balanced Advantage Fund marked Your Best Match, with a Start with this fund button",
+    "Choose Mutual Fund: SBI Equity Hybrid Fund marked More Growth — more growth potential, less stability",
+    "Choose Mutual Fund: HDFC Balanced Advantage Fund marked More Stable — less growth potential, more stability",
+  ],
+  captions: ["recommended", "compare alternatives"],
+} as const;
+
+export const stackupFirstInvestment = {
+  label: "First Investment",
+  body: [
+    [{ text: "The first investment is broken into " }, { text: "small, guided decisions.", bold: true }, { text: " Every step " }, { text: "builds confidence", bold: true }, { text: " before rewarding" }],
+    [{ text: "progress." }],
+  ] satisfies RichLine[],
+  phones: [
+    "How to Invest: choose between a One-Time Investment and a Monthly SIP",
+    "One-Time Investment: entering ₹5,000 on a number pad",
+    "Ready to Invest?: a review of ₹5,000 moving from the Practice Wallet into the ICICI Prudential Balanced Advantage Fund, with an Invest ₹5000 button",
+    "First Investment Complete!: confidence increased from 0% to 10%",
+  ],
+  captions: ["choose how to invest", "enter amount", "review before confirming", "build confidence"],
+} as const;
+
+export const stackupPortfolio = {
+  label: "Learning Through Your Portfolio",
+  body: [
+    [{ text: "Instead of only showing performance, the portfolio helps users understand " }, { text: "what they own, how it behaves, and", bold: true }],
+    [{ text: "how their confidence grows over time.", bold: true }],
+  ] satisfies RichLine[],
+  phones: [
+    "Your Confidence Jar: confidence grows with every financial challenge; reach 100% to start investing with real money",
+    "Assets: a ₹25,000 asset portfolio split between the practice wallet and mutual funds, with Stocks still locked",
+    "Asset Portfolio: total assets of ₹25,000 and how the mutual fund investment has performed",
+    "Practice Mode: small market changes amplified 100× so they're easier to notice",
+  ],
+  captions: ["build confidence", "assets → details", "practice mode"],
+} as const;
