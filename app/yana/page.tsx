@@ -6,6 +6,15 @@ import { YanaChapterDivider } from "@/components/yana/chapter-divider";
 import { YanaDiscoverSection } from "@/components/yana/discover-section";
 import { YANA_SCREEN } from "@/components/yana/frame";
 import { yanaDiscoverChapter } from "@/lib/yana-content";
+import { YanaStack } from "@/components/yana/research/stack";
+import { YanaAwarenessSection } from "@/components/yana/research/awareness-section";
+import { YanaDataSection } from "@/components/yana/research/data-section";
+import { YanaSupportSection } from "@/components/yana/research/support-section";
+import { YanaGroupTherapySection } from "@/components/yana/research/group-therapy-section";
+import { YanaComparisonSection } from "@/components/yana/research/comparison-section";
+import { YanaInsightsSection } from "@/components/yana/research/insights-section";
+import { YanaSurveySection } from "@/components/yana/research/survey-section";
+import { YanaPersonaSection } from "@/components/yana/research/persona-section";
 
 /**
  * The YANA case study, reproduced from the supplied reference PDF. Its
@@ -22,7 +31,10 @@ import { yanaDiscoverChapter } from "@/lib/yana-content";
  * --yana-pink-light are measured from the reference's vector data.
  *
  * Sections are appended in batches as their reference pages arrive —
- * currently the cover through the Discover chapter's first page.
+ * currently the cover through the Discover chapter's research screens
+ * (Discover pages 2–9: awareness, data, support, group therapy,
+ * comparison, key insights, survey, persona data), which scroll as a
+ * sticky page-stack like the Stack Up case study.
  */
 export default function YanaPage() {
   return (
@@ -38,6 +50,14 @@ export default function YanaPage() {
           "--yana-label": "#6a4ad8",
           "--yana-night": "#09086f",
           "--yana-pink-light": "#ffabf9",
+          // Supporting palette for the research screens' accents/charts.
+          "--yana-indigo": "#49408f",
+          "--yana-periwinkle": "#a3b5f1",
+          "--yana-pink": "#f770ee",
+          "--yana-magenta": "#cf00c1",
+          // The light portfolio surface the cover panel is framed on —
+          // Stack Up's page color, used only around the Yana cover.
+          "--yana-surround": "#f5f5f5",
           background: "var(--yana-bg)",
         } as React.CSSProperties
       }
@@ -62,6 +82,17 @@ export default function YanaPage() {
         <YanaChapterDivider number={yanaDiscoverChapter.number} title={yanaDiscoverChapter.title} />
         <YanaDiscoverSection />
       </div>
+
+      <YanaStack>
+        <YanaAwarenessSection />
+        <YanaDataSection />
+        <YanaSupportSection />
+        <YanaGroupTherapySection />
+        <YanaComparisonSection />
+        <YanaInsightsSection />
+        <YanaSurveySection />
+        <YanaPersonaSection />
+      </YanaStack>
     </main>
   );
 }
