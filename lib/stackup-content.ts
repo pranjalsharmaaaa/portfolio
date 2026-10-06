@@ -124,17 +124,17 @@ export const stackupBenchmarkInsights = [
       {
         name: "Groww",
         logo: "/images/stackup/logo-groww.webp",
-        shots: [{ src: "/images/stackup/benchmark-groww-investready.webp", alt: "Groww mutual funds screen prompting account setup to start investing", aspect: 173 / 227, caption: "Fund discovery and start investing becomes the primary thing" }],
+        shots: [{ src: "/images/stackup/benchmark-groww-investready.webp", alt: "Groww mutual funds screen prompting account setup to start investing", aspect: 740 / 1278, caption: "Fund discovery and start investing becomes the primary thing" }],
       },
       {
         name: "IND Money",
         logo: "/images/stackup/logo-indmoney.webp",
-        shots: [{ src: "/images/stackup/benchmark-indmoney-investready.webp", alt: "IND Money screen prompting mutual fund account setup and SIP actions", aspect: 176 / 233, caption: "Users are shown actions first thing on the page" }],
+        shots: [{ src: "/images/stackup/benchmark-indmoney-investready.webp", alt: "IND Money screen prompting mutual fund account setup and SIP actions", aspect: 740 / 1228, caption: "Users are shown actions first thing on the page" }],
       },
       {
         name: "Kuvera",
         logo: "/images/stackup/logo-kuvera.webp",
-        shots: [{ src: "/images/stackup/benchmark-kuvera-investready.webp", alt: "Kuvera mutual fund collections and most-bought funds screen", aspect: 153 / 239, caption: "Assumes users already know how to invest." }],
+        shots: [{ src: "/images/stackup/benchmark-kuvera-investready.webp", alt: "Kuvera mutual fund collections and most-bought funds screen", aspect: 592 / 1129, caption: "Assumes users already know how to invest." }],
       },
     ] satisfies InsightExample[],
     observed: { label: "What I Observed", heading: "Investment comes first.", body: "Portfolios, returns, fund discovery and investment actions form the core experience across most platforms studied." },
@@ -148,12 +148,12 @@ export const stackupBenchmarkInsights = [
       {
         name: "Kuvera",
         logo: "/images/stackup/logo-kuvera.webp",
-        shots: [{ src: "/images/stackup/benchmark-kuvera-learning.webp", alt: "Kuvera FAQ screen answering mutual fund questions", aspect: 163 / 218, caption: "Learning is down in FAQ which are not part of the journey" }],
+        shots: [{ src: "/images/stackup/benchmark-kuvera-learning.webp", alt: "Kuvera FAQ screen answering mutual fund questions", aspect: 592 / 1074, caption: "Learning is down in FAQ which are not part of the journey" }],
       },
       {
         name: "IND Money",
         logo: "/images/stackup/logo-indmoney.webp",
-        shots: [{ src: "/images/stackup/benchmark-indmoney-learning.webp", alt: "IND Money dedicated finance course screen", aspect: 179 / 215, caption: "Education exists, but as a separate learning destination wherein user are expected to complete course" }],
+        shots: [{ src: "/images/stackup/benchmark-indmoney-learning.webp", alt: "IND Money dedicated finance course screen", aspect: 321 / 556, caption: "Education exists, but as a separate learning destination wherein user are expected to complete course" }],
       },
       {
         name: "Groww",
@@ -173,14 +173,14 @@ export const stackupBenchmarkInsights = [
       {
         name: "Money Bhai",
         logo: "/images/stackup/logo-moneybhai.webp",
-        shots: [{ src: "/images/stackup/benchmark-moneybhai-practice.webp", alt: "Money Bhai gamified paper-trading portfolio dashboard", aspect: 348 / 249, caption: "Even if it is risk free practice it still assumes prior knowledge which give a lot of cognitive load", displayWidth: 420 }],
+        shots: [{ src: "/images/stackup/benchmark-moneybhai-practice.webp", alt: "Money Bhai gamified paper-trading portfolio dashboard", aspect: 348 / 249, caption: "Even if it is risk free practice it still assumes prior knowledge which give a lot of cognitive load", displayWidth: 348 }],
       },
       {
         name: "Frontpage",
         logo: "/images/stackup/logo-frontpage.webp",
         shots: [
-          { src: "/images/stackup/benchmark-frontpage-practice-1.webp", alt: "Frontpage community feed with market discussion posts", aspect: 133 / 274, caption: "Through community feature with different experience between users gets overwhelming for someone to learn", displayWidth: 190 },
-          { src: "/images/stackup/benchmark-frontpage-practice-2.webp", alt: "Frontpage watchlist screen with live stock prices", aspect: 128 / 255, caption: "Information is provided without any guidance leaving the user to figure out themselves the first step.", displayWidth: 190 },
+          { src: "/images/stackup/benchmark-frontpage-practice-1.webp", alt: "Frontpage community feed with market discussion posts", aspect: 133 / 274, caption: "Through community feature with different experience between users gets overwhelming for someone to learn", displayWidth: 133 },
+          { src: "/images/stackup/benchmark-frontpage-practice-2.webp", alt: "Frontpage watchlist screen with live stock prices", aspect: 128 / 255, caption: "Information is provided without any guidance leaving the user to figure out themselves the first step.", displayWidth: 128 },
         ],
       },
     ] satisfies InsightExample[],
@@ -188,3 +188,224 @@ export const stackupBenchmarkInsights = [
     opportunity: { label: "The Opportunity", heading: "What if practice simplified the decision itself?", body: "Introduce concepts progressively and let beginners practise one financial decision at a time, before exposing them to the complexity of real investing." },
   },
 ] as const;
+
+/**
+ * Research screens (11-17), transcribed verbatim from the second
+ * reference PDF ("User_1_merged"). Running text is stored as the PDF's
+ * own lines (RichLine[]) so the 1440x810 slide can break exactly where
+ * the frame does; in phone/flow layout the same lines simply wrap.
+ */
+export type RichSegment = { text: string; bold?: boolean; accent?: boolean };
+export type RichLine = readonly RichSegment[];
+
+export const stackupResearchIntro = {
+  headingPlain: "Understanding how",
+  headingAccent: "People actually manage their money",
+  body: [
+    [{ text: "I conducted conversations with " }, { text: "40+ people", bold: true }, { text: " across different levels of financial experience. It was " }, { text: "first-time", bold: true }],
+    [{ text: "earners in their 20s", bold: true }, { text: " whose experiences most closely validated my initial hypothesis and shaped the direction" }],
+    [{ text: "of this project." }],
+  ] satisfies RichLine[],
+} as const;
+
+export const stackupConversations = {
+  label: "23 USER CONVERSATIONS - Early-career professionals aged 21–26, managing money independently",
+  quotes: [
+    [
+      [{ text: "“I learnt through " }, { text: "external", bold: true }],
+      [{ text: "websites, youtube channels", bold: true }, { text: " and" }],
+      [{ text: "then do the investment”" }],
+    ],
+    [
+      [{ text: "\"Even after managing my own" }],
+      [{ text: "money, I " }, { text: "still don't understand", bold: true }],
+      [{ text: "many financial terms.", bold: true }, { text: "\"" }],
+    ],
+    [
+      [{ text: "“There are a lot of financial tools" }],
+      [{ text: "overall i " }, { text: "don’t know where to", bold: true }],
+      [{ text: "start from", bold: true }, { text: "”" }],
+    ],
+    [
+      [{ text: "“Online Websites se " }, { text: "smjh aajata h", bold: true }],
+      [{ text: "mgr jb krne lgti hun manage toh" }],
+      [{ text: "confidence nhi aata", bold: true }, { text: "”" }],
+    ],
+    [
+      [{ text: "“Bohot " }, { text: "time consuming hota h", bold: true }],
+      [{ text: "khudse seekhna", bold: true }, { text: " Financial tools" }],
+      [{ text: "ke bare mein”" }],
+    ],
+    [
+      [{ text: "“Mentally I " }, { text: "need to calculate my", bold: true }],
+      [{ text: "Financial Worth", bold: true }, { text: "”" }],
+    ],
+    [
+      [{ text: "“I’m " }, { text: "scared of being judged", bold: true }, { text: " for" }],
+      [{ text: "not knowing basic terms." }],
+    ],
+    [
+      [{ text: "“I " }, { text: "depend on my friend", bold: true }, { text: " who" }],
+      [{ text: "manages my finances”" }],
+    ],
+  ] satisfies RichLine[][],
+  closing: "A few patterns kept repeating",
+} as const;
+
+export const stackupInsights = {
+  label: "Insights",
+  heading: "People weren’t struggling in the same way.",
+  subheading: "Although participants had different experiences, their behaviours consistently fell into four patterns.",
+  patterns: [
+    { lines: ["DEPEND ON OTHERS"], image: "/images/stackup/insight-depend.webp", alt: "Illustration: a person resting their arms on a table, looking unsure, with a question mark" },
+    { lines: ["FIGURE IT OUT", "THEMSELVES"], image: "/images/stackup/insight-figure-out.webp", alt: "Illustration: a person at a laptop with YouTube and Google icons floating beside them" },
+    { lines: ["MANAGE IT", "IN FRAGMENTS"], image: "/images/stackup/insight-fragments.webp", alt: "Illustration: a person holding a phone and a notebook, with question marks in a thought bubble" },
+    { lines: ["HESITATE TO ASK"], image: "/images/stackup/insight-hesitate.webp", alt: "Illustration: a person with folded arms beside a warning shield" },
+  ],
+  closing: [{ text: "Different behaviours pointed to the same underlying need: " }, { text: "guidance before action.", bold: true }] satisfies RichLine,
+} as const;
+
+export const stackupProblemStatement = {
+  label: "Problem Statement",
+  statement: [
+    [{ text: "Financial products help people execute decisions," }],
+    [{ text: "but do little to build the " }, { text: "understanding and confidence", accent: true }, { text: " needed to" }],
+    [{ text: "make those decisions independently." }],
+  ] satisfies RichLine[],
+  paragraphs: [
+    [
+      [{ text: "Complex terminology, fragmented financial information, and limited guidance", bold: true }, { text: " make it difficult " }, { text: "for first-time", bold: true }],
+      [{ text: "earners", bold: true }, { text: " to understand where they stand, learn through action, and make informed decisions." }],
+    ],
+    [[{ text: "As a result, the " }, { text: "fear of losing money", bold: true }, { text: " often prevents people from taking their first step with confidence." }]],
+  ] satisfies RichLine[][],
+} as const;
+
+export const stackupDesignOpportunity = {
+  label: "Design Opportunity",
+  opportunities: [
+    { title: "Start", question: "How might we make the first financial step feel simple and judgment-free?" },
+    { title: "Understand", question: "How might we make the overall financial picture easier to understand?" },
+    { title: "Experience", question: "How might people learn from financial decisions without risking real consequences?" },
+    { title: "Confidence", question: "How might we build confidence to move from learning to real financial decisions?" },
+  ],
+} as const;
+
+export const stackupResearchToDesign = {
+  heading: "From Research to Design",
+  body: [
+    [{ text: "The research defined the problem. The next step was translating those insights into an interface that felt" }],
+    [{ text: "simple, trustworthy and encouraging.", bold: true }],
+  ] satisfies RichLine[],
+} as const;
+
+export const stackupVisualLanguage = {
+  label: "From Inspiration to System",
+  heading: "Building Stack Up's visual language",
+  pills: ["Bold Heading", "Calm Interfaces", "Hero Illustrations"],
+} as const;
+
+/*
+ * Screens 18-24 — the product walkthrough (third reference PDF). Copy is
+ * verbatim from the PDF, split into its own lines; phone screenshots are
+ * the PDF's embedded images, listed left to right.
+ */
+export const stackupPrototype = {
+  label: "See Stackup in Action",
+  body: [
+    [{ text: "A guided financial journey designed to help first-time earners understand, practise, and build confidence before" }],
+    [{ text: "investing real money." }],
+  ] satisfies RichLine[],
+  cta: "Open Interactive Prototype",
+  href: "https://l1nq.com/wu5tgqc",
+} as const;
+
+export const stackupOnboarding = {
+  label: "Onboarding Experience",
+  body: [
+    [{ text: "The onboarding gradually introduces the core ideas behind Stack Up from " }, { text: "understanding the user's confidence", bold: true }],
+    [{ text: "level", bold: true }, { text: " to " }, { text: "creating a safe space for practice.", bold: true }],
+  ] satisfies RichLine[],
+  phones: [
+    "Welcome screen: Stack Up logo, a photo of a smiling woman at a laptop, 'Finances Made Easy' and a Get Started button",
+    "Know You Better: 'When it comes to money, which feels most like you?' with the options 'I'm still building my confidence' and 'I'm confident with money'",
+    "Learn Without Risk: investing can feel risky, so your first decisions happen without real money",
+    "Meet Your Practice Wallet: virtual money to explore investments without risking real money",
+    "You're All Set: a Practice Wallet balance of ₹25,000 and a Let's Begin Journey button",
+  ],
+  captions: ["Welcome", "Understand You", "Learn Safely", "Practice Wallet", "Start Journey"],
+} as const;
+
+export const stackupJourney = {
+  label: "Your Journey Begins",
+  body: [
+    [{ text: "After onboarding, users enter a " }, { text: "guided journey", bold: true }, { text: " where financial concepts are introduced progressively through" }],
+    [{ text: "learning and decision-making.", bold: true }],
+  ] satisfies RichLine[],
+  phones: [
+    "Home screen: a ₹25,000 practice wallet and a 'First Step Starts Here' journey card",
+    "First Move: the easiest way to start growing your money is with a Mutual Fund, shown as an unlocked card",
+    "Mutual Funds explained: a mutual fund spreads your money across many companies, tagged Beginner Friendly, Many Companies and Lower Risk",
+    "Question: 'How do you feel about changes in your investment value?' with three comfort options",
+    "Question: 'How long would you feel comfortable leaving this money invested?' with less than 3, 3–7 and more than 7 years",
+  ],
+  captions: ["single guided journey", "one financial concept at a time", "discover the right choice through guided questions"],
+} as const;
+
+export const stackupRecommendation = {
+  label: "Personalised Recommendation",
+  body: [
+    [{ text: "Based on users' responses, the app recommends a " }, { text: "beginner-friendly mutual fund type", bold: true }, { text: " and explains the" }],
+    [{ text: "reasoning behind every recommendation.", bold: true }],
+  ] satisfies RichLine[],
+  phones: [
+    "Loading screen: 'Finding your best starting point…' matching your preferences to a Mutual Fund category",
+    "Best Starting Point: a Hybrid Mutual Fund card listing why it matches your answers",
+    "Why Hybrid?: part of your money aims for growth while another part focuses on stability, with growth, stability and risk ratings",
+    "Meet the Three Categories: Equity, Hybrid (recommended) and Debt, with a Continue button",
+  ],
+  captions: ["finding a match", "recommendation", "understanding the recommendation", "explore alternatives"],
+} as const;
+
+export const stackupFundSelection = {
+  label: "Mutual Fund Selection",
+  body: [
+    [{ text: "Users receive a " }, { text: "personalized recommendation", bold: true }, { text: ", but can " }, { text: "compare alternatives", bold: true }, { text: " before making their decision." }],
+  ] satisfies RichLine[],
+  phones: [
+    "Choose Mutual Fund: ICICI Prudential Balanced Advantage Fund marked Your Best Match, with a Start with this fund button",
+    "Choose Mutual Fund: SBI Equity Hybrid Fund marked More Growth — more growth potential, less stability",
+    "Choose Mutual Fund: HDFC Balanced Advantage Fund marked More Stable — less growth potential, more stability",
+  ],
+  captions: ["recommended", "compare alternatives"],
+} as const;
+
+export const stackupFirstInvestment = {
+  label: "First Investment",
+  body: [
+    [{ text: "The first investment is broken into " }, { text: "small, guided decisions.", bold: true }, { text: " Every step " }, { text: "builds confidence", bold: true }, { text: " before rewarding" }],
+    [{ text: "progress." }],
+  ] satisfies RichLine[],
+  phones: [
+    "How to Invest: choose between a One-Time Investment and a Monthly SIP",
+    "One-Time Investment: entering ₹5,000 on a number pad",
+    "Ready to Invest?: a review of ₹5,000 moving from the Practice Wallet into the ICICI Prudential Balanced Advantage Fund, with an Invest ₹5000 button",
+    "First Investment Complete!: confidence increased from 0% to 10%",
+  ],
+  captions: ["choose how to invest", "enter amount", "review before confirming", "build confidence"],
+} as const;
+
+export const stackupPortfolio = {
+  label: "Learning Through Your Portfolio",
+  body: [
+    [{ text: "Instead of only showing performance, the portfolio helps users understand " }, { text: "what they own, how it behaves, and", bold: true }],
+    [{ text: "how their confidence grows over time.", bold: true }],
+  ] satisfies RichLine[],
+  phones: [
+    "Your Confidence Jar: confidence grows with every financial challenge; reach 100% to start investing with real money",
+    "Assets: a ₹25,000 asset portfolio split between the practice wallet and mutual funds, with Stocks still locked",
+    "Asset Portfolio: total assets of ₹25,000 and how the mutual fund investment has performed",
+    "Practice Mode: small market changes amplified 100× so they're easier to notice",
+  ],
+  captions: ["build confidence", "assets → details", "practice mode"],
+} as const;

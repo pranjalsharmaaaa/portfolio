@@ -21,7 +21,7 @@ export function Container({
   className?: string;
 }) {
   return (
-    <div className={`w-full px-5 sm:px-10 lg:px-[60px] ${className}`}>
+    <div className={`w-full px-5 @min-[640px]:px-10 @min-[1024px]:px-[60px] ${className}`}>
       {children}
     </div>
   );
@@ -38,4 +38,14 @@ export function Container({
  * happened to be typed differently in each file, and not doubled by an
  * extra margin stacked on top of this padding.
  */
-export const SECTION_Y = "py-10 sm:py-14 lg:py-[60px]";
+export const SECTION_Y = "py-10 @min-[640px]:py-14 @min-[1024px]:py-[60px]";
+
+/**
+ * A smaller vertical inset used by Understanding the Problem and the
+ * three Benchmark Insight pages, whose own content is the tallest in
+ * the case study. Mobile is untouched (py-10, identical to SECTION_Y);
+ * only the 640px+/1024px+ inset is tighter. Fitting a screen into the
+ * viewport is the page-stack's job (it scales the whole composition —
+ * see stack-page.tsx), not this value's.
+ */
+export const SECTION_Y_COMPACT = "py-10 @min-[640px]:py-6 @min-[1024px]:py-8";

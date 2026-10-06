@@ -9,7 +9,7 @@ import { Container, SECTION_Y } from "@/components/stackup/container";
 export function QuestionSection() {
   return (
     <section
-      className={`relative overflow-hidden ${SECTION_Y}`}
+      className={`relative overflow-clip ${SECTION_Y}`}
       style={{ background: "var(--stackup-bg)" }}
       aria-label="It all started with a question"
     >
@@ -23,14 +23,14 @@ export function QuestionSection() {
       />
 
       <Container className="relative flex flex-col items-center gap-6 text-center">
-        <div className="mx-auto max-w-2xl">
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+        <div className="mx-auto max-w-2xl @min-[640px]:max-w-none">
+          <p className="text-xl font-bold tracking-wide uppercase @min-[640px]:text-2xl @min-[1024px]:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupQuestion.label}
           </p>
-          <p className="mt-6 text-3xl sm:text-4xl" style={{ color: "var(--stackup-ink)" }}>
+          <p className="mt-6 text-[2.375rem]/[1.2] @min-[640px]:text-[2.75rem]/[1.111]" style={{ color: "var(--stackup-ink)" }}>
             {stackupQuestion.lineOne}
           </p>
-          <p className="mt-2 text-4xl font-extrabold sm:text-6xl" style={{ color: "var(--stackup-green)" }}>
+          <p className="mt-2 text-[2.75rem]/[1.111] font-extrabold @min-[640px]:text-[4.375rem]/[1] @min-[640px]:whitespace-nowrap" style={{ color: "var(--stackup-green)" }}>
             {stackupQuestion.lineTwo}
           </p>
         </div>

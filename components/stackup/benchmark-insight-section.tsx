@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { InsightCard, InsightExample } from "@/lib/stackup-content";
-import { Container, SECTION_Y } from "@/components/stackup/container";
+import { Container, SECTION_Y_COMPACT } from "@/components/stackup/container";
 import { ProductLogo } from "@/components/stackup/product-logo";
 
 /**
@@ -28,16 +28,18 @@ export function BenchmarkInsightSection({
   opportunity: InsightCard;
 }) {
   return (
-    <section className={`relative ${SECTION_Y}`} style={{ background: "var(--stackup-bg)" }} aria-label={`Benchmark insight ${index}`}>
-      <Container className="flex flex-col gap-10">
+    <section className={`relative ${SECTION_Y_COMPACT}`} style={{ background: "var(--stackup-bg)" }} aria-label={`Benchmark insight ${index}`}>
+      {/* gap-10 on mobile, tighter gap-3 once the canvas is 640px+ wide,
+          where these three blocks sit in their desktop arrangement. */}
+      <Container className="flex flex-col gap-10 @min-[640px]:gap-3">
         <div className="w-full">
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-base font-bold tracking-wide uppercase @min-[640px]:text-lg" style={{ color: "var(--stackup-label)" }}>
             {index} / Benchmark Insight
           </p>
-          <h2 className="mt-3 max-w-4xl text-2xl font-bold sm:text-3xl" style={{ color: "var(--stackup-ink)" }}>
+          <h2 className="mt-3 max-w-4xl text-2xl font-bold @min-[640px]:text-3xl" style={{ color: "var(--stackup-ink)" }}>
             {headline}
           </h2>
-          <p className="mt-3 max-w-3xl text-base leading-relaxed sm:text-lg" style={{ color: "var(--stackup-muted)" }}>
+          <p className="mt-3 max-w-3xl text-base leading-relaxed @min-[640px]:text-lg" style={{ color: "var(--stackup-muted)" }}>
             {subheading}
           </p>
         </div>
@@ -50,35 +52,51 @@ export function BenchmarkInsightSection({
           // narrower example's shot fills its own column at closer to its
           // native size instead of being squeezed into the same fixed
           // thumbnail width as a tall phone screenshot.
-          <div className="flex flex-col items-start gap-10 lg:flex-row lg:justify-between">
-            {examples.map((example) => (
-              <div key={example.name} className="flex w-full flex-col items-start gap-4 lg:w-auto">
-                <div className="flex items-center gap-2">
-                  <ProductLogo src={example.logo} name={example.name} className="h-8 w-auto" />
-                  <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
-                    {example.name}
-                  </h3>
-                </div>
+          <div className="flex flex-col items-start gap-10 @min-[1024px]:flex-row @min-[1024px]:justify-between">
+            {examples.map((example) => {
+              // An example with more than one shot (Frontpage) pairs each
+              // phone with its own caption beside its lower portion, side
+              // by side with the other pair — not stacked image-then-
+              // caption like a single-shot example (Money Bhai) is. Below
+              // a 640px canvas (phones) each pair stacks instead — phone,
+              // then its own caption — and the pairs stack one per row.
+              const pairShots = example.shots.length > 1;
+              return (
+                <div key={example.name} className="flex w-full flex-col items-start gap-4 @min-[1024px]:w-auto">
+                  <div className="flex items-center gap-2">
+                    <ProductLogo src={example.logo} name={example.name} className="h-8 w-auto" />
+                    <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
+                      {example.name}
+                    </h3>
+                  </div>
 
-                <div className="flex w-full flex-row flex-wrap items-start gap-6">
-                  {example.shots.map((shot) => (
-                    <div key={shot.src} className="flex flex-col gap-2" style={{ width: shot.displayWidth ? `${shot.displayWidth}px` : "10rem", maxWidth: "100%" }}>
-                      <div className="relative w-full overflow-hidden rounded-lg shadow-[0_2px_10px_-4px_rgb(0_0_0/15%)]" style={{ aspectRatio: shot.aspect }}>
-                        <Image src={shot.src} alt={shot.alt} fill sizes={shot.displayWidth ? `${shot.displayWidth}px` : "10rem"} quality={100} className="object-contain" />
+                  <div className={`flex w-full flex-col items-start gap-8 @min-[640px]:flex-row @min-[640px]:flex-wrap @min-[640px]:gap-6 ${pairShots ? "@min-[640px]:items-end @min-[640px]:justify-between" : ""}`}>
+                    {example.shots.map((shot) => (
+                      <div
+                        key={shot.src}
+                        className={pairShots ? "flex flex-col items-start gap-2 @min-[640px]:flex-row @min-[640px]:items-end @min-[640px]:gap-3" : "flex flex-col gap-2"}
+                        style={pairShots ? undefined : { width: shot.displayWidth ? `${shot.displayWidth}px` : "10rem", maxWidth: "100%" }}
+                      >
+                        <div
+                          className="relative shrink-0 overflow-hidden rounded-lg shadow-[0_2px_10px_-4px_rgb(0_0_0/15%)]"
+                          style={{ width: pairShots ? (shot.displayWidth ? `${shot.displayWidth}px` : "10rem") : "100%", aspectRatio: shot.aspect }}
+                        >
+                          <Image src={shot.src} alt={shot.alt} fill sizes={shot.displayWidth ? `${shot.displayWidth}px` : "10rem"} quality={100} className="object-contain" />
+                        </div>
+                        {shot.caption ? (
+                          <p className={pairShots ? "max-w-xs text-sm leading-snug @min-[640px]:max-w-[8rem] @min-[640px]:text-xs" : "text-sm leading-snug @min-[640px]:text-xs"} style={{ color: "var(--stackup-muted)" }}>
+                            {shot.caption}
+                          </p>
+                        ) : null}
                       </div>
-                      {shot.caption ? (
-                        <p className="text-xs leading-snug" style={{ color: "var(--stackup-muted)" }}>
-                          {shot.caption}
-                        </p>
-                      ) : null}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-10 @min-[640px]:grid-cols-3">
             {examples.map((example) => (
               <div key={example.name} className="flex flex-col items-center gap-4 text-center">
                 <div className="flex items-center gap-2">
@@ -91,12 +109,12 @@ export function BenchmarkInsightSection({
                 {example.shots.length > 0 ? (
                   <div className="flex flex-row flex-wrap items-start justify-center gap-4">
                     {example.shots.map((shot) => (
-                      <div key={shot.src} className="flex w-32 flex-col gap-2">
+                      <div key={shot.src} className="flex w-[12.5rem] flex-col gap-2 @min-[640px]:w-32">
                         <div className="relative w-full overflow-hidden rounded-lg shadow-[0_2px_10px_-4px_rgb(0_0_0/15%)]" style={{ aspectRatio: shot.aspect }}>
-                          <Image src={shot.src} alt={shot.alt} fill sizes="10rem" quality={100} className="object-contain" />
+                          <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 639px) 12.5rem, 10rem" quality={100} className="object-contain" />
                         </div>
                         {shot.caption ? (
-                          <p className="text-xs leading-snug" style={{ color: "var(--stackup-muted)" }}>
+                          <p className="text-sm leading-snug @min-[640px]:text-xs" style={{ color: "var(--stackup-muted)" }}>
                             {shot.caption}
                           </p>
                         ) : null}
@@ -113,7 +131,7 @@ export function BenchmarkInsightSection({
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 @min-[640px]:grid-cols-2">
           <InsightCardView card={observed} background="#f1f1ef" />
           <InsightCardView card={opportunity} background="#e8f0e8" />
         </div>
@@ -124,7 +142,7 @@ export function BenchmarkInsightSection({
 
 function InsightCardView({ card, background }: { card: InsightCard; background: string }) {
   return (
-    <div className="rounded-2xl p-6" style={{ background }}>
+    <div className="rounded-2xl p-6 @min-[640px]:p-4" style={{ background }}>
       <p className="text-xs font-bold tracking-wide uppercase" style={{ color: "var(--stackup-muted)" }}>
         {card.label}
       </p>

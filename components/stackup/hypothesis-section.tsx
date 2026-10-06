@@ -11,16 +11,16 @@ export function HypothesisSection() {
     >
       <Container className="flex flex-col gap-10">
         <div>
-          <p className="text-sm font-bold tracking-wide uppercase" style={{ color: "var(--stackup-label)" }}>
+          <p className="text-xl font-bold tracking-wide uppercase @min-[640px]:text-2xl @min-[1024px]:text-3xl" style={{ color: "var(--stackup-label)" }}>
             {stackupHypothesis.label}
           </p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl" style={{ color: "var(--stackup-ink)" }}>
+          <h2 className="mt-3 text-3xl font-bold @min-[640px]:text-4xl" style={{ color: "var(--stackup-ink)" }}>
             {stackupHypothesis.headingPlain}
             <span style={{ color: "var(--stackup-green)" }}>{stackupHypothesis.headingAccent}</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 @min-[640px]:grid-cols-3">
           {stackupHypothesis.pillars.map((pillar) => (
             <div
               key={pillar.title}
