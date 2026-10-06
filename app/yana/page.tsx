@@ -14,10 +14,12 @@ import { yanaDiscoverChapter } from "@/lib/yana-content";
  * token is read or changed, so nothing here can leak into the rest of
  * the portfolio, and nothing outside can restyle it.
  *
- * The first seven are the approved working values; the rest are
- * measured directly from the reference's vector data (night, indigo,
- * pink, magenta, the lavender heading/marker color) or its rendered
- * text (periwinkle body copy on dark).
+ * Color system: a warm cream foundation (--yana-bg) with Yana purple
+ * as the primary accent, the same family as the rest of the portfolio.
+ * The night sky is kept only where it's the reference's own artwork —
+ * the cover — and pink survives as one controlled accent. The first
+ * seven are the approved working values; --yana-night and
+ * --yana-pink-light are measured from the reference's vector data.
  *
  * Sections are appended in batches as their reference pages arrive —
  * currently the cover through the Discover chapter's first page.
@@ -35,11 +37,7 @@ export default function YanaPage() {
           "--yana-muted": "#6b6b6b",
           "--yana-label": "#6a4ad8",
           "--yana-night": "#09086f",
-          "--yana-indigo": "#49408f",
-          "--yana-periwinkle": "#b1c5ff",
-          "--yana-pink": "#f770ee",
           "--yana-pink-light": "#ffabf9",
-          "--yana-magenta": "#cf00c1",
           background: "var(--yana-bg)",
         } as React.CSSProperties
       }
@@ -59,7 +57,7 @@ export default function YanaPage() {
           in the reference they're a 193 + 464 split of what is otherwise
           a single ~650-tall page (the same height as the process page),
           and a lone band stretched to a full viewport would be mostly
-          empty pink. */}
+          empty color. */}
       <div className={YANA_SCREEN}>
         <YanaChapterDivider number={yanaDiscoverChapter.number} title={yanaDiscoverChapter.title} />
         <YanaDiscoverSection />

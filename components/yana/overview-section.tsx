@@ -4,14 +4,6 @@ import { YanaFrame, YANA_SCREEN, YANA_SCREEN_Y } from "@/components/yana/frame";
 import { YanaSectionHeading } from "@/components/yana/section-heading";
 
 /**
- * Continues the cover's night field straight down into Yana's indigo —
- * the reference's own vertical gradient for this page (#09086F →
- * #49408F), so cover → overview → process reads as one sky deepening
- * into dusk rather than three separately colored slabs.
- */
-const DUSK_FIELD = "linear-gradient(180deg, var(--yana-night) 0%, var(--yana-indigo) 100%)";
-
-/**
  * The splash-screen phone is a genuine alpha cutout (the reference's own
  * JPEG + its soft mask, recombined losslessly — 915×967px including the
  * floor shadow). Its width is capped so it never displays above its
@@ -26,7 +18,7 @@ export function YanaOverviewSection() {
   return (
     <section
       className={`${YANA_SCREEN} overflow-hidden`}
-      style={{ background: DUSK_FIELD }}
+      style={{ background: "var(--yana-bg)" }}
       aria-label="Project overview"
     >
       <YanaFrame
@@ -38,7 +30,7 @@ export function YanaOverviewSection() {
           <ul className="mt-12 flex flex-col gap-9 sm:mt-14 sm:gap-11 lg:mt-[76px] lg:gap-[50px]">
             {yanaOverview.items.map((item) => (
               <li key={item.title}>
-                <h3 className="flex items-start gap-[0.45em] text-xl leading-snug text-white sm:text-2xl lg:text-[24px]">
+                <h3 className="flex items-start gap-[0.45em] text-xl leading-snug sm:text-2xl lg:text-[24px]" style={{ color: "var(--yana-ink)" }}>
                   {/* Drawn rather than typed: Inter's own "→" sits low on
                       the math axis, while the reference's arrow is a
                       full-size mark centered on the cap height. Pinned to
@@ -48,6 +40,7 @@ export function YanaOverviewSection() {
                     aria-hidden="true"
                     viewBox="0 0 24 24"
                     className="mt-[0.3em] size-[0.8em] shrink-0"
+                    style={{ color: "var(--yana-purple)" }}
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={2.25}
@@ -60,7 +53,7 @@ export function YanaOverviewSection() {
                 </h3>
                 <p
                   className="mt-2 text-base leading-relaxed sm:text-[17px] lg:mt-2.5 lg:text-[17px]"
-                  style={{ color: "var(--yana-periwinkle)" }}
+                  style={{ color: "var(--yana-muted)" }}
                 >
                   {item.description}
                 </p>
@@ -72,14 +65,22 @@ export function YanaOverviewSection() {
         {/* Centered against the text column but lifted above its middle,
             as in the reference, where the phone rides noticeably higher
             than the list beside it. */}
-        <div className="mx-auto w-[min(78%,300px)] sm:w-[340px] lg:mx-0 lg:mr-[2%] lg:w-[min(32vw,458px)] lg:shrink-0 lg:-translate-y-[7%]">
+        <div className="relative mx-auto w-[min(78%,300px)] sm:w-[340px] lg:mx-0 lg:mr-[2%] lg:w-[min(32vw,458px)] lg:shrink-0 lg:-translate-y-[7%]">
+          {/* A soft lavender halo behind the phone — the one trace of the
+              reference's purple atmosphere on this otherwise cream page,
+              so the splash screen still sits in Yana's own light. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-[12%]"
+            style={{ background: "radial-gradient(closest-side, var(--yana-purple-light), transparent)" }}
+          />
           <Image
             src={PHONE.src}
             alt="YANA app splash screen: a cheerful brain mascot lifting dumbbells above the words “YANA — You Are Not Alone!”"
             width={PHONE.width}
             height={PHONE.height}
             unoptimized
-            className="h-auto w-full"
+            className="relative h-auto w-full"
             style={{ transform: "rotate(-8.76deg)" }}
           />
         </div>

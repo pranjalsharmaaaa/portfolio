@@ -4,11 +4,12 @@ import { YanaFrame, YANA_SCREEN } from "@/components/yana/frame";
 import { YanaSectionHeading } from "@/components/yana/section-heading";
 
 /**
- * Yana's signature transition: the pink wave that carries the dark
- * opening into the reading content. Traced from the reference's own
- * wave (sub-pixel edge detection across its full width, then a smooth
- * Catmull-Rom → cubic Bézier fit) so it's a resolution-independent
- * vector instead of the source's 625px raster. Drawn in a 1200 × 211
+ * Yana's signature transition: the wave that carries this page into the
+ * Discover chapter, drawn in Yana purple so it flows straight into the
+ * purple chapter band below it (the source drew it pink). Traced from
+ * the reference's own wave (sub-pixel edge detection across its full
+ * width, then a smooth Catmull-Rom → cubic Bézier fit) so it's a
+ * resolution-independent vector instead of the source's 625px raster. Drawn in a 1200 × 211
  * box — the reference page's own width and the wave band's own height
  * — and always scaled uniformly with the page width, never stretched.
  */
@@ -17,7 +18,7 @@ const WAVE_PATH =
 
 export function YanaProcessSection() {
   return (
-    <section className={YANA_SCREEN} style={{ background: "var(--yana-indigo)" }} aria-label="Design process">
+    <section className={YANA_SCREEN} style={{ background: "var(--yana-bg)" }} aria-label="Design process">
       <YanaFrame className="flex flex-1 flex-col justify-center pt-16 pb-12 sm:pt-20 sm:pb-14 lg:pt-[60px] lg:pb-10">
         <YanaSectionHeading>{yanaProcess.heading}</YanaSectionHeading>
 
@@ -28,8 +29,10 @@ export function YanaProcessSection() {
         <ol className="mt-14 flex flex-wrap justify-center gap-x-6 gap-y-10 sm:mt-16 sm:flex-nowrap sm:justify-between sm:gap-x-4 lg:mt-[84px]">
           {yanaProcess.steps.map((step) => (
             <li key={step.label} className="flex w-[84px] flex-col items-center sm:w-[92px] lg:w-[104px]">
-              {/* Exact blob + icon vectors from the reference. The soft
-                  pink glow under each blob is rebuilt as a CSS shadow
+              {/* Exact blob + icon vectors from the reference: blobs in
+                  the source's own light pink (the same accent as the
+                  "01" chapter tile), icons recolored to Yana purple. The
+                  soft glow under each blob is rebuilt as a CSS shadow
                   that follows the blob's own outline — the reference
                   only had it as a separate blurred raster. */}
               <Image
@@ -40,10 +43,10 @@ export function YanaProcessSection() {
                 className="h-auto w-full"
                 style={{
                   filter:
-                    "drop-shadow(0 8px 14px color-mix(in srgb, var(--yana-pink-light) 50%, transparent))",
+                    "drop-shadow(0 8px 14px color-mix(in srgb, var(--yana-pink-light) 60%, transparent))",
                 }}
               />
-              <span className="mt-6 text-[15px] text-white sm:mt-10 sm:text-[17px] lg:mt-[60px] lg:text-[19px]">
+              <span className="mt-6 text-[15px] sm:mt-10 sm:text-[17px] lg:mt-[60px] lg:text-[19px]" style={{ color: "var(--yana-ink)" }}>
                 {step.label}
               </span>
             </li>
@@ -57,7 +60,7 @@ export function YanaProcessSection() {
         className="relative z-10 -mb-px block h-auto w-full"
         focusable="false"
       >
-        <path d={WAVE_PATH} fill="var(--yana-pink)" />
+        <path d={WAVE_PATH} fill="var(--yana-purple)" />
       </svg>
     </section>
   );
