@@ -163,3 +163,44 @@ spike/step scan flags only natural syllables, which have the same shape as in
 the source). Echo z-scores stay <= 0.9 in all zones. Noise floor between
 sentences -54.8 dB. Sync within 1 sample of the source. Words unchanged.
 -17.3 LUFS, peak -2.3 dBFS.
+
+=====================================================
+AUDIO REVISION 3 — sales_coach_ask_in_context_final_audio_clean_v3.mp4
+=====================================================
+Scope: transition repair only. No new whole-track cleanup. Video stream copied
+bit-for-bit. Audio is identical to v2 (sample-exact) everywhere except two splice
+regions: 0–4.478 s and 15.950–17.980 s.
+
+Root causes found (waveform-verified against the actual video):
+A) Duplicate-voice cut-ins in the ORIGINAL recording. The delayed (~110 ms) copy of
+   the voice switches on abruptly and loudly, like a hard splice, and clips the
+   recording: 3.466 s, 3.702 s, 16.234 s (plus 16.589/17.079/17.298/17.578 s, smaller).
+   Each window correlates 0.40–0.53 with the audio ~110 ms earlier (normal speech ~0.1).
+B) A processing bug in v1/v2: one intermediate file was stored as 16-bit PCM after the
+   tone-restoration EQ had pushed peaks above full scale, which hard-clipped them.
+   That left 1,011 flat-topped samples, concentrated at 3.71–3.80 s and 16.24–16.25 s.
+C) My own v2 edit at 16.222–16.292 s ended with a 4 ms gain snap-back at 16.29 s
+   (the splice-like disturbance reported at "16.29").
+
+Fixes:
+1. Inside each cut-in window only: removed the delayed duplicate (per-band delay and
+   gain fitted to that window, subtracted with 4–6 ms ramps).
+2. Re-ran the identical v2 processing chain in 32-bit float end to end. There is no
+   intermediate clipping now: 0 clipped samples at either transition (2 in the whole track).
+3. 3.702 s: the remaining hot syllable was eased to the voice's own 90th-percentile level
+   (-17.6 dB) with 15 ms raised-cosine ramps.
+   16.24 s: the burst was eased with a smooth 20 ms contour (max slew 0.35 dB/ms, no
+   snap-back). The v2 16.222–16.292 edit is removed.
+4. Spliced into v2 with 10 ms equal-power crossfades at zero crossings, at points where
+   the two versions differ by -74 to -92 dB (inaudible).
+
+Verification on the exported MP4:
+- No clipped flat-tops at either transition. No hard steps or isolated pops (only
+  natural syllables flagged, same shape as in the source).
+- Voice start: the 3.47 s cut-in is reduced from -13.7 to -22.3 dB (now normal speech
+  level). The 3.70–3.80 s clipped block (996 samples) is gone.
+- Subtitles-off: the cut-in level matches the surrounding voice, with a natural decay.
+- Room tone is unchanged at both points (pauses -55 to -67 dB, same as v2).
+- One voice: echo z <= 0.5 in all zones. Sync within 1 sample of the source. Words
+  unchanged ("workload" is now clearly recognised after the switch).
+- -18.1 LUFS, peak -2.4 dBFS. The limiter acts on <1% of samples, by at most 1.9 dB.
