@@ -132,3 +132,34 @@ Measured results (source -> revised):
 - This is the original Sales Coach voice. No TTS, no cloning, no re-reading of screen text.
 
 Note: these checks are objective measurements. I could not literally listen on headphones.
+
+=====================================================
+AUDIO REVISION 2 — sales_coach_ask_in_context_final_audio_clean_v2.mp4
+=====================================================
+Scope: only two short transition points were edited. All edits are gain-only
+(attenuation and fades) applied to the audio_clean mix; no samples change outside
+the windows below (verified: 0 samples). The video stream is copied bit-for-bit.
+
+1. AI voice start (3.18–3.26 s)
+   Cause: the source recording has a ~200 ms digital dropout where the browser started
+   playback. Audio resumed with a hard step at 3.1795 s (click), followed by a faint
+   noise bed before the first word.
+   Fix: silence until 3.245 s, then a 12 ms raised-cosine fade-in ending at the first
+   glottal pulse of "Based" (3.257 s). The voice is not delayed and its level is
+   unchanged from 3.26 s on.
+
+2. Subtitles-off transition (screen switch at 15.983 s)
+   a) 15.988–16.038 s: a 22 ms buzzy packet that was not in the source. The denoiser
+      rendered the quiet pause right after the switch as a burst. Fix: -20 dB with
+      4 ms ramps (the pause is now -67 dB).
+   b) 16.232–16.26 s: a 30 ms periodic burst at ~194 Hz (about twice the voice's pitch),
+      consistent with the trackpad's haptic click being picked up by the mic. The denoiser
+      kept its head and removed the rest, leaving a pop about 10 dB above the voice.
+      Fix: levelled to the surrounding voice level (2.5 ms envelope, 3 ms smoothing,
+      inside 16.222–16.292 s only).
+
+Re-verified on the exported MP4: no isolated pops or hard steps remain (the
+spike/step scan flags only natural syllables, which have the same shape as in
+the source). Echo z-scores stay <= 0.9 in all zones. Noise floor between
+sentences -54.8 dB. Sync within 1 sample of the source. Words unchanged.
+-17.3 LUFS, peak -2.3 dBFS.
