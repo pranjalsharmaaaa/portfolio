@@ -94,3 +94,41 @@ Known limit: the source is a 313 px-wide phone in a 1080p screen capture, so the
 upscale is clean but not as crisp as a native export. For maximum sharpness, re-record
 the Figma prototype full-screen (or with "Fit" zoomed in) and this same process gives a
 near-native 1080-wide result.
+
+=====================================================
+AUDIO REVISION — sales_coach_ask_in_context_final_audio_clean.mp4
+=====================================================
+Why: the first audio pass still had room noise, a muddy tone, and audible doubling
+(the delayed copy of the AI voice) in places.
+
+Video: the H.264 stream is copied bit-for-bit from sales_coach_ask_in_context_final.mp4
+(per-frame checksums match on all 631 frames). Crop, resolution, UI, timing and the
+screen 19 start are unchanged.
+
+Audio was rebuilt from the ORIGINAL source recording (not the previous mix):
+1. Source audio cut at the screen-19 frame (2.569 s), the same cut as the video.
+2. Neural speech enhancement: DeepFilterNet3, run locally (no cloud and no voice
+   generation). It removes the room hiss/hum and most of the audible doubling.
+   Its 30 ms processing delay is compensated exactly.
+   Suppression is capped at 30 dB so pauses fall to a quiet floor instead of
+   hard-gating to silence between syllables, which sounds choppy.
+3. Late-echo suppression: removes what's left of the ~110 ms delayed copy of the voice
+   (laptop speaker picked up by the mic), only where that copy is present.
+4. Tone restoration: the denoiser had pulled the voice's 315–2500 Hz clarity band
+   down 6–9 dB, which made it muddy. A linear-phase EQ, measured against the source
+   voice's own loudest moments, restores the original tonal balance (now within about
+   ±1–2.5 dB of the source in every band). Plus a 60 Hz high-pass.
+5. Level: -17.1 LUFS, peak -2.3 dBFS. The limiter touches <5% of voice samples by
+   at most 2.7 dB. The mic hiss before the AI starts speaking is faded out inside
+   the source's own 70 ms dropout (3.0–3.1 s), so the cut is inaudible.
+
+Measured results (source -> revised):
+- Doubling: envelope repetition at ~110 ms (z-score; ~0 means no copy)
+    sentence 3 ("I'd also ask about…"): 3.8 -> -1.3 ; all zones now <= 0.7
+- Noise floor between sentences: -29.2 dB -> -54.8 dB; before the voice: silent
+- Sync: within 1 sample (0.02 ms) of the source in all three sentences
+- Words: unchanged. The same three original sentences at the same timestamps; speech
+  recognition now hears "AWS spend", "validated" and "workload" more clearly than in the source.
+- This is the original Sales Coach voice. No TTS, no cloning, no re-reading of screen text.
+
+Note: these checks are objective measurements. I could not literally listen on headphones.
