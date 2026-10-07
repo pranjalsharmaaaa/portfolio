@@ -22,6 +22,17 @@ import { YanaHmwSection } from "@/components/yana/define/hmw-section";
 import { YanaBrainstormSection } from "@/components/yana/define/brainstorm-section";
 import { YanaIdeationInsightsSection } from "@/components/yana/define/ideation-insights-section";
 import { yanaDefineChapter, yanaIdeationChapter, yanaPersonas } from "@/lib/yana-define-content";
+import { YanaIaSection } from "@/components/yana/prototype/ia-section";
+import { YanaDassSection } from "@/components/yana/prototype/dass-section";
+import { YanaPrototypeCtaSection } from "@/components/yana/prototype/prototype-cta-section";
+import {
+  YanaHomeFeatureSection,
+  YanaJournalFeatureSection,
+  YanaOnboardingSection,
+  YanaProfileFeatureSection,
+  YanaTherapyFeatureSection,
+} from "@/components/yana/prototype/feature-sections";
+import { yanaPrototypingChapter } from "@/lib/yana-prototype-content";
 
 /**
  * The YANA case study, reproduced from the supplied reference PDF. Its
@@ -42,7 +53,9 @@ import { yanaDefineChapter, yanaIdeationChapter, yanaPersonas } from "@/lib/yana
  * (Discover pages 2–9: awareness, data, support, group therapy,
  * comparison, key insights, survey, persona data), the two user
  * personas, and the "02 DEFINE" (problem statement, HMW) and
- * "03 Ideation" (brainstorming, insights) chapters — all of which scroll
+ * "03 Ideation" (brainstorming, insights) chapters, the information
+ * architecture and DASS-21 assessment, and the "04 Prototyping" chapter
+ * (prototype link and five feature walkthroughs) — all of which scroll
  * as one sticky page-stack like the Stack Up case study.
  */
 export default function YanaPage() {
@@ -110,6 +123,15 @@ export default function YanaPage() {
         <YanaChapterScreen number={yanaIdeationChapter.number} title={yanaIdeationChapter.title} />
         <YanaBrainstormSection />
         <YanaIdeationInsightsSection />
+        <YanaIaSection />
+        <YanaDassSection />
+        <YanaChapterScreen number={yanaPrototypingChapter.number} title={yanaPrototypingChapter.title} />
+        <YanaPrototypeCtaSection />
+        <YanaOnboardingSection />
+        <YanaHomeFeatureSection />
+        <YanaJournalFeatureSection />
+        <YanaTherapyFeatureSection />
+        <YanaProfileFeatureSection />
       </YanaStack>
     </main>
   );

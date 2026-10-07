@@ -15,6 +15,7 @@ export const YANA_CHAPTER_FIELD = "linear-gradient(135deg, var(--yana-purple) 0%
  * section paints its own field.
  */
 export function YanaChapterScreen({ number, title }: { number: string; title: string }) {
+  const long = title.length > 8;
   return (
     <section
       aria-label={`Chapter ${number}: ${title}`}
@@ -39,7 +40,14 @@ export function YanaChapterScreen({ number, title }: { number: string; title: st
         >
           {number}
         </span>
-        <h2 className="text-[56px] leading-none font-semibold tracking-[-0.01em] text-white sm:text-[96px] lg:text-[136px]">{title}</h2>
+        {/* A long single word ("Prototyping") can't wrap, so on phones and
+            small tablets it gets a size that always fits beside the tile;
+            short titles keep the fixed 56 / 96px. */}
+        <h2
+          className={`${long ? "text-[min(44px,11vw)]" : "text-[56px]"} leading-none font-semibold tracking-[-0.01em] text-white ${long ? "sm:text-[min(96px,12vw)]" : "sm:text-[96px]"} lg:text-[136px]`}
+        >
+          {title}
+        </h2>
       </YanaFrame>
     </section>
   );
