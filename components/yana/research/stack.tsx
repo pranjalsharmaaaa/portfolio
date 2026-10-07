@@ -101,9 +101,11 @@ function YanaStackScreen({ children }: { children: ReactNode }) {
   return (
     <div
       ref={screenRef}
-      className="relative [@media(min-width:1024px)_and_(min-height:600px)]:sticky [@media(min-width:1024px)_and_(min-height:600px)]:top-0 [@media(min-width:1024px)_and_(min-height:600px)]:h-svh [@media(min-width:1024px)_and_(min-height:600px)]:overflow-clip"
+      // Cream by default; a screen holding a full-bleed chapter divider
+      // (marked `data-yana-chapter`) takes that divider's purple field
+      // across the whole viewport instead.
+      className="relative bg-[var(--yana-bg)] has-[[data-yana-chapter]]:[background:linear-gradient(135deg,var(--yana-purple)_0%,var(--yana-indigo)_100%)] [@media(min-width:1024px)_and_(min-height:600px)]:sticky [@media(min-width:1024px)_and_(min-height:600px)]:top-0 [@media(min-width:1024px)_and_(min-height:600px)]:h-svh [@media(min-width:1024px)_and_(min-height:600px)]:overflow-clip"
       style={{
-        background: "var(--yana-bg)",
         // A hairline and a soft lift along the top edge, so each screen
         // reads as a sheet sliding over the one beneath it rather than
         // the content simply swapping on an identical cream.

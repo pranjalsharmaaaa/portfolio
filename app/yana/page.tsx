@@ -15,6 +15,13 @@ import { YanaComparisonSection } from "@/components/yana/research/comparison-sec
 import { YanaInsightsSection } from "@/components/yana/research/insights-section";
 import { YanaSurveySection } from "@/components/yana/research/survey-section";
 import { YanaPersonaSection } from "@/components/yana/research/persona-section";
+import { YanaPersonaProfileSection } from "@/components/yana/define/persona-profile-section";
+import { YanaChapterScreen } from "@/components/yana/define/chapter-screen";
+import { YanaProblemStatementSection } from "@/components/yana/define/problem-statement-section";
+import { YanaHmwSection } from "@/components/yana/define/hmw-section";
+import { YanaBrainstormSection } from "@/components/yana/define/brainstorm-section";
+import { YanaIdeationInsightsSection } from "@/components/yana/define/ideation-insights-section";
+import { yanaDefineChapter, yanaIdeationChapter, yanaPersonas } from "@/lib/yana-define-content";
 
 /**
  * The YANA case study, reproduced from the supplied reference PDF. Its
@@ -33,8 +40,10 @@ import { YanaPersonaSection } from "@/components/yana/research/persona-section";
  * Sections are appended in batches as their reference pages arrive —
  * currently the cover through the Discover chapter's research screens
  * (Discover pages 2–9: awareness, data, support, group therapy,
- * comparison, key insights, survey, persona data), which scroll as a
- * sticky page-stack like the Stack Up case study.
+ * comparison, key insights, survey, persona data), the two user
+ * personas, and the "02 DEFINE" (problem statement, HMW) and
+ * "03 Ideation" (brainstorming, insights) chapters — all of which scroll
+ * as one sticky page-stack like the Stack Up case study.
  */
 export default function YanaPage() {
   return (
@@ -92,6 +101,15 @@ export default function YanaPage() {
         <YanaInsightsSection />
         <YanaSurveySection />
         <YanaPersonaSection />
+        {yanaPersonas.map((persona, i) => (
+          <YanaPersonaProfileSection key={persona.name} persona={persona} index={i} />
+        ))}
+        <YanaChapterScreen number={yanaDefineChapter.number} title={yanaDefineChapter.title} />
+        <YanaProblemStatementSection />
+        <YanaHmwSection />
+        <YanaChapterScreen number={yanaIdeationChapter.number} title={yanaIdeationChapter.title} />
+        <YanaBrainstormSection />
+        <YanaIdeationInsightsSection />
       </YanaStack>
     </main>
   );
