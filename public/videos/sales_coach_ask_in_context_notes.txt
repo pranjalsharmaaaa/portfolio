@@ -1,0 +1,96 @@
+SALES COACH — "ASK IN CONTEXT" DEMO · PRODUCTION NOTES
+=====================================================
+
+Source file        : Ask AI (1).mp4  (left untouched; not modified or overwritten)
+Source format      : 1920x1020, 29.97 fps, H.264 + AAC stereo 48 kHz
+Source duration    : 27.63 s
+
+Final file         : sales_coach_ask_in_context_final.mp4
+Final duration     : 21.05 s  (631 frames)
+Final resolution   : 1080 x 2346, vertical, 29.97 fps
+                     The phone screen is 313 x 680 px in the source (iPhone 16 Plus ratio).
+                     It was scaled exactly 3.45x so the phone's original proportions are kept
+                     (a 1080 x 1920 frame would have needed letterbox bars or a crop).
+Encoding           : H.264 High, CRF 14, BT.709, faststart (web ready); AAC 192 kbps
+
+STARTING POINT (SCREEN 19)
+--------------------------
+- The video starts on the exact first frame where Figma's counter reads "19 / 27":
+  source frame 77, 2.569 s. That's the "Sales Coach – JK Tyres & Industries Ltd" voice screen.
+- Everything before it (screens 18 and earlier) is removed.
+- Audio is cut at the same timestamp, so picture and sound keep their original sync.
+
+STORY / PACING (final timeline)
+-------------------------------
+0.00 s  Screen 19: JK Tyres context, "What would you like to know about this opportunity?"
+1.57 s  Rajesh's question is captured ("At what rate are JK Tyres taking AWS…")
+3.14 s  Sales Coach answers. Voice and the streaming answer start together.
+~9.8 s  The full contextual answer is shown (spend estimate, drivers, "For the conversation")
+~14.0 s The transcript toggle is tapped; at 16.0 s the answer collapses to the headline
+~19.5 s The AI voice finishes; 1.5 s hold, then a 0.5 s audio fade
+Only dead time was trimmed: the 4 s of static screen after the voice ended.
+Nothing in the conversation was sped up, slowed down or re-timed.
+
+AUDIO CLEANUP
+-------------
+1. Duplicate/overlapping AI voice
+   Diagnosis: the recording holds the clean system-audio voice plus a second, delayed copy
+   of the same voice (~110 ms later). That's the laptop speaker being picked up again by
+   the microphone. The copy came and went (5.7–6.6 s, 8.3–9.5 s, 18.4–21.9 s source time),
+   and its delay drifted by microseconds (two audio clocks), so a fixed echo filter
+   could not catch it.
+   Fix: a drift-tracking echo canceller, run in 5 frequency bands over 0.2 s windows.
+   Each window measures the copy's exact delay and level and subtracts only that copy.
+   It acts only where the copy is statistically significant, so the clean parts of the
+   voice are left essentially untouched (changes there are 20–38 dB down, i.e. inaudible).
+   Result: copy-correlation in the echo zones went from 0.33 / 0.26 / 0.16 / 0.22
+   to 0.11 / 0.11 / 0.07 / 0.05 (≈0.05 is the normal level for single-voice speech).
+2. Background noise
+   Spectral noise reduction, profiled only from voice-free stretches (before the answer,
+   between sentences, after the answer).
+   - Mic hiss before the AI speaks: -23.8 dB -> -58.2 dB (effectively silent)
+   - Noise floor between sentences: -29.2 dB -> -40.7 dB
+   - 70 Hz high-pass to remove rumble/hum
+3. Level
+   +1.5 dB gain with a gentle look-ahead peak limiter (max 3.1 dB on a few peaks).
+   Result: -19 LUFS, true peak -1.5 dBFS. No compression, EQ, pitch or timing changes.
+   No music, no added sound.
+- The user (Rajesh) has no spoken audio in this section; his question appears on screen
+  as text, so no user voice needed preserving.
+
+ORIGINAL AI VOICE PRESERVED — CONFIRMED
+---------------------------------------
+- This is the original Sales Coach voice from the recording. No TTS, ElevenLabs or
+  replacement voice was used, and nothing was resynthesised.
+- The words are unchanged. A speech-recognition check before and after processing gives
+  the same three sentences at the same timestamps:
+  "Based on the available signals, I'd estimate their AWS spend at around ₹50 lakh to
+   ₹1 crore per month." / "This is a market estimate, so it should be validated in
+   conversation." / "I'd also ask about their current AWS spend, workload sizing and
+   where they're seeing cost pressure."
+- Sync: audio and video were cut at the same timestamp (within 0.2 ms) and never re-timed.
+
+VISUAL CLEANUP
+--------------
+- Cropped to the phone screen only. Browser tabs, address bar, Figma toolbar, canvas,
+  prototype controls (19/27, device menu, Restart) and the mouse pointer are all gone.
+- The black bezel showing in the screen's rounded corners was painted white
+  (the UI's own background), so there is no black or grey anywhere in the frame.
+- Figma's grey touch-indicator circle (16.6–21.7 s source) was removed by restoring the
+  original UI pixels from a clean frame of the same screen state. No UI was invented, and
+  the heading's typing animation is not revealed early.
+- Upscaled with Lanczos plus a light unsharp mask. The UI, animations, transitions and
+  content are otherwise untouched.
+
+QUALITY CHECKLIST
+-----------------
+[x] Starts exactly at screen 19            [x] One AI voice (delayed duplicate removed)
+[x] Voice synchronized with UI             [x] Background noise reduced
+[x] Phone screen fully visible             [x] All browser/Figma UI removed
+[x] Original interaction unchanged         [x] Sharp, high-bitrate export
+[x] No black/grey space at edges/corners   [x] No music, captions, or added graphics
+
+Known limit: the source is a 313 px-wide phone in a 1080p screen capture, so the 3.45x
+upscale is clean but not as crisp as a native export. For maximum sharpness, re-record
+the Figma prototype full-screen (or with "Fit" zoomed in) and this same process gives a
+near-native 1080-wide result.
