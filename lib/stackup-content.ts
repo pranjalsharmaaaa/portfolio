@@ -317,7 +317,7 @@ export const stackupPrototype = {
     [{ text: "investing real money." }],
   ] satisfies RichLine[],
   cta: "Open Interactive Prototype",
-  href: "https://l1nq.com/wu5tgqc",
+  href: "https://www.figma.com/proto/qv5yeiq6zjTMy87nvgYxdk/Team-project?node-id=1626-2000&p=f&t=WaPCjpAtxQseqVkY-1&scaling=scale-down&content-scaling=fixed&page-id=1592%3A3749",
 } as const;
 
 export const stackupOnboarding = {

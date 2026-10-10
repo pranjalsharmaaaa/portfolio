@@ -124,8 +124,8 @@ export const yanaPrototype = {
   heading: "See Yana in Action",
   body: "A mental wellbeing experience designed to help people understand how they feel, explore the right support, and take small steps towards feeling better.",
   cta: "Open Interactive Prototype",
-  /** No prototype link has been supplied yet — set it here and the CTA becomes a live link. */
-  href: null as string | null,
+  /** The Figma prototype; null would render the CTA as an inert button. */
+  href: "https://www.figma.com/proto/qv5yeiq6zjTMy87nvgYxdk/Team-project?page-id=1592%3A3749&node-id=1626-2000&viewport=168%2C40%2C0.1&t=JBTSexZ7EV4cHv2Y-1&scaling=scale-down&content-scaling=fixed" as string | null,
 };
 
 export type YanaScreen = { src: string; width: number; height: number; alt: string; caption?: string };
