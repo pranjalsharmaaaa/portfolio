@@ -5,7 +5,7 @@ import { Slide, Lines, at, slide } from "@/components/stackup/slide";
 /**
  * Screen 18 — "See Stackup in Action". Its PDF page is only 355px tall
  * (at 1440 wide), so the frame is that height, centred like every other
- * screen's. The prototype button stays centred on the canvas (f: 0.5).
+ * screen's. The prototype button stays centred on the canvas.
  */
 export function PrototypeSection() {
   return (
@@ -28,13 +28,10 @@ export function PrototypeSection() {
             href={content.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center justify-center rounded-2xl px-6 py-3 text-lg font-medium underline underline-offset-4 transition-[filter] hover:brightness-95 ${slide.abs} ${slide.w} ${slide.h} ${slide.type}`}
-            style={{
-              background: "rgb(5 161 65 / 20%)",
-              color: "var(--stackup-green)",
-              borderRadius: "calc(24 * var(--u, 0.667px))",
-              ...at({ x: 466.8, y: 218.4, w: 506.4, h: 84, fs: 33.6, lh: 40, f: 0.5 }),
-            }}
+            // Yana's CTA proportions in Stack Up's green; position and size
+            // on tablets and up come from slide.module.css (.cta).
+            className={`inline-flex items-center justify-center rounded-2xl px-8 py-4 text-[18px] font-semibold whitespace-nowrap underline underline-offset-4 transition-[filter] hover:brightness-95 ${slide.abs} ${slide.cta}`}
+            style={{ background: "rgb(5 161 65 / 20%)", color: "var(--stackup-green)" }}
           >
             {content.cta}
           </a>

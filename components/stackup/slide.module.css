@@ -85,6 +85,21 @@
     height: calc(var(--h) * var(--u));
   }
 
+  /* The "Open Interactive Prototype" button (Screen 18): Yana's CTA
+     proportions (376x70, 20px) at full size, centred on the canvas at
+     design (720, 260.4) like the rest of the frame, but never shrunk
+     below a comfortably tappable 280x52 with a 15px label on tablets. */
+  .cta {
+    left: calc(720 * var(--u) + 0.5 * var(--extra));
+    top: calc(260.4 * var(--u));
+    translate: -50% -50%;
+    width: max(calc(376 * var(--u)), 280px);
+    height: max(calc(70 * var(--u)), 52px);
+    font-size: max(calc(20 * var(--u)), 15px);
+    line-height: 1.4;
+    border-radius: max(calc(20 * var(--u)), 14px);
+  }
+
   .type {
     font-size: calc(var(--fs) * var(--u));
     line-height: calc(var(--lh) * var(--u));
