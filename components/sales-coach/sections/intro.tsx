@@ -132,17 +132,19 @@ export function FindingScreen() {
 }
 
 /* ── PDF p4 · What if the brief did more? ───────────────────────────── */
+/* The four steps + arrows need the full 1280px design width (the step
+   titles are 40px); narrower desktops keep the two-column layout. */
 export function BriefMoreScreen() {
   const c = scBriefMore;
   return (
     <section className={SCREEN_Y}>
       <Container>
         <SectionTitle heading={c.heading} sub={c.sub} />
-        <ol className="mt-10 grid grid-cols-1 gap-10 @min-[640px]:grid-cols-2 @min-[640px]:gap-x-6 @min-[1024px]:mt-14 @min-[1024px]:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] @min-[1024px]:gap-x-4">
+        <ol className="mt-10 grid grid-cols-1 gap-10 @min-[640px]:grid-cols-2 @min-[640px]:gap-x-6 @min-[1024px]:mt-14 @min-[1280px]:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr] @min-[1280px]:gap-x-4">
           {c.steps.map((s, i) => (
             <li key={s.n} className="contents">
               {i > 0 && (
-                <span aria-hidden className="hidden self-start pt-[17%] text-[var(--sc-red)] @min-[1024px]:block">
+                <span aria-hidden className="hidden self-start pt-[17%] text-[var(--sc-red)] @min-[1280px]:block">
                   <svg viewBox="0 0 48 16" className="w-12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M2 8h42M37 2l7 6-7 6" />
                   </svg>

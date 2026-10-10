@@ -51,12 +51,12 @@ export default function StackUpPage() {
         } as React.CSSProperties
       }
     >
-      {/* Outside the page-stack (phones, incl. landscape) the link sits
-          in its own sticky, opaque top bar that occupies real space in
-          the flow, so it never floats over a section's content. Where
-          the page-stack is active (same gate as stack-page.tsx) the bar
-          collapses (`display: contents`) and the link is the original
-          floating pill. */}
+      {/* On phones (incl. landscape) the link sits in its own sticky,
+          opaque top bar that occupies real space in the flow, so it
+          never floats over a section's content. On tablets and up (the
+          same gate as the fixed-composition screens, slide.module.css)
+          the bar collapses (`display: contents`) and the link is the
+          original floating pill. */}
       <div
         className="sticky top-0 z-20 px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 sm:[@media(min-height:520px)]:contents"
         style={{ background: "var(--stackup-bg)" }}

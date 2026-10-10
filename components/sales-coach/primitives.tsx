@@ -3,19 +3,14 @@ import type { Heading } from "@/lib/sales-coach-content";
 
 /**
  * Shared building blocks for the Sales Coach screens. Breakpoints are
- * container queries (`@min-[640px]:` / `@min-[1024px]:`) on the screen
- * canvas, not viewport media queries, so a section's layout always
- * matches the width it's actually laid out at inside the scaled stack.
+ * container queries (`@min-[640px]:` / `@min-[1024px]:`) on the screen,
+ * not viewport media queries, so a section's layout always matches the
+ * width it's actually laid out at.
  */
 
-/**
- * The one horizontal grid: 20px mobile · 40px tablet · 60px desktop.
- * The desktop 60px is applied by ScreenStack outside the scaled canvas
- * (so it stays exactly 60px at any scale); a canvas 1024px+ wide only
- * exists inside the stack, so here it carries no padding of its own.
- */
+/** The one horizontal grid: 20px mobile · 40px tablet · 60px desktop. */
 export function Container({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`w-full px-5 @min-[640px]:px-10 @min-[1024px]:px-0 ${className}`}>{children}</div>;
+  return <div className={`w-full px-5 @min-[640px]:px-10 @min-[1024px]:px-[60px] ${className}`}>{children}</div>;
 }
 
 /** The one vertical rhythm every screen owns. */

@@ -3,31 +3,28 @@
  * which reproduce 16:9 Figma frames element-for-element rather than
  * flowing like screens 1-10.
  *
- * Everything here is gated on exactly the same media query as the
- * page-stack itself (stack-page.tsx: `sm:[@media(min-height:520px)]:`),
- * so it only ever applies where each screen is a full-viewport sticky
- * panel. Outside it (phones, landscape phones, very short windows) none
- * of these rules exist and the same elements fall back to their plain
- * Tailwind flow layout.
+ * Everything here is gated on the same media query as before
+ * (`(min-width: 40rem) and (min-height: 520px)`, i.e. tablets and up but
+ * not landscape phones). Outside it (phones, landscape phones, very
+ * short windows) none of these rules exist and the same elements fall
+ * back to their plain Tailwind flow layout.
  *
  * Positions and sizes are the PDF frame's own coordinates in CSS px at
  * 1440x810, passed per element as unitless custom properties (--x, --y,
  * --w, --h, --fs, --lh) and multiplied by --u: the size of one design px.
- * --u is derived from container query units of `.screen`, a size
- * container, so it is pure CSS — no measurement, no flash before
- * hydration.
+ * --u is derived from container query units (the screen's width), so it
+ * is pure CSS — no measurement, no flash before hydration.
  *
- * The frame sits on the same horizontal grid as screens 1-10 (the shared
- * Container: a fixed 60px inset at any width) rather than being centred:
- * design x=60 always lands exactly 60px from the screen's left edge.
- * Like screens 1-10 it never scales up — --u is capped at 1px — and only
- * scales down when the 1320px-wide content box (design 60..1380) or the
- * 810px height doesn't fit. Vertically the frame is centred. A screen
- * whose PDF page is shorter than 810 (Screen 18) sets --frame-h to its own
- * height: the frame is centred at the same --u, so its type and spacing
- * match every other screen.
+ * The frame sits on the same horizontal grid as screens 1-10 (a fixed
+ * 60px inset at any width) rather than being centred: design x=60
+ * always lands exactly 60px from the screen's left edge. It never scales
+ * up — --u is capped at 1px — and only scales down when the 1320px-wide
+ * content box (design 60..1380) doesn't fit the width. Each screen is
+ * exactly as tall as its frame at that scale, so the screens follow one
+ * another in normal document flow. A screen whose PDF page is shorter
+ * than 810 (Screen 18) sets --frame-h to its own height.
  *
- * On a canvas wider than the frame, the room left over between design
+ * On a screen wider than the frame, the room left over between design
  * x=1380 and the 60px right margin is --extra. Elements opt in to a
  * share of it with --f (0 = stay put, 1 = move by all of it): the
  * multi-column layouts (12, 13) use it to spread their columns so the
@@ -41,25 +38,24 @@
 }
 
 @media (min-width: 40rem) and (min-height: 520px) {
-  /* --u is declared here, on the size container, so the corner rings
-     (siblings of .frame) can use it too. Unregistered custom properties
-     are substituted where they are used, so its cq units always resolve
-     against .screen. */
+  /* --u is declared here, on the screen, so the corner rings (siblings
+     of .frame) can use it too. Unregistered custom properties are
+     substituted where they are used: inside the screen its cq units
+     resolve against .screen, and for the screen's own height against
+     the PageStack wrapper — both the same width. */
   .screen {
-    --u: min(1px, calc((100cqw - 120px) / 1320), calc(100cqh / 810));
+    --u: min(1px, calc((100cqw - 120px) / 1320));
     --extra: calc(100cqw - 120px - 1320 * var(--u));
-    container-type: size;
+    container-type: inline-size;
     position: relative;
-    flex: 1 1 auto;
-    align-self: stretch;
-    min-height: 0;
+    height: calc(var(--frame-h, 810) * var(--u));
     padding: 0;
   }
 
   .frame {
     position: absolute;
     left: calc(60px - 60 * var(--u));
-    top: calc((100cqh - var(--frame-h, 810) * var(--u)) / 2);
+    top: 0;
     width: calc(1440 * var(--u));
     height: calc(var(--frame-h, 810) * var(--u));
   }

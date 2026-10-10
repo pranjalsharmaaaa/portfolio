@@ -18,20 +18,13 @@ export function YanaFrame({
 }
 
 /**
- * The one canvas every YANA screen sits in.
- *
- * The reference PDF's pages are all different heights (853, 694, 651,
- * 193 + 464 — a property of the export, not the design), so each page's
- * composition is placed inside the same full-viewport screen instead of
- * being reproduced at its own height: on landscape desktop/tablet each
- * screen fills exactly one viewport with its content vertically centered
- * (content can still grow it, never clip). Portrait tablets and phones
- * let screens take their natural height, so a short composition never
- * gets stretched into a mostly-empty full-height block.
+ * The one canvas every YANA screen sits in: a plain block as tall as its
+ * own content, so the page scrolls as one continuous document and no
+ * composition is stretched into a mostly-empty full-height block.
  *
  * Vertical breathing room is one shared value at every breakpoint
- * (64 / 80 / 60px + centering on desktop), so the space above the first
- * line and below the last is the same on every screen.
+ * (64 / 80 / 60px), so the space above the first line and below the
+ * last is the same on every screen.
  */
-export const YANA_SCREEN = "relative flex flex-col lg:landscape:min-h-svh";
+export const YANA_SCREEN = "relative flex flex-col";
 export const YANA_SCREEN_Y = "py-16 sm:py-20 lg:py-[60px]";

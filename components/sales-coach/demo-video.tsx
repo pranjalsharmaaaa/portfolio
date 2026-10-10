@@ -19,10 +19,8 @@ type Status = "idle" | "playing" | "paused-by-user" | "blocked";
  *
  * - Plays (muted, looping, inline) only while it is actually on screen.
  *   "On screen" = at least 35% of the video intersects the viewport AND
- *   the next case-study screen hasn't risen over it. The second check
- *   matters because screens are sticky: a covered screen is still
- *   geometrically "in" the viewport, so a plain IntersectionObserver
- *   would keep it playing underneath. Both checks are
+ *   the next case-study screen hasn't scrolled up past 40% of the
+ *   viewport (by then the reader has moved on to it). Both checks are
  *   IntersectionObservers — no scroll listeners, no scroll hijacking.
  * - Scrolling away pauses it; scrolling back resumes it. A tab in the
  *   background pauses it too.
@@ -77,7 +75,7 @@ export function DemoVideo({ src, poster, width, height, label }: Props) {
     selfIO.observe(v);
 
     // The screen after this one: once its top edge is above 40% of the
-    // viewport, it covers (sticky) or has replaced (mobile flow) ours.
+    // viewport, it has taken over from ours.
     const next = v.closest("[data-sc-screen]")?.nextElementSibling;
     let nextIO: IntersectionObserver | undefined;
     if (next) {

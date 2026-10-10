@@ -9,10 +9,9 @@ export const YANA_CHAPTER_FIELD = "linear-gradient(135deg, var(--yana-purple) 0%
  * a whole screen of Yana purple with the type set large and left, and
  * the rest left as open space — a deliberate pause between phases.
  *
- * In the page-stack the screen itself paints the field (YanaStack keys
- * it off `data-yana-chapter`, with the same gradient as
- * YANA_CHAPTER_FIELD) so it fills the viewport; in the phone flow the
- * section paints its own field.
+ * The section paints its own field, with the same generous padding at
+ * every width from tablet up, so the divider reads as a pause in the
+ * continuous scroll rather than a thin band.
  */
 export function YanaChapterScreen({ number, title }: { number: string; title: string }) {
   const long = title.length > 8;
@@ -20,10 +19,7 @@ export function YanaChapterScreen({ number, title }: { number: string; title: st
     <section
       aria-label={`Chapter ${number}: ${title}`}
       data-yana-chapter=""
-      // In the page-stack the section steps back (no box, no clip): the
-      // screen itself carries the field, and the glow below is placed
-      // against the whole viewport instead of being cut at this box.
-      className="relative overflow-hidden py-24 [background:var(--yana-chapter-field)] sm:py-32 lg:py-[60px] [@media(min-width:1024px)_and_(min-height:600px)]:static [@media(min-width:1024px)_and_(min-height:600px)]:overflow-visible [@media(min-width:1024px)_and_(min-height:600px)]:[background:none]"
+      className="relative overflow-hidden py-24 [background:var(--yana-chapter-field)] sm:py-32"
       style={{ "--yana-chapter-field": YANA_CHAPTER_FIELD } as React.CSSProperties}
     >
       {/* A soft lift of pink light in the far corner — Yana's glow
