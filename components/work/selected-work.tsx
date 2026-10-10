@@ -57,11 +57,11 @@ function ProjectImage({
           screens underneath stay recognizable, not blacked out. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 opacity-0 backdrop-blur-[3px] transition-opacity duration-500 ease-out group-hover:opacity-100 group-focus-within:opacity-100"
+        className="absolute inset-0 opacity-0 backdrop-blur-[3px] transition-opacity duration-500 ease-out group-hover:opacity-100 group-focus-within:opacity-100 max-md:hidden"
         style={{ background: "color-mix(in srgb, var(--paper-ink) 44%, transparent)" }}
       />
 
-      <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-10">
+      <div className="absolute inset-0 flex items-center justify-center p-6 max-md:hidden sm:p-10">
         <p
           className="max-w-sm translate-y-1 text-center text-sm leading-relaxed opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100"
           style={{ color: "var(--shore-solid)" }}
@@ -85,7 +85,7 @@ function ProjectLabel({
 }) {
   return (
     <div
-      className={`flex items-baseline gap-2 ${align === "center" ? "justify-center" : "justify-start"}`}
+      className={`flex items-baseline gap-2 ${align === "center" ? "justify-center" : "justify-center md:justify-start"}`}
     >
       <span className="font-display text-xs tracking-[0.1em]" style={{ color: "var(--paper-ink-muted)" }}>
         {project.number}
@@ -95,12 +95,29 @@ function ProjectLabel({
       </h3>
       <span
         aria-hidden="true"
-        className="inline-block text-base opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100"
+        className="inline-block text-base opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100 max-md:hidden"
         style={{ color: "var(--paper-ink)" }}
       >
         ↗
       </span>
     </div>
+  );
+}
+
+/**
+ * Below md there is no hover, so the same description the image overlay
+ * reveals on desktop sits under the centred title instead, always
+ * visible. Exactly one of the two is ever displayed: this one is
+ * `md:hidden`, the overlay is `max-md:hidden`.
+ */
+function MobileDescription({ project }: { project: SelectedWorkProject }) {
+  return (
+    <p
+      className="mx-auto mt-2 max-w-[34ch] text-center text-[15px] leading-relaxed md:hidden"
+      style={{ color: "var(--paper-ink-muted)" }}
+    >
+      {project.description}
+    </p>
   );
 }
 
@@ -129,6 +146,7 @@ function FeaturedProject({ project }: { project: SelectedWorkProject }) {
 
         <div className="mt-4">
           <ProjectLabel project={project} align="center" titleClassName="text-xl sm:text-2xl" />
+          <MobileDescription project={project} />
         </div>
       </Link>
     </motion.div>
@@ -151,8 +169,9 @@ function SecondaryCard({ project }: { project: SelectedWorkProject }) {
           <ProjectImage project={project} aspectClass="aspect-[4/3]" />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-4 md:mt-3">
           <ProjectLabel project={project} align="left" titleClassName="text-lg" />
+          <MobileDescription project={project} />
         </div>
       </Link>
     </motion.div>
@@ -187,7 +206,7 @@ export function SelectedWork() {
           <FeaturedProject project={selectedWork.featured} />
         </div>
 
-        <div className="mx-auto mt-10 grid w-full max-w-[46rem] grid-cols-1 gap-6 sm:mt-12 sm:grid-cols-2">
+        <div className="mx-auto mt-12 grid w-full max-w-[46rem] grid-cols-1 gap-12 sm:mt-12 sm:grid-cols-2 sm:gap-6">
           {selectedWork.secondary.map((project) => (
             <SecondaryCard key={project.title} project={project} />
           ))}

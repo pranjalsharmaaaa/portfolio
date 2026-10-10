@@ -67,7 +67,7 @@ export function Hero() {
               this wrapper's own sizing/centering: below that, mobile
               keeps its current full-width, left-anchored layout
               untouched. */}
-          <div className="flex flex-col gap-6 sm:gap-8 md:w-fit md:mx-auto">
+          <div className="flex flex-col gap-1 md:w-fit md:mx-auto md:gap-8">
             {/* Kicker and headline get their own tight, deliberate gap —
                 siblings of one intro line — separate from the larger gap
                 (above, in the parent wrapper) that separates this whole
@@ -95,9 +95,10 @@ export function Hero() {
                 who". `flex-nowrap` from md up keeps that trio from
                 breaking apart; only below md (where the vocabulary
                 already renders separately above, not here) does the row
-                wrap, letting the word drop under the cassette instead of
-                overflowing. */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-6 md:flex-nowrap md:gap-x-8">
+                wrap; there the cycling word moves to the front of it
+                (see CyclingWord) so the headline reads continuously
+                and the cassette sits below the complete headline. */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-8 md:flex-nowrap md:gap-x-8">
               {/* A vertical-writing-mode child inside a flex row is a
                   known trap: with no explicit height, its auto block-size
                   calculation stretches to the flex line's full cross

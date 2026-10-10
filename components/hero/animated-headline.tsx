@@ -146,7 +146,7 @@ export function DesignerWhoLine() {
         onFocus={onFocus}
         onBlur={onBlur}
         onTouchStart={onTouchStart}
-        className={`inline-block cursor-default text-[clamp(3.5rem,8vw,6.5rem)] leading-[0.95] ${active ? "all-active" : ""}`}
+        className={`inline-block cursor-default text-[clamp(3.5rem,8vw,6.5rem)] leading-[0.95] max-md:text-[clamp(2.5rem,calc((100vw_-_48px)/6.9),3.5rem)] ${active ? "all-active" : ""}`}
         style={{ color: "var(--hero-text)", textShadow: "0 4px 24px rgb(0 0 0 / 18%)" }}
       >
         <span aria-hidden="true">
@@ -180,6 +180,13 @@ export function DesignerWhoLine() {
  *    letter would jostle its neighbors mid-word. Grouping it at the
  *    word level means only the word's own box grows, which is safe —
  *    it sits after the cassette in the row, so it never pushes it.
+ *
+ * Below md (phones) the word continues the headline instead of sitting
+ * beside the cassette: it takes its own full-width line first in the
+ * row (`order-first basis-full`, so the cassette drops below it),
+ * left-aligned under "Designer who", and both lines share one size
+ * that always fits "Designer who" on a single line (6.55em of text in
+ * the width left after the 24px gutters). Desktop is untouched.
  *
  * These compose without conflict only because (A) animates `transform`
  * on the per-letter entrance/exit and (B) only ever touches
@@ -226,7 +233,7 @@ export function CyclingWord() {
       // one sentence in one typeface at rest — the hover transition
       // below then genuinely goes *from* that editorial serif *into*
       // the handwritten mark, not from the body's default sans.
-      className={`cycling-word font-display relative inline-block cursor-default text-[clamp(3rem,7vw,6rem)] leading-[0.95] ${active ? "all-active" : ""}`}
+      className={`cycling-word font-display relative inline-block cursor-default text-[clamp(3rem,7vw,6rem)] leading-[0.95] max-md:text-[clamp(2.5rem,calc((100vw_-_48px)/6.9),3.5rem)] max-md:order-first max-md:basis-full ${active ? "all-active" : ""}`}
       style={{ color: "var(--hero-text)", textShadow: "0 4px 24px rgb(0 0 0 / 18%)", perspective: 600 }}
     >
       {/* Invisible ghost sized to the longest word, kept in normal flow
@@ -242,7 +249,7 @@ export function CyclingWord() {
           and centered inside its box, so it can freely change width as
           it cycles without that change ever reaching the ghost's — and
           therefore this span's — own layout size. */}
-      <span className="absolute inset-0 flex items-center justify-center">
+      <span className="absolute inset-0 flex items-center justify-center max-md:justify-start">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={word}
