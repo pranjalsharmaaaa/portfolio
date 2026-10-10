@@ -55,7 +55,7 @@ export function AskScreen() {
               <p className="mt-4 text-[16px] leading-[1.55] text-[var(--sc-muted)] @min-[640px]:text-[20px]">{c.principle.body}</p>
             </Card>
           </div>
-          <div className="mx-auto w-full max-w-[270px] @min-[640px]:max-w-[290px] @min-[1024px]:max-w-[300px]">
+          <div className="mx-auto w-full max-w-[270px] @min-[640px]:max-w-[290px] @min-[1024px]:mr-0 @min-[1024px]:max-w-[300px]">
             <DemoVideo {...c.video} />
           </div>
         </div>
@@ -79,7 +79,7 @@ export function PractiseScreen() {
     <section className={SCREEN_Y}>
       <Container>
         <SectionTitle heading={c.heading} sub={c.sub} />
-        <ul className="mx-auto mt-10 grid max-w-[1180px] grid-cols-2 items-start gap-x-4 gap-y-10 @min-[640px]:grid-cols-3 @min-[640px]:gap-x-6 @min-[1024px]:mt-12 @min-[1024px]:gap-x-12">
+        <ul className="mx-auto mt-10 grid max-w-[1180px] grid-cols-2 items-start gap-x-4 gap-y-10 @min-[640px]:grid-cols-3 @min-[640px]:gap-x-6 @min-[1024px]:mt-12 @min-[1024px]:max-w-none @min-[1024px]:gap-x-12">
           {c.phones.map((p) => (
             <li key={p.src} className="flex justify-center">
               <Image

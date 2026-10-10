@@ -42,7 +42,7 @@ export function CoverScreen() {
               width={c.orb.width}
               height={c.orb.height}
               priority
-              className="absolute top-[-6%] right-0 w-[48%] max-w-[360px] @min-[1024px]:top-[-12%] @min-[1024px]:right-[2%]"
+              className="absolute top-[-6%] right-0 w-[48%] max-w-[360px] @min-[1024px]:top-[-12%] @min-[1024px]:right-0"
             />
             <Image
               src={c.phone.src}

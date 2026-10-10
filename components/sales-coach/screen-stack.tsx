@@ -3,13 +3,32 @@
 import { Children, useLayoutEffect, useRef, type ReactNode } from "react";
 
 /**
- * Narrowest width (design px) a screen's composition is laid out at
- * once the stack is active (≥1024px viewports). A 1024–1279px viewport
- * scales the whole composition down rather than reflowing it, so each
- * PDF page keeps its desktop arrangement on small laptops / landscape
- * tablets. Portrait tablets and phones get the normal-flow layout.
+ * The desktop page margin, left and right, in real screen px — the same
+ * 60px frame as Stack Up. It sits outside the scaled canvas, so it stays
+ * exactly 60px whatever scale a screen ends up at.
  */
-const DESIGN_MIN_WIDTH = 1280;
+const GUTTER = 60;
+
+/**
+ * Narrowest width (design px) a screen's content is laid out at once
+ * the stack is active (≥1024px viewports): 1280 minus the two gutters.
+ * A narrower viewport scales the whole composition down rather than
+ * reflowing it, so each PDF page keeps its desktop arrangement on small
+ * laptops / landscape tablets. Portrait tablets and phones get the
+ * normal-flow layout.
+ */
+const DESIGN_MIN_WIDTH = 1280 - 2 * GUTTER;
+
+/** Widest a screen's content is ever laid out at, however tall it is. */
+const DESIGN_MAX_WIDTH = 2400;
+
+/**
+ * Every screen's top padding at desktop (SCREEN_Y's 72px). It is kept
+ * at a full 72 real px however far a screen is scaled, so content
+ * pinned to the top of a tall screen always clears the fixed "Back
+ * home" pill (which ends ~56px down) instead of sliding under it.
+ */
+const TOP_PAD = 72;
 
 /**
  * The Sales Coach page-stack — same model as Stack Up's (sibling
@@ -19,13 +38,17 @@ const DESIGN_MIN_WIDTH = 1280;
  * component stays untouched.
  *
  * One difference: Sales Coach's PDF pages vary a lot in height (p3 is
- * almost square, p15 is a wide landscape), so instead of one shared
- * canvas height every screen measures its OWN content and picks the
- * uniform scale that fits it: min(1, viewportW / canvasW,
- * viewportH / contentH). The content height doesn't depend on the
- * scale (transforms don't affect layout size), so there is no
- * measure→scale feedback loop. Measured with ResizeObserver only —
- * nothing runs on scroll, nothing intercepts the wheel.
+ * almost square, p15 is a wide landscape), so every screen measures its
+ * OWN content and picks the largest uniform scale (≤ 1) at which it
+ * fits the viewport height. The canvas is then laid out at
+ * (available width / scale), so once scaled it spans exactly the width
+ * between the two 60px gutters: a screen that has to shrink to fit its
+ * height gets a wider composition, not wider side margins. Because the
+ * content reflows at that width (and its height changes with it), the
+ * scale is found by a short binary search over real layouts. Measured
+ * with ResizeObserver only — nothing runs on scroll, nothing intercepts
+ * the wheel; the search settles on the same width every time, so the
+ * observer doesn't loop.
  *
  * Screens clip with `overflow: clip` (not hidden/auto), which never
  * creates a scroll container: the browser scrollbar is the only one.
@@ -64,15 +87,41 @@ function Screen({ children, index }: { children: ReactNode; index: number }) {
         canvas.style.removeProperty("transform");
         return;
       }
-      const vw = screen.clientWidth;
       const vh = screen.clientHeight;
-      const canvasW = Math.max(vw, DESIGN_MIN_WIDTH);
-      canvas.style.width = `${canvasW}px`;
-      const contentH = content.offsetHeight;
-      const scale = Math.min(1, vw / canvasW, vh / Math.max(contentH, 1));
-      const left = (vw - canvasW * scale) / 2;
-      canvas.style.height = `${vh / scale}px`;
-      canvas.style.transform = `translateX(${left}px) scale(${scale})`;
+      const avail = screen.clientWidth - 2 * GUTTER;
+      // Real px added above a screen scaled to `s`, restoring TOP_PAD.
+      const lift = (s: number) => TOP_PAD * (1 - s);
+      // Lay the content out at the width it gets at scale `s`; true if it fits.
+      const fits = (s: number) => {
+        canvas.style.width = `${avail / s}px`;
+        return content.offsetHeight * s + lift(s) <= vh + 0.5;
+      };
+
+      let scale = Math.min(1, avail / DESIGN_MIN_WIDTH);
+      if (!fits(scale)) {
+        let lo = avail / DESIGN_MAX_WIDTH;
+        let hi = scale;
+        if (fits(lo)) {
+          for (let i = 0; i < 10; i++) {
+            const mid = (lo + hi) / 2;
+            if (fits(mid)) lo = mid;
+            else hi = mid;
+          }
+          scale = lo;
+          fits(scale);
+        } else {
+          // Still too tall at the widest layout: shrink further and centre it.
+          const h = Math.max(content.offsetHeight, 1);
+          scale = (vh - TOP_PAD) / (h - TOP_PAD);
+          const width = avail / lo;
+          canvas.style.width = `${width}px`;
+          canvas.style.height = `${(vh - lift(scale)) / scale}px`;
+          canvas.style.transform = `translate(${GUTTER + (avail - width * scale) / 2}px, ${lift(scale)}px) scale(${scale})`;
+          return;
+        }
+      }
+      canvas.style.height = `${(vh - lift(scale)) / scale}px`;
+      canvas.style.transform = `translate(${GUTTER}px, ${lift(scale)}px) scale(${scale})`;
     };
 
     const ro = new ResizeObserver(apply);
