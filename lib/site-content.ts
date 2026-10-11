@@ -163,3 +163,25 @@ export const selectedWork = {
   featured: SelectedWorkProject;
   secondary: SelectedWorkProject[];
 };
+
+/**
+ * The closing "Let's grow your next idea" section at the very end of
+ * the homepage (components/contact/grow-section.tsx). `headline.lines`
+ * is the deliberate two-line composition from `sm` up; `emphasis` is
+ * the one word inside it set in italic. Contact details are the
+ * owner's own — LinkedIn opens in a new tab, email/phone use
+ * `mailto:`/`tel:`.
+ */
+export const growContact = {
+  intro:
+    "From early ideas to refined experiences, I design thoughtful digital products that earn trust, solve real problems, and help businesses grow.",
+  headline: { lines: ["Let’s grow your", "next idea."], emphasis: "grow" },
+  supporting:
+    "Have a product idea, a challenge to solve, or an opportunity to discuss? Let’s connect.",
+  links: {
+    linkedin: { label: "LinkedIn", href: "https://www.linkedin.com/in/pranjal-sharmaaa/" },
+    email: { label: "pranjallsharmaa23@gmail.com", href: "mailto:pranjallsharmaa23@gmail.com" },
+    phone: { label: "+91 93544 14884", href: "tel:+919354414884" },
+  },
+  gardenHint: { pointer: "Click a flower to water it", touch: "Tap a flower to water it" },
+} as const;

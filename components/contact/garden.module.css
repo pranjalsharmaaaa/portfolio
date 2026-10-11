@@ -1,0 +1,356 @@
+/* The closing garden (garden.tsx). Colours are fixed, not themed: the
+   garden sits on the same theme-independent --shore-solid cream "paper"
+   as About and Selected Work. */
+
+.garden {
+  --fw: 68px; /* base flower width */
+  --soil: 56px; /* soil band height */
+  position: relative;
+  height: 205px;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .garden {
+    --fw: clamp(56px, 7.6vw, 124px);
+    --soil: clamp(64px, 7.5vw, 112px);
+    height: clamp(210px, 23.5vw, 340px);
+  }
+}
+
+/* --------------------------------------------------------- placement */
+
+.flower,
+.sprig {
+  position: absolute;
+  left: var(--xm);
+  bottom: calc(var(--soil) * var(--bm));
+  transform: translateX(-50%);
+}
+.flower[data-phone="false"],
+.sprig[data-phone="false"] {
+  display: none;
+}
+@media (min-width: 640px) {
+  .flower,
+  .sprig {
+    left: var(--x);
+    bottom: calc(var(--soil) * var(--b));
+  }
+  .flower[data-phone="false"],
+  .sprig[data-phone="false"] {
+    display: block;
+  }
+}
+
+.sprig {
+  width: calc(var(--fw) * 0.6 * var(--s));
+  aspect-ratio: 60 / 80;
+  pointer-events: none;
+}
+
+.flower {
+  width: calc(var(--fw) * var(--s));
+  aspect-ratio: 1 / 2;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.flower:focus-visible {
+  outline: 2px solid var(--paper-ink);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+/* The watering-can cursor only where there is a real pointer to carry
+   it — never on touch screens. While a flower is being watered the can
+   is drawn pouring over it, so the cursor steps aside. */
+@media (hover: hover) and (pointer: fine) {
+  .flower {
+    cursor: var(--can-cursor), pointer;
+  }
+  .flower[data-pouring="true"] {
+    cursor: none;
+  }
+}
+
+.art,
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.overlay {
+  pointer-events: none;
+}
+
+.soil {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 100%;
+  height: var(--soil);
+  pointer-events: none;
+}
+.soilRim {
+  fill: #4b3c30;
+}
+.soilBed {
+  fill: #2d2520;
+}
+
+/* ------------------------------------------------------------- sway */
+
+.sway {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: 50% 100%;
+  animation: sway var(--sway) ease-in-out var(--phase) infinite alternate;
+}
+@keyframes sway {
+  from {
+    transform: rotate(-1.4deg);
+  }
+  to {
+    transform: rotate(1.4deg);
+  }
+}
+
+/* ------------------------------------------------------------ plant */
+
+.stem,
+.lavStem,
+.blade {
+  fill: none;
+  stroke-linecap: round;
+}
+.stem {
+  stroke: #4f6b3a;
+  stroke-width: 3.2;
+}
+.lavStem {
+  stroke: #6b7f55;
+  stroke-width: 2.6;
+}
+.blade {
+  stroke: #6f8f4e;
+  stroke-width: 2.2;
+}
+.leaf {
+  fill: #6f8f4e;
+}
+.sprigLeaf {
+  fill: #8aa66a;
+}
+.clumpBack {
+  fill: #5f7d45;
+}
+.clumpFront {
+  fill: #7f9c5f;
+}
+
+/* Bud → bloom: the whole plant grows from its foot; petals open from
+   the disc; lavender buds fill in and colour from the bottom up. */
+.plant,
+.petals,
+.disc {
+  transform-box: view-box;
+  transition: transform 750ms cubic-bezier(0.34, 1.45, 0.64, 1);
+}
+.plant {
+  transform-origin: 50px 200px;
+  transform: scale(0.86);
+}
+.petals,
+.disc {
+  transform-origin: 50px 58px;
+}
+.petals {
+  transform: scale(0.6) rotate(-18deg);
+}
+.disc {
+  transform: scale(0.86);
+}
+
+.flower[data-bloomed="true"] .plant {
+  transform: scale(1);
+}
+.flower[data-bloomed="true"] .petals {
+  transform: scale(1) rotate(0deg);
+}
+.flower[data-bloomed="true"] .disc {
+  transform: scale(1);
+}
+
+@media (hover: hover) {
+  .flower:hover .plant {
+    transform: scale(0.89);
+  }
+  .flower[data-bloomed="true"]:hover .plant {
+    transform: scale(1.02);
+  }
+}
+
+.petal {
+  fill: #fffdf7;
+  stroke: #ddd5c2;
+  stroke-width: 0.8;
+}
+.discOuter {
+  fill: #e8b33d;
+}
+.discInner {
+  fill: #cf8f2a;
+}
+
+.bud {
+  fill: #b9add4;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.8);
+  transition:
+    transform 600ms cubic-bezier(0.34, 1.45, 0.64, 1),
+    fill 600ms ease;
+}
+.flower[data-bloomed="true"] .bud {
+  transform: scale(1.08);
+}
+.flower[data-bloomed="true"] .bud[data-tone="0"] {
+  fill: #8a76c2;
+}
+.flower[data-bloomed="true"] .bud[data-tone="1"] {
+  fill: #a28fd6;
+}
+.flower[data-bloomed="true"] .bud[data-tone="2"] {
+  fill: #7563b0;
+}
+
+/* -------------------------------------------------------- watering */
+
+.can {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: can-pour 1600ms ease both;
+}
+@keyframes can-pour {
+  0% {
+    opacity: 0;
+    transform: translate(6px, -6px) rotate(0deg);
+  }
+  16% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(-8deg);
+  }
+  28%,
+  70% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(-30deg);
+  }
+  88% {
+    opacity: 1;
+    transform: translate(2px, -2px) rotate(-8deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(5px, -5px) rotate(-4deg);
+  }
+}
+
+.drop {
+  fill: #7fb3d6;
+  opacity: 0;
+  transform-box: view-box;
+  animation: drip 560ms ease-in both;
+}
+@keyframes drip {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-4px, 30px);
+  }
+}
+
+.sparkle {
+  fill: #e8b33d;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sparkle 620ms ease-out both;
+}
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(90deg);
+  }
+}
+
+/* ----------------------------------------------------------- hint */
+
+.hintTouch {
+  display: none;
+}
+@media (hover: none), (pointer: coarse) {
+  .hintPointer {
+    display: none;
+  }
+  .hintTouch {
+    display: inline;
+  }
+}
+
+/* --------------------------------------------------- reduced motion */
+
+/* Flowers still bloom when watered — the change is just immediate and
+   quiet: no sway, no falling drops or sparkles, the can only fades. */
+@media (prefers-reduced-motion: reduce) {
+  .sway {
+    animation: none;
+  }
+  .plant,
+  .petals,
+  .disc,
+  .bud {
+    transition-duration: 150ms;
+    transition-delay: 0ms !important;
+    transition-timing-function: ease;
+  }
+  .can {
+    animation: can-fade 700ms ease both;
+    transform: rotate(-30deg);
+  }
+  .drop,
+  .sparkle {
+    display: none;
+  }
+}
+@keyframes can-fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  25%,
+  75% {
+    opacity: 1;
+  }
+}

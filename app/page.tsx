@@ -1,4 +1,5 @@
 import { AboutSection } from "@/components/about/about-section";
+import { GrowSection } from "@/components/contact/grow-section";
 import { Hero } from "@/components/hero/hero";
 import { LoadingScreen } from "@/components/ui/loading-screen";
 import { SelectedWork } from "@/components/work/selected-work";
@@ -71,6 +72,8 @@ export default function Home() {
       </div>
 
       <SelectedWork />
+
+      <GrowSection />
     </>
   );
 }
