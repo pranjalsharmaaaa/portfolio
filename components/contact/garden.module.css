@@ -1,27 +1,153 @@
-/* The closing garden (garden.tsx). Colours are fixed, not themed: the
-   garden sits on the same theme-independent --shore-solid cream "paper"
-   as About and Selected Work. */
+/* The closing "Let's grow" section (grow-section.tsx) and its garden
+   (garden.tsx). Unlike About and Selected Work above it, which sit on
+   the theme-independent --shore-solid "paper", this section follows
+   the site's light/dark toggle: next-themes puts `dark` on <html>, and
+   every colour here comes from the --grow-* tokens below, which that
+   class swaps for a night-garden palette. Because the class is on
+   <html> before first paint, the right theme shows on load too. */
 
-.garden {
-  --fw: 68px; /* base flower width */
+/* ------------------------------------------------------------ scene */
+
+.scene {
+  /* Day: the warm cream paper and the original botanical colours. */
+  --grow-bg: #fffaf2;
+  --grow-ink: #171717;
+  --grow-muted: #5f5f5f;
+  --grow-accent: #5a7743;
+  --soil-rim: #4b3c30;
+  --soil-bed: #2d2520;
+  --stem: #4f6b3a;
+  --lav-stem: #6b7f55;
+  --blade: #6f8f4e;
+  --leaf: #6f8f4e;
+  --sprig-leaf: #8aa66a;
+  --clump-back: #5f7d45;
+  --clump-front: #7f9c5f;
+  --petal: #fffdf7;
+  --petal-edge: #ddd5c2;
+  --bud: #b9add4;
+  --bud-0: #8a76c2;
+  --bud-1: #a28fd6;
+  --bud-2: #7563b0;
+
+  /* Sizes shared by the garden and the text's bottom clearance. Both
+     follow the viewport's height as well as its width, so a short
+     window gets a shorter garden instead of pushing the text off. */
+  --fw: 68px; /* base flower width (box is 1:2) */
   --soil: 56px; /* soil band height */
-  position: relative;
-  height: 205px;
-  overflow: hidden;
+
+  background-color: var(--grow-bg);
+  color: var(--grow-ink);
+  transition:
+    background-color 500ms ease,
+    color 500ms ease;
 }
 
 @media (min-width: 640px) {
-  .garden {
-    --fw: clamp(56px, 7.6vw, 124px);
-    --soil: clamp(64px, 7.5vw, 112px);
-    height: clamp(210px, 23.5vw, 340px);
+  .scene {
+    --fw: clamp(52px, min(7.2vw, 12svh), 116px);
+    --soil: clamp(52px, min(7.5vw, 11svh), 104px);
   }
+}
+
+:global(.dark) .scene {
+  /* Night: a muted midnight-blue garden. Greens and petals are lifted
+     so stems, leaves and flowers still read against the dark sky; the
+     soil goes a shade deeper so it stays the darkest band. */
+  --grow-bg: #101a2e;
+  --grow-ink: #eef1f6;
+  --grow-muted: #b2bccd;
+  --grow-accent: #94c473;
+  --soil-rim: #2c2531;
+  --soil-bed: #16131b;
+  --stem: #6f9a56;
+  --lav-stem: #86a06b;
+  --blade: #7ea660;
+  --leaf: #7ea660;
+  --sprig-leaf: #94b578;
+  --clump-back: #5f8746;
+  --clump-front: #86a96a;
+  --petal: #f6f3ea;
+  --petal-edge: #a9a4b8;
+  --bud: #8f86ad;
+  --bud-0: #a893e6;
+  --bud-1: #c0b0f2;
+  --bud-2: #9581d8;
+}
+
+/* A quiet night sky behind everything: a slightly deeper top and a
+   faint moonlit glow, cross-faded in so the theme switch is smooth
+   (gradients themselves can't transition). Nothing in light mode. */
+.scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 45% at 78% 8%, rgb(150 175 230 / 12%), transparent 70%),
+    linear-gradient(to bottom, #0b1324 0%, transparent 55%);
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+:global(.dark) .scene::before {
+  opacity: 1;
+}
+
+/* Layers: night sky (0) → garden (1) → text (2). The text column
+   ignores the pointer except on its own words and links, so flowers
+   behind empty space stay clickable while flowers can never sit on top
+   of a link. */
+.foreground {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  /* Keep the text clear of the resting garden: the soil plus a young
+     plant's height. */
+  padding-bottom: calc(var(--soil) + var(--fw) * 1.05);
+}
+
+/* The text block itself. A soft wash of the section colour sits right
+   behind the words (its own stacking context keeps it above the
+   garden), so a tall flower passing behind the headline is softened,
+   never competing with it, in either theme. */
+.copy {
+  position: relative;
+  isolation: isolate;
+}
+.copy > * {
+  pointer-events: auto;
+}
+.copy::before {
+  content: "";
+  position: absolute;
+  inset: -8% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--grow-bg) 62%, transparent) 0%,
+    color-mix(in srgb, var(--grow-bg) 45%, transparent) 62%,
+    transparent 100%
+  );
+}
+
+/* ----------------------------------------------------------- garden */
+
+.garden {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  /* Full bloom's stem stretch until garden.tsx measures the real one. */
+  --kmax: 2.4;
 }
 
 /* --------------------------------------------------------- placement */
 
 .flower,
-.sprig {
+.sprig,
+.probe {
   position: absolute;
   left: var(--xm);
   bottom: calc(var(--soil) * var(--bm));
@@ -33,7 +159,8 @@
 }
 @media (min-width: 640px) {
   .flower,
-  .sprig {
+  .sprig,
+  .probe {
     left: var(--x);
     bottom: calc(var(--soil) * var(--b));
   }
@@ -41,6 +168,13 @@
   .sprig[data-phone="false"] {
     display: block;
   }
+}
+
+.probe {
+  width: var(--fw);
+  aspect-ratio: 1 / 2;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .sprig {
@@ -60,7 +194,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 .flower:focus-visible {
-  outline: 2px solid var(--paper-ink);
+  outline: 2px solid var(--grow-ink);
   outline-offset: 4px;
   border-radius: 999px;
 }
@@ -99,10 +233,12 @@
   pointer-events: none;
 }
 .soilRim {
-  fill: #4b3c30;
+  fill: var(--soil-rim);
+  transition: fill 500ms ease;
 }
 .soilBed {
-  fill: #2d2520;
+  fill: var(--soil-bed);
+  transition: fill 500ms ease;
 }
 
 /* ------------------------------------------------------------- sway */
@@ -132,75 +268,112 @@
   stroke-linecap: round;
 }
 .stem {
-  stroke: #4f6b3a;
+  stroke: var(--stem);
   stroke-width: 3.2;
 }
 .lavStem {
-  stroke: #6b7f55;
+  stroke: var(--lav-stem);
   stroke-width: 2.6;
 }
 .blade {
-  stroke: #6f8f4e;
+  stroke: var(--blade);
   stroke-width: 2.2;
 }
 .leaf {
-  fill: #6f8f4e;
+  fill: var(--leaf);
 }
 .sprigLeaf {
-  fill: #8aa66a;
+  fill: var(--sprig-leaf);
 }
 .clumpBack {
-  fill: #5f7d45;
+  fill: var(--clump-back);
 }
 .clumpFront {
-  fill: #7f9c5f;
+  fill: var(--clump-front);
 }
 
-/* Bud → bloom: the whole plant grows from its foot; petals open from
-   the disc; lavender buds fill in and colour from the bottom up. */
+/* ----------------------------------------------------------- growth */
+
+/* Each watering moves a flower one stage along: `--t` is how far from
+   sprout (0) to full bloom (1), `--hs` the head's size, `--open` how
+   open the daisy's petals are. The stem stretch `--k` runs from the
+   sprout's `--k0` to the garden's measured `--kmax`. Stages are set
+   here, never accumulated, so a flower can't grow past full bloom. */
+.flower {
+  --t: 0;
+  --hs: 0.5;
+  --open: 0.3;
+  --k: calc(var(--k0) + (var(--kmax) - var(--k0)) * var(--t));
+}
+.flower[data-stage="1"] {
+  --t: 0.14;
+  --hs: 0.66;
+  --open: 0.55;
+}
+.flower[data-stage="2"] {
+  --t: 0.32;
+  --hs: 0.8;
+  --open: 0.8;
+}
+.flower[data-stage="3"] {
+  --t: 0.54;
+  --hs: 0.92;
+  --open: 1;
+}
+.flower[data-stage="4"] {
+  --t: 0.77;
+  --hs: 1;
+  --open: 1;
+}
+.flower[data-stage="5"] {
+  --t: 1;
+  --hs: 1.1;
+  --open: 1;
+}
+
 .plant,
+.stalk,
+.rider,
 .petals,
 .disc {
   transform-box: view-box;
-  transition: transform 750ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  transition: transform 800ms cubic-bezier(0.34, 1.35, 0.64, 1);
 }
-.plant {
+
+/* The stem stretches up from its foot … */
+.stalk {
   transform-origin: 50px 200px;
-  transform: scale(0.86);
+  transform: scaleY(var(--k));
 }
+/* … and whatever sits on it rides up to where the stretch carries it. */
+.rider {
+  transform: translateY(calc((1 - var(--k)) * var(--rise)));
+}
+.head {
+  transform: translateY(calc((1 - var(--k)) * var(--rise))) scale(var(--hs));
+}
+
 .petals,
 .disc {
   transform-origin: 50px 58px;
 }
 .petals {
-  transform: scale(0.6) rotate(-18deg);
-}
-.disc {
-  transform: scale(0.86);
+  transform: scale(var(--open)) rotate(calc((1 - var(--open)) * -26deg));
 }
 
-.flower[data-bloomed="true"] .plant {
-  transform: scale(1);
-}
-.flower[data-bloomed="true"] .petals {
-  transform: scale(1) rotate(0deg);
-}
-.flower[data-bloomed="true"] .disc {
-  transform: scale(1);
-}
-
+/* A small lift on hover says "this one's interactive". */
 @media (hover: hover) {
-  .flower:hover .plant {
-    transform: scale(0.89);
+  .plant {
+    transform-origin: 50px 200px;
   }
-  .flower[data-bloomed="true"]:hover .plant {
-    transform: scale(1.02);
+  .flower:hover .plant {
+    transform: scale(1.03);
   }
 }
 
 .petal {
-  fill: #fffdf7;
-  stroke: #ddd5c2;
+  fill: var(--petal);
+  stroke: var(--petal-edge);
   stroke-width: 0.8;
 }
 .discOuter {
@@ -210,8 +383,10 @@
   fill: #cf8f2a;
 }
 
+/* Lavender buds start pale and small, colour from stage 2 and fill out
+   toward full bloom. */
 .bud {
-  fill: #b9add4;
+  fill: var(--bud);
   transform-box: fill-box;
   transform-origin: center;
   transform: scale(0.8);
@@ -219,20 +394,31 @@
     transform 600ms cubic-bezier(0.34, 1.45, 0.64, 1),
     fill 600ms ease;
 }
-.flower[data-bloomed="true"] .bud {
+.flower[data-stage="2"] .bud,
+.flower[data-stage="3"] .bud {
+  transform: scale(0.95);
+}
+.flower[data-stage="4"] .bud,
+.flower[data-stage="5"] .bud {
   transform: scale(1.08);
 }
-.flower[data-bloomed="true"] .bud[data-tone="0"] {
-  fill: #8a76c2;
+.flower:not([data-stage="0"], [data-stage="1"]) .bud[data-tone="0"] {
+  fill: var(--bud-0);
 }
-.flower[data-bloomed="true"] .bud[data-tone="1"] {
-  fill: #a28fd6;
+.flower:not([data-stage="0"], [data-stage="1"]) .bud[data-tone="1"] {
+  fill: var(--bud-1);
 }
-.flower[data-bloomed="true"] .bud[data-tone="2"] {
-  fill: #7563b0;
+.flower:not([data-stage="0"], [data-stage="1"]) .bud[data-tone="2"] {
+  fill: var(--bud-2);
 }
 
 /* -------------------------------------------------------- watering */
+
+/* The pour overlay follows the head up the stem. */
+.overlay {
+  transform: translateY(calc((1 - var(--k)) * var(--rise)));
+  transition: transform 800ms cubic-bezier(0.34, 1.35, 0.64, 1);
+}
 
 .can {
   transform-box: view-box;
@@ -321,13 +507,20 @@
 
 /* --------------------------------------------------- reduced motion */
 
-/* Flowers still bloom when watered — the change is just immediate and
+/* Flowers still grow when watered — the change is just immediate and
    quiet: no sway, no falling drops or sparkles, the can only fades. */
 @media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene::before {
+    transition-duration: 0ms;
+  }
   .sway {
     animation: none;
   }
   .plant,
+  .stalk,
+  .rider,
+  .overlay,
   .petals,
   .disc,
   .bud {

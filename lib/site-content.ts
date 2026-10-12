@@ -185,5 +185,8 @@ export const growContact = {
     email: { label: "pranjallsharmaa23@gmail.com", href: "mailto:pranjallsharmaa23@gmail.com" },
     phone: { label: "+91 93544 14884", href: "tel:+919354414884" },
   },
-  gardenHint: { pointer: "Click a flower to water it", touch: "Tap a flower to water it" },
+  gardenHint: {
+    pointer: "Click a flower to water it — keep watering to help it grow",
+    touch: "Tap a flower to water it — keep watering to help it grow",
+  },
 } as const;

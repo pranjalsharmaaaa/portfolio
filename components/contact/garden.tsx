@@ -5,22 +5,38 @@ import { useReducedMotion } from "framer-motion";
 import styles from "./garden.module.css";
 
 /**
- * The illustrated garden closing the homepage: a dark, gently curved
- * bed with daisies and lavender standing in it. Every flower is a real
- * <button> — click (or tap, or Enter/Space) to water it: a watering can
- * tips over it, a few drops fall, and it grows into full bloom with a
- * small sparkle. Each flower keeps its own state, so any number can be
- * watered, in any order, as many times as you like.
+ * The illustrated garden behind the closing section: a dark, gently
+ * curved bed with daisies and lavender standing in it. It fills the
+ * whole section as its back layer (grow-section.tsx puts the text in
+ * front), so a well-watered flower can rise behind the headline.
+ *
+ * Every flower is a real <button> — click (or tap, or Enter/Space) to
+ * water it: a watering can tips over it, a few drops fall, and it grows
+ * one stage, from a young sprout (stage 0) to full bloom (stage
+ * MAX_STAGE), each flower independently. Past full bloom, watering
+ * still pours but the flower stops growing.
+ *
+ * Growth is drawn, not scaled: the stem stretches upward from its foot
+ * and the head (daisy) or bud spikes (lavender) ride up to its new top,
+ * so a tall flower keeps the proportions of a short one. How tall full
+ * bloom is depends on the garden's own height (`--kmax`, measured
+ * below), so it reaches about the headline's level on any screen.
  *
  * Everything moves with CSS transforms on SVG — no layout ever changes,
  * nothing scrolls sideways (the garden clips its own overflow), and
  * reduced motion drops the sway, drops and sparkles while keeping the
- * bloom itself.
+ * growth itself.
  *
  * Coordinates: each flower is drawn in a 100×200 box whose bottom
  * centre (50,200) is the stem's foot. Flowers are positioned by `x`
  * (percent across the garden) and stand on the soil's curved top edge.
  */
+
+/** Waterings from sprout to full bloom. */
+const MAX_STAGE = 5;
+
+/** Stem stretch `k` at stage 0 (1 = the stem as drawn; full bloom is `--kmax`). */
+const K_SPROUT = 0.55;
 
 type FlowerKind = "daisy" | "lavender";
 
@@ -85,20 +101,32 @@ const r2 = (n: number) => n.toFixed(2);
 
 const DAISY_PETALS = Array.from({ length: 14 }, (_, i) => r2((i * 360) / 14));
 
+/**
+ * Each moving part rises by `(1 − k) × its distance above the foot`
+ * (the `--rise` on it), which is exactly where the stretched stem
+ * carries that point — so leaves stay on the stem and the head stays on
+ * its tip at every stage.
+ */
 function Daisy() {
   return (
     <>
-      <path d="M50 200 C 47 165, 54 120, 50 62" className={styles.stem} />
-      <path d="M49.5 160 C 37 155, 28 143, 25 131 C 38 133, 47 144, 49.5 160 Z" className={styles.leaf} />
-      <path d="M51 128 C 63 122, 71 110, 74 99 C 61 102, 53 112, 51 128 Z" className={styles.leaf} />
-      <g className={styles.petals}>
-        {DAISY_PETALS.map((a) => (
-          <ellipse key={a} cx="50" cy="45" rx="4.6" ry="12.5" transform={`rotate(${a} 50 58)`} className={styles.petal} />
-        ))}
+      <path d="M50 200 C 47 165, 54 120, 50 62" className={`${styles.stem} ${styles.stalk}`} />
+      <g className={styles.rider} style={{ "--rise": "40px" } as CSSProperties}>
+        <path d="M49.5 160 C 37 155, 28 143, 25 131 C 38 133, 47 144, 49.5 160 Z" className={styles.leaf} />
       </g>
-      <g className={styles.disc}>
-        <circle cx="50" cy="58" r="8" className={styles.discOuter} />
-        <circle cx="50" cy="58" r="4.2" className={styles.discInner} />
+      <g className={styles.rider} style={{ "--rise": "72px" } as CSSProperties}>
+        <path d="M51 128 C 63 122, 71 110, 74 99 C 61 102, 53 112, 51 128 Z" className={styles.leaf} />
+      </g>
+      <g className={`${styles.rider} ${styles.head}`} style={{ "--rise": "138px", transformOrigin: "50px 58px" } as CSSProperties}>
+        <g className={styles.petals}>
+          {DAISY_PETALS.map((a) => (
+            <ellipse key={a} cx="50" cy="45" rx="4.6" ry="12.5" transform={`rotate(${a} 50 58)`} className={styles.petal} />
+          ))}
+        </g>
+        <g className={styles.disc}>
+          <circle cx="50" cy="58" r="8" className={styles.discOuter} />
+          <circle cx="50" cy="58" r="4.2" className={styles.discInner} />
+        </g>
       </g>
     </>
   );
@@ -131,7 +159,9 @@ const LAVENDER_SPIKES = [
       order: spike.n - 1 - i,
     };
   });
-  return { stem: spike.stem, buds };
+  // The spike's buds ride up with its stem top (y of the stem's end).
+  const stemTop = Number(spike.stem.split(", ").pop()!.split(" ")[1]);
+  return { stem: spike.stem, buds, rise: 200 - stemTop, origin: `${tx}px ${ty}px` };
 });
 
 function Lavender() {
@@ -140,21 +170,27 @@ function Lavender() {
       <path d="M49 200 C 44 186, 39 178, 33 172" className={styles.blade} />
       <path d="M51 200 C 57 187, 62 180, 69 175" className={styles.blade} />
       {LAVENDER_SPIKES.map((spike) => (
-        <path key={spike.stem} d={spike.stem} className={styles.lavStem} />
+        <path key={spike.stem} d={spike.stem} className={`${styles.lavStem} ${styles.stalk}`} />
       ))}
-      {LAVENDER_SPIKES.flatMap((spike, si) =>
-        spike.buds.map((b, i) => (
-          <g key={`${si}-${i}`} transform={`translate(${b.x} ${b.y}) rotate(${b.rot}) scale(${b.scale})`}>
-            <ellipse
-              rx="3.8"
-              ry="5.6"
-              className={styles.bud}
-              data-tone={b.tone}
-              style={{ transitionDelay: `${b.order * 45}ms` }}
-            />
-          </g>
-        )),
-      )}
+      {LAVENDER_SPIKES.map((spike, si) => (
+        <g
+          key={si}
+          className={`${styles.rider} ${styles.head}`}
+          style={{ "--rise": `${spike.rise}px`, transformOrigin: spike.origin } as CSSProperties}
+        >
+          {spike.buds.map((b, i) => (
+            <g key={i} transform={`translate(${b.x} ${b.y}) rotate(${b.rot}) scale(${b.scale})`}>
+              <ellipse
+                rx="3.8"
+                ry="5.6"
+                className={styles.bud}
+                data-tone={b.tone}
+                style={{ transitionDelay: `${b.order * 45}ms` }}
+              />
+            </g>
+          ))}
+        </g>
+      ))}
     </>
   );
 }
@@ -194,10 +230,19 @@ const SPARKLES = [
 
 const HEAD: Record<FlowerKind, [number, number]> = { daisy: [50, 58], lavender: [50, 44] };
 
+/** How far each kind's head sits above the foot (its `--rise`), for the pour overlay. */
+const HEAD_RISE: Record<FlowerKind, number> = { daisy: 138, lavender: 164 };
+
 function PourOverlay({ kind, mirrored }: { kind: FlowerKind; mirrored: boolean }) {
   const [hx, hy] = HEAD[kind];
   return (
-    <svg viewBox="0 0 100 200" className={styles.overlay} overflow="visible" aria-hidden="true">
+    <svg
+      viewBox="0 0 100 200"
+      className={styles.overlay}
+      overflow="visible"
+      aria-hidden="true"
+      style={{ "--rise": `${HEAD_RISE[kind] / 2}%` } as CSSProperties}
+    >
       <g transform={mirrored ? `translate(${2 * hx} 0) scale(-1 1)` : undefined}>
         <g transform={`translate(${hx + 7} ${hy - 40})`}>
           <g className={styles.can} dangerouslySetInnerHTML={{ __html: CAN_MARKUP }} />
@@ -231,7 +276,11 @@ const NAMES: Record<FlowerKind, string> = { daisy: "daisy", lavender: "lavender"
 
 function Flower({ spec }: { spec: FlowerSpec }) {
   const reduceMotion = useReducedMotion();
-  const [bloomed, setBloomed] = useState(false);
+  // `stage` counts every watering (so each click can be acted on at
+  // once); `shown` is what the plant displays, lagging a beat behind so
+  // it grows as the water lands rather than before the can tips.
+  const [stage, setStage] = useState(0);
+  const [shown, setShown] = useState(0);
   const [pouring, setPouring] = useState(false);
   const [pourId, setPourId] = useState(0);
   const timers = useRef<number[]>([]);
@@ -242,12 +291,14 @@ function Flower({ spec }: { spec: FlowerSpec }) {
   }, []);
 
   function water() {
+    const next = Math.min(MAX_STAGE, stage + 1);
     timers.current.forEach(clearTimeout);
     timers.current.length = 0;
+    setStage(next);
     setPourId((n) => n + 1);
     setPouring(true);
     timers.current.push(
-      window.setTimeout(() => setBloomed(true), reduceMotion ? 0 : 450),
+      window.setTimeout(() => setShown(next), reduceMotion ? 0 : 450),
       window.setTimeout(() => setPouring(false), reduceMotion ? 700 : 1600),
     );
   }
@@ -269,10 +320,15 @@ function Flower({ spec }: { spec: FlowerSpec }) {
       className={styles.flower}
       style={style}
       data-kind={spec.kind}
-      data-bloomed={bloomed}
+      data-stage={shown}
+      data-full={shown === MAX_STAGE}
       data-pouring={pouring}
       data-phone={spec.xm !== undefined}
-      aria-label={bloomed ? `The ${name} is in bloom — water it again` : `Water the ${name}`}
+      aria-label={
+        stage === MAX_STAGE
+          ? `The ${name} is fully grown`
+          : `Water the ${name} (grown ${stage} of ${MAX_STAGE})`
+      }
       onClick={water}
     >
       <span className={styles.sway}>
@@ -325,13 +381,40 @@ function Sprig({ kind }: { kind: SprigKind }) {
 
 /* ----------------------------------------------------------- garden */
 
+/** Fraction of the garden's height a fully grown head reaches (≈ the headline). */
+const FULL_REACH = 0.62;
+
 export function Garden() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Full bloom is as tall as the garden allows: solve for the stem
+  // stretch `k` that puts a daisy head at FULL_REACH of the garden's
+  // height (head centre = (4 + 138k)/200 of the flower box above its
+  // foot). Recomputed whenever the garden resizes.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      const probe = el.querySelector<HTMLElement>("[data-probe]");
+      if (!probe || probe.offsetHeight === 0) return;
+      const box = probe.offsetHeight;
+      const foot = parseFloat(getComputedStyle(probe).bottom) || 0;
+      const k = (((FULL_REACH * el.clientHeight - foot) * 200) / box - 4) / 138;
+      el.style.setProperty("--kmax", Math.min(4.5, Math.max(1.6, k)).toFixed(3));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <div
+      ref={ref}
       role="group"
-      aria-label="A small garden. Water a flower to help it bloom."
+      aria-label="A small garden. Water a flower again and again to help it grow."
       className={styles.garden}
-      style={{ "--can-cursor": CAN_CURSOR } as CSSProperties}
+      style={{ "--can-cursor": CAN_CURSOR, "--k0": K_SPROUT } as CSSProperties}
     >
       {SPRIGS.map((s, i) => (
         <span
@@ -355,6 +438,14 @@ export function Garden() {
       {FLOWERS.map((spec, i) => (
         <Flower key={i} spec={spec} />
       ))}
+
+      {/* Invisible s=1 flower box at the garden's centre, for sizing full bloom. */}
+      <span
+        data-probe
+        aria-hidden="true"
+        className={styles.probe}
+        style={{ "--x": "50%", "--xm": "50%", "--b": footing(50), "--bm": footing(50) } as CSSProperties}
+      />
 
       <svg viewBox="0 0 1000 120" preserveAspectRatio="none" className={styles.soil} aria-hidden="true">
         <path d="M0 120 L0 54 C 250 14, 750 14, 1000 54 L1000 120 Z" className={styles.soilRim} />
