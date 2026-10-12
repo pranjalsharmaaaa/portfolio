@@ -101,7 +101,13 @@ export function Cassette() {
       return;
     }
     if (audio.paused) {
-      audio.play().catch(fail);
+      audio.play().catch((err: unknown) => {
+        // Pausing before play() settles (a quick second tap while the
+        // file is still loading) rejects it with AbortError. That's the
+        // listener changing their mind, not a broken file.
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        fail();
+      });
     } else {
       audio.pause();
     }
@@ -187,7 +193,10 @@ export function Cassette() {
             type="button"
             aria-label={failed ? cassette.errorLabel : playing ? cassette.pauseLabel : cassette.playLabel}
             onClick={toggle}
-            className={`flex h-[3.4em] w-[3.4em] shrink-0 items-center justify-center rounded-full transition-transform duration-150 ease-out hover:scale-105 active:scale-90 sm:h-[2.7em] sm:w-[2.7em] ${
+            // Scales with the cassette like everything else, but clamped
+            // so it's never under a 44px tap target on phones nor past
+            // 56px on large screens (≈49–56px across desktop widths).
+            className={`flex size-[clamp(44px,3.5em,56px)] shrink-0 items-center justify-center rounded-full transition-transform duration-150 ease-out hover:scale-105 active:scale-90 ${
               nudgeKey ? "cassette-nudge" : ""
             }`}
             style={{ background: "#1c2230", color: "#fbf3e6" }}
