@@ -3,9 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { cassette } from "@/lib/site-content";
 
-function Reel() {
+/** idle: at rest (load, ended, error) · playing: turning · paused: frozen where it stopped. */
+type ReelState = "idle" | "playing" | "paused";
+
+function Reel({ state }: { state: ReelState }) {
   return (
     <div
+      data-reel={state}
       className="cassette-reel relative flex aspect-square w-[3.3em] shrink-0 items-center justify-center rounded-full sm:w-[4.6em]"
       style={{
         background:
@@ -55,6 +59,7 @@ export function Cassette() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [nudgeKey, setNudgeKey] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [reel, setReel] = useState<ReelState>("idle");
   const [failed, setFailed] = useState(false);
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -85,6 +90,7 @@ export function Cassette() {
   function fail() {
     setFailed(true);
     setPlaying(false);
+    setReel("idle");
     setNudgeKey((k) => k + 1);
   }
 
@@ -119,7 +125,7 @@ export function Cassette() {
           "0 24px 48px -12px rgb(28 34 48 / 22%), inset 0 0 0 1px rgb(255 255 255 / 60%)",
       }}
     >
-      <Reel />
+      <Reel state={reel} />
 
       <div
         className="flex min-w-0 flex-1 flex-col gap-[0.7em] rounded-[1.2em] px-[1em] py-[0.95em]"
@@ -155,14 +161,22 @@ export function Cassette() {
             preload="metadata"
             onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
             onDurationChange={(e) => setDuration(e.currentTarget.duration)}
+            // The button follows intent (play/pause, instant feedback);
+            // the reels follow what the audio is actually doing:
+            // `playing` only once sound is really coming out, frozen
+            // while paused or buffering, back to rest when it ends.
             onPlay={() => setPlaying(true)}
+            onPlaying={() => setReel("playing")}
+            onWaiting={() => setReel((r) => (r === "playing" ? "paused" : r))}
             onPause={(e) => {
               setPlaying(false);
+              setReel("paused");
               setCurrent(e.currentTarget.currentTime);
             }}
             onEnded={(e) => {
               e.currentTarget.currentTime = 0;
               setPlaying(false);
+              setReel("idle");
               setCurrent(0);
             }}
             onError={fail}
@@ -173,18 +187,35 @@ export function Cassette() {
             type="button"
             aria-label={failed ? cassette.errorLabel : playing ? cassette.pauseLabel : cassette.playLabel}
             onClick={toggle}
-            className={`flex h-[3.4em] w-[3.4em] shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105 sm:h-[2.7em] sm:w-[2.7em] ${
+            className={`flex h-[3.4em] w-[3.4em] shrink-0 items-center justify-center rounded-full transition-transform duration-150 ease-out hover:scale-105 active:scale-90 sm:h-[2.7em] sm:w-[2.7em] ${
               nudgeKey ? "cassette-nudge" : ""
             }`}
             style={{ background: "#1c2230", color: "#fbf3e6" }}
           >
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-[40%] w-[40%]">
-              {playing ? (
-                <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
-              ) : (
+            {/* Both icons stay mounted and cross-fade: the outgoing one
+                shrinks and turns away as the incoming one settles in. */}
+            <span className="relative h-[40%] w-[40%]">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                className={`absolute inset-0 h-full w-full transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-opacity ${
+                  playing ? "scale-50 -rotate-90 opacity-0" : "scale-100 rotate-0 opacity-100"
+                }`}
+              >
                 <path d="M8 5v14l11-7z" />
-              )}
-            </svg>
+              </svg>
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                className={`absolute inset-0 h-full w-full transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-opacity ${
+                  playing ? "scale-100 rotate-0 opacity-100" : "scale-50 rotate-90 opacity-0"
+                }`}
+              >
+                <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
+              </svg>
+            </span>
           </button>
 
           <div className="flex min-w-0 flex-1 flex-col gap-[0.45em]">
@@ -220,7 +251,7 @@ export function Cassette() {
         </div>
       </div>
 
-      <Reel />
+      <Reel state={reel} />
     </div>
   );
 }

@@ -170,8 +170,7 @@
   --animate-spin-slow: spin 5s linear infinite;
   --animate-float-slow: float-slow 6s ease-in-out infinite;
   --animate-shooting-star: shooting-star 23s linear infinite;
-  --animate-reel-idle: spin 34s linear infinite;
-  --animate-reel-awake: spin 5s linear infinite;
+  --animate-reel-spin: spin 2.4s linear infinite;
 }
 
 @keyframes twinkle {
@@ -332,12 +331,19 @@
 /* Cassette                                                             */
 /* ------------------------------------------------------------------ */
 
-.cassette-reel {
-  animation: var(--animate-reel-idle);
+/* The reels turn only while the rap is genuinely playing. `data-reel`
+   is set from the <audio> element's own events (cassette.tsx):
+   idle → no animation, so the reels sit at their resting angle (page
+   load, after the track ends, on error); playing → one continuous
+   spin; paused (paused, or buffering) → the same animation frozen in
+   place, so resuming carries on from that angle. One CSS animation
+   per reel, toggled — never a second loop stacked on the first. */
+.cassette-reel[data-reel="playing"],
+.cassette-reel[data-reel="paused"] {
+  animation: var(--animate-reel-spin);
 }
-.cassette:hover .cassette-reel,
-.cassette:focus-within .cassette-reel {
-  animation: var(--animate-reel-awake);
+.cassette-reel[data-reel="paused"] {
+  animation-play-state: paused;
 }
 
 /* A brief, honest "not yet" shake on the play control — feedback
@@ -365,7 +371,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cassette-reel {
+  .cassette-reel[data-reel] {
     animation: none;
   }
   .cassette-nudge {
