@@ -161,7 +161,10 @@ function BeforeAfterScreen({ c }: { c: BeforeAfter }) {
               </div>
               <ol className="grid grid-cols-1 gap-4 @min-[640px]:grid-cols-3 @min-[640px]:gap-3">
                 {data.steps.map((s, i) => (
-                  <li key={s.title} className="flex items-start gap-3">
+                  // 1024–1279px: two cards side by side leave each step too
+                  // narrow for its disc and words in one row, so the disc
+                  // sits above its text there.
+                  <li key={s.title} className="flex items-start gap-3 @min-[1024px]:flex-col @min-[1024px]:gap-2 @min-[1280px]:flex-row @min-[1280px]:gap-3">
                     <NumberDisc n={String(i + 1).padStart(2, "0")} size="sm" tone={tone === "pink" ? "pink" : "grey"} />
                     <p className="text-[15px] leading-[1.35] @min-[640px]:text-[17px]">
                       <span className="block font-medium text-[var(--sc-ink)]">{s.title}</span>

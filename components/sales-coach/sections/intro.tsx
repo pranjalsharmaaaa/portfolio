@@ -3,30 +3,43 @@ import { scBriefMore, scCover, scEnvironment, scFinding } from "@/lib/sales-coac
 import { Card, Container, SCREEN_Y, SectionTitle, Takeaway } from "@/components/sales-coach/primitives";
 
 /* ── PDF p1 · Cover ─────────────────────────────────────────────────── */
+/**
+ * From 1024px the cover is two columns that start at the same line: the
+ * title, headline, body and role on the left, the phone + AI orb on the
+ * right. The headline, body and phone are sized by the viewport's height
+ * as well as its width (`svh`), so the whole cover fits one desktop
+ * screen — 1440×900 and 1280×800 alike — without clipping anything:
+ * nothing is forced to `100vh`, it's simply sized to fit. The phone is
+ * capped by its column's width too (`max-w-full`), so it can never run
+ * into the right margin. Role and audience sit side by side, each on
+ * one line, and drop to their own rows only when the column is too
+ * narrow for both. Below 1024px it stacks, as tall as it needs.
+ */
 export function CoverScreen() {
   const c = scCover;
   return (
     <section className={SCREEN_Y} aria-labelledby="sc-title">
       <Container>
-        <h1
-          id="sc-title"
-          className="inline-block rounded-[22px] bg-[linear-gradient(90deg,#7a0202,#4b0000_55%,#1f0000)] px-7 py-3 text-[40px] leading-tight font-medium tracking-[-0.01em] text-white shadow-[0_18px_40px_-14px_rgba(80,0,0,0.55)] @min-[640px]:px-8 @min-[640px]:py-4 @min-[640px]:text-[56px]"
-        >
-          {c.badge}
-        </h1>
-        <p className="mt-10 max-w-[1500px] text-[26px] leading-[1.35] font-medium tracking-[-0.015em] text-[var(--sc-ink)] @min-[640px]:text-[36px] @min-[1024px]:mt-14 @min-[1024px]:text-[40px]">
-          {c.headline}
-        </p>
-
-        <div className="mt-8 grid gap-10 @min-[1024px]:mt-6 @min-[1024px]:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] @min-[1024px]:gap-6">
-          <div className="@min-[1024px]:pt-4">
-            <p className="max-w-[640px] text-[18px] leading-[1.55] text-[var(--sc-ink)] @min-[640px]:text-[24px]">{c.body}</p>
-            <dl className="mt-10 grid gap-8 @min-[640px]:grid-cols-2 @min-[1024px]:mt-16 @min-[1024px]:grid-cols-1 @min-[1024px]:gap-12">
+        <div className="grid gap-10 @min-[1024px]:grid-cols-[minmax(0,1.12fr)_minmax(0,1fr)] @min-[1024px]:items-start @min-[1024px]:gap-12">
+          <div>
+            <h1
+              id="sc-title"
+              className="inline-block rounded-[22px] bg-[linear-gradient(90deg,#7a0202,#4b0000_55%,#1f0000)] px-7 py-3 text-[40px] leading-tight font-medium tracking-[-0.01em] text-white shadow-[0_18px_40px_-14px_rgba(80,0,0,0.55)] @min-[640px]:px-8 @min-[640px]:py-4 @min-[640px]:text-[56px]"
+            >
+              {c.badge}
+            </h1>
+            <p className="mt-10 max-w-[1500px] text-[26px] leading-[1.3] font-medium tracking-[-0.015em] text-[var(--sc-ink)] @min-[640px]:text-[36px] @min-[1024px]:mt-[max(1.5rem,4svh)] @min-[1024px]:text-[clamp(30px,min(2.8vw,4.6svh),40px)]">
+              {c.headline}
+            </p>
+            <p className="mt-8 max-w-[640px] text-[18px] leading-[1.55] text-[var(--sc-ink)] @min-[640px]:text-[24px] @min-[1024px]:mt-[max(1.25rem,3svh)] @min-[1024px]:text-[clamp(18px,min(1.65vw,2.7svh),24px)]">
+              {c.body}
+            </p>
+            <dl className="mt-10 grid gap-8 @min-[640px]:grid-cols-2 @min-[1024px]:mt-[max(1.5rem,4svh)] @min-[1024px]:flex @min-[1024px]:flex-wrap @min-[1024px]:gap-x-14 @min-[1024px]:gap-y-5">
               {c.meta.map((m) => (
                 <div key={m.label}>
-                  <dt className="text-[14px] font-medium tracking-[0.06em] text-[var(--sc-muted)] uppercase @min-[640px]:text-[18px]">{m.label}</dt>
+                  <dt className="text-[14px] font-medium tracking-[0.06em] text-[var(--sc-muted)] uppercase @min-[640px]:text-[18px] @min-[1024px]:text-[clamp(14px,1.15vw,18px)]">{m.label}</dt>
                   {m.lines.map((l) => (
-                    <dd key={l} className="mt-2 text-[19px] leading-snug text-[var(--sc-ink)] @min-[640px]:text-[24px]">
+                    <dd key={l} className="mt-2 text-[19px] leading-snug text-[var(--sc-ink)] @min-[640px]:text-[24px] @min-[1024px]:mt-1.5 @min-[1024px]:text-[clamp(18px,min(1.4vw,2.4svh),22px)] @min-[1024px]:whitespace-nowrap">
                       {l}
                     </dd>
                   ))}
@@ -42,7 +55,7 @@ export function CoverScreen() {
               width={c.orb.width}
               height={c.orb.height}
               priority
-              className="absolute top-[-6%] right-0 w-[48%] max-w-[360px] @min-[1024px]:top-[-12%] @min-[1024px]:right-0"
+              className="absolute top-[-6%] right-0 w-[48%] max-w-[360px] @min-[1024px]:top-[2%] @min-[1024px]:w-[52%]"
             />
             <Image
               src={c.phone.src}
@@ -51,7 +64,7 @@ export function CoverScreen() {
               height={c.phone.height}
               priority
               sizes="(min-width: 1024px) 40vw, 90vw"
-              className="relative w-[78%] max-w-[560px] @min-[1024px]:ml-[2%] @min-[1024px]:h-[600px] @min-[1024px]:w-auto @min-[1024px]:max-w-none"
+              className="relative w-[78%] max-w-[560px] @min-[1024px]:h-auto @min-[1024px]:max-h-[min(600px,calc(100svh-150px))] @min-[1024px]:w-auto @min-[1024px]:max-w-full"
             />
           </div>
         </div>
