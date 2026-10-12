@@ -154,9 +154,10 @@ function FeaturedProject({ project }: { project: SelectedWorkProject }) {
 }
 
 /**
- * One of the two smaller projects below the featured one. Same image +
- * hover-overlay mechanics as `FeaturedProject`, just smaller and
- * left-aligned.
+ * One of the two projects below the featured one. Same image +
+ * hover-overlay mechanics and the same thumbnail shape as
+ * `FeaturedProject` (the grid below sizes each column to match its
+ * width), left-aligned.
  */
 function SecondaryCard({ project }: { project: SelectedWorkProject }) {
   const prefersReducedMotion = useReducedMotion();
@@ -166,7 +167,7 @@ function SecondaryCard({ project }: { project: SelectedWorkProject }) {
     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-10% 0px -10% 0px" }} variants={variants}>
       <Link href={project.href} className="group block">
         <div className="shadow-[0_18px_36px_-20px_rgb(20_30_50/36%)]">
-          <ProjectImage project={project} aspectClass="aspect-[4/3]" />
+          <ProjectImage project={project} aspectClass="aspect-[1672/941]" />
         </div>
 
         <div className="mt-4 md:mt-3">
@@ -179,10 +180,14 @@ function SecondaryCard({ project }: { project: SelectedWorkProject }) {
 }
 
 /**
- * Stack Up featured, centered and modestly larger; Sales Coach and
- * YANA follow as two equal, smaller cards below it, both narrower than
- * the section's full content width so they read as supporting projects
- * rather than a second full-width row. Sits directly after
+ * Stack Up featured and centered; Sales Coach and YANA follow side by
+ * side below it, each thumbnail the same size as Stack Up's. From `md`
+ * the row is `88% + 1.5rem` wide, so each column is exactly Stack Up's
+ * 44% (its `md:w-[44%]`) with the 1.5rem gap between them; below `md`
+ * the pair can't fit at Stack Up's 65%/100% widths side by side, so
+ * there they share the row (sm) or stack full-width (mobile, where
+ * that already equals Stack Up's width). From `sm` the row sits 200px
+ * further below Stack Up than the original 48px. Sits directly after
  * AboutSection on the same `--shore-solid` cream surface.
  *
  * `pt-10 sm:pt-8` (paired with AboutSection's own `pb-10 sm:pb-12`)
@@ -206,7 +211,7 @@ export function SelectedWork() {
           <FeaturedProject project={selectedWork.featured} />
         </div>
 
-        <div className="mx-auto mt-12 grid w-full max-w-[46rem] grid-cols-1 gap-12 sm:mt-12 sm:grid-cols-2 sm:gap-6">
+        <div className="mx-auto mt-12 grid w-full grid-cols-1 gap-12 sm:mt-[248px] sm:grid-cols-2 sm:gap-6 md:w-[calc(88%+1.5rem)]">
           {selectedWork.secondary.map((project) => (
             <SecondaryCard key={project.title} project={project} />
           ))}
