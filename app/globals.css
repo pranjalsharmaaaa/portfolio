@@ -370,7 +370,53 @@
   animation: cassette-nudge 0.4s ease-in-out;
 }
 
+/* "PRESS PLAY STRANGER" cursor over the cassette (mouse only). A white
+   disc with black type under `mix-blend-mode: difference`: over the
+   cream cassette the disc reads dark navy and the type reads cream,
+   and wherever it crosses a reel or the title it inverts them. The
+   outer element only follows the pointer (its `translate` is set from
+   cassette.tsx); the disc inside scales in and out around its centre. */
+.cassette-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  pointer-events: none;
+  mix-blend-mode: difference;
+}
+.cassette-cursor-disc {
+  display: flex;
+  width: 96px;
+  height: 96px;
+  margin: -48px 0 0 -48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #fff;
+  color: #000;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-align: center;
+  transform: scale(0);
+  transition: transform 0.2s ease-out;
+}
+.cassette-cursor[data-visible="true"] .cassette-cursor-disc {
+  transform: scale(1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cassette,
+  .cassette * {
+    cursor: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .cassette-cursor-disc {
+    transition: none;
+  }
   .cassette-reel[data-reel] {
     animation: none;
   }

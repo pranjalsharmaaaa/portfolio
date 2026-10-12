@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { cassette } from "@/lib/site-content";
 
 /** idle: at rest (load, ended, error) · playing: turning · paused: frozen where it stopped. */
@@ -36,6 +37,8 @@ function Reel({ state }: { state: ReelState }) {
   );
 }
 
+const noopSubscribe = () => () => {};
+
 /** "m:ss" for the time readout and the progress bar's accessible value. */
 function formatTime(seconds: number) {
   const s = Math.max(0, Math.floor(seconds));
@@ -57,12 +60,23 @@ function formatTime(seconds: number) {
  */
 export function Cassette() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
   const [nudgeKey, setNudgeKey] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [reel, setReel] = useState<ReelState>("idle");
   const [failed, setFailed] = useState(false);
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  // The custom cursor is portalled to <body> (the cassette sits inside
+  // transformed parallax layers, which would break `position: fixed`),
+  // so it can only render once the document exists (false on the server
+  // and during hydration, true after).
+  const mounted = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
 
   // The server-rendered <audio> can load its metadata (or fail) before
   // React attaches the handlers below, so pick up what it already has.
@@ -101,10 +115,30 @@ export function Cassette() {
       return;
     }
     if (audio.paused) {
-      audio.play().catch(fail);
+      audio.play().catch((err: unknown) => {
+        // Pausing before play() settles (a quick second tap while the
+        // file is still loading) rejects it with AbortError. That's the
+        // listener changing their mind, not a broken file.
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        fail();
+      });
     } else {
       audio.pause();
     }
+  }
+
+  // Mouse only: touch has no hover, and there the play button and a
+  // tap anywhere on the cassette are enough. Position is written
+  // straight to the element so following the pointer never re-renders.
+  function moveCursor(e: React.PointerEvent) {
+    const el = cursorRef.current;
+    if (!el || e.pointerType !== "mouse") return;
+    el.style.translate = `${e.clientX}px ${e.clientY}px`;
+    el.dataset.visible = "true";
+  }
+
+  function hideCursor() {
+    if (cursorRef.current) cursorRef.current.dataset.visible = "false";
   }
 
   const progress = duration > 0 ? Math.min(1, current / duration) : 0;
@@ -118,6 +152,13 @@ export function Cassette() {
       // phones are already full-width (92vw), so there the parts grow
       // within the same width; md is tight beside the cycling word;
       // from xl up there is room to make it a prominent object.
+      // The whole cassette is the play control for pointer users; the
+      // button inside stays the keyboard/screen-reader control, and its
+      // own clicks bubble up here, so there's exactly one toggle.
+      onClick={toggle}
+      onPointerEnter={moveCursor}
+      onPointerMove={moveCursor}
+      onPointerLeave={hideCursor}
       className="cassette flex w-[min(92vw,26rem)] items-center gap-[0.9em] rounded-[1.9em] p-[0.9em] text-[13px] sm:w-[30rem] sm:text-[15px] md:w-[26rem] md:text-[14px] lg:w-[30rem] lg:text-[15px] xl:w-[clamp(34rem,40vw,44rem)] xl:text-[clamp(16px,1.25vw,20px)]"
       style={{
         background: "linear-gradient(160deg, #fffaf0 0%, #f6e9cf 100%)",
@@ -186,8 +227,10 @@ export function Cassette() {
             key={nudgeKey}
             type="button"
             aria-label={failed ? cassette.errorLabel : playing ? cassette.pauseLabel : cassette.playLabel}
-            onClick={toggle}
-            className={`flex h-[3.4em] w-[3.4em] shrink-0 items-center justify-center rounded-full transition-transform duration-150 ease-out hover:scale-105 active:scale-90 sm:h-[2.7em] sm:w-[2.7em] ${
+            // Scales with the cassette like everything else, but clamped
+            // so it's never under a 44px tap target on phones nor past
+            // 56px on large screens (≈49–56px across desktop widths).
+            className={`flex size-[clamp(44px,3.5em,56px)] shrink-0 items-center justify-center rounded-full transition-transform duration-150 ease-out hover:scale-105 active:scale-90 ${
               nudgeKey ? "cassette-nudge" : ""
             }`}
             style={{ background: "#1c2230", color: "#fbf3e6" }}
@@ -252,6 +295,20 @@ export function Cassette() {
       </div>
 
       <Reel state={reel} />
+
+      {mounted &&
+        createPortal(
+          <div ref={cursorRef} aria-hidden="true" data-visible="false" className="cassette-cursor">
+            <span className="cassette-cursor-disc">
+              PRESS
+              <br />
+              {playing ? "PAUSE" : "PLAY"}
+              <br />
+              STRANGER
+            </span>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
