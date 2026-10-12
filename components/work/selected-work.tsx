@@ -186,8 +186,9 @@ function SecondaryCard({ project }: { project: SelectedWorkProject }) {
  * 44% (its `md:w-[44%]`) with the 1.5rem gap between them; below `md`
  * the pair can't fit at Stack Up's 65%/100% widths side by side, so
  * there they share the row (sm) or stack full-width (mobile, where
- * that already equals Stack Up's width). From `sm` the row sits 200px
- * further below Stack Up than the original 48px. Sits directly after
+ * that already equals Stack Up's width). From `sm` the row's top margin
+ * (`sm:mt-15`, 60px) is the only space between Stack Up's title and
+ * the two thumbnails. Sits directly after
  * AboutSection on the same `--shore-solid` cream surface.
  *
  * `pt-10 sm:pt-8` (paired with AboutSection's own `pb-10 sm:pb-12`)
@@ -211,7 +212,7 @@ export function SelectedWork() {
           <FeaturedProject project={selectedWork.featured} />
         </div>
 
-        <div className="mx-auto mt-12 grid w-full grid-cols-1 gap-12 sm:mt-[248px] sm:grid-cols-2 sm:gap-6 md:w-[calc(88%+1.5rem)]">
+        <div className="mx-auto mt-12 grid w-full grid-cols-1 gap-12 sm:mt-15 sm:grid-cols-2 sm:gap-6 md:w-[calc(88%+1.5rem)]">
           {selectedWork.secondary.map((project) => (
             <SecondaryCard key={project.title} project={project} />
           ))}
