@@ -33,13 +33,15 @@ export const headlineStaticSentence =
 export const sideVocabulary = "DESIGN / DETAILS / SIMPLY";
 
 /**
- * The cassette: a reserved, inactive slot for a future audio piece.
- * No audio exists yet — swap `Cassette`'s inner content for a real
- * player without touching where it sits in the hero.
+ * The cassette player in the hero: "Designer Brain", the rap made in
+ * Suno, served from /public/audio.
  */
 export const cassette = {
   title: "My design journey, rapped",
-  playLabel: "Play “My design journey, rapped” — no audio yet",
+  src: "/audio/designer-rap.mp3",
+  playLabel: "Play “My design journey, rapped”",
+  pauseLabel: "Pause “My design journey, rapped”",
+  errorLabel: "“My design journey, rapped” couldn’t be loaded",
 } as const;
 
 export type NavItem = {
