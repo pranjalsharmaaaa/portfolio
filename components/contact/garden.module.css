@@ -16,15 +16,18 @@
   --grow-accent: #5a7743;
   --soil-rim: #4b3c30;
   --soil-bed: #2d2520;
-  --stem: #4f6b3a;
+  --stem: #557a3c;
   --lav-stem: #6b7f55;
-  --blade: #6f8f4e;
-  --leaf: #6f8f4e;
-  --sprig-leaf: #8aa66a;
-  --clump-back: #5f7d45;
-  --clump-front: #7f9c5f;
-  --petal: #fffdf7;
-  --petal-edge: #ddd5c2;
+  --leaf-dark: #4b6e35;
+  --leaf-mid: #648c45;
+  --leaf-light: #82a85c;
+  --midrib: rgb(240 246 220 / 55%);
+  --petal: #fffdf6;
+  --petal-back: #ece3cf;
+  --petal-edge: #d9cfb9;
+  --disc-1: #e9a92a;
+  --disc-2: #f6c84e;
+  --disc-dot: #b97a17;
   --bud: #b9add4;
   --bud-0: #8a76c2;
   --bud-1: #a28fd6;
@@ -33,7 +36,7 @@
   /* Sizes shared by the garden and the text's bottom clearance. Both
      follow the viewport's height as well as its width, so a short
      window gets a shorter garden instead of pushing the text off. */
-  --fw: 68px; /* base flower width (box is 1:2) */
+  --fw: 76px; /* base flower width (box is 1:2) */
   --soil: 56px; /* soil band height */
 
   background-color: var(--grow-bg);
@@ -45,7 +48,7 @@
 
 @media (min-width: 640px) {
   .scene {
-    --fw: clamp(52px, min(7.2vw, 12svh), 116px);
+    --fw: clamp(56px, min(7.8vw, 12.5svh), 124px);
     --soil: clamp(52px, min(7.5vw, 11svh), 104px);
   }
 }
@@ -58,17 +61,23 @@
   --grow-ink: #eef1f6;
   --grow-muted: #b2bccd;
   --grow-accent: #94c473;
-  --soil-rim: #2c2531;
-  --soil-bed: #16131b;
-  --stem: #6f9a56;
-  --lav-stem: #86a06b;
-  --blade: #7ea660;
-  --leaf: #7ea660;
-  --sprig-leaf: #94b578;
-  --clump-back: #5f8746;
-  --clump-front: #86a96a;
-  --petal: #f6f3ea;
-  --petal-edge: #a9a4b8;
+  /* Charcoal-blue soil: darker than the sky, with a lighter rim so the
+     bed's edge still reads against it. Leaves go a cooler sage, as in a
+     moonlit illustration; petals stay warm cream for contrast. */
+  --soil-rim: #2b3550;
+  --soil-bed: #0b111d;
+  --stem: #6c9474;
+  --lav-stem: #7f9a86;
+  --leaf-dark: #3f6555;
+  --leaf-mid: #57826c;
+  --leaf-light: #77a487;
+  --midrib: rgb(214 236 222 / 32%);
+  --petal: #f4ecd8;
+  --petal-back: #c9bea4;
+  --petal-edge: #a89f88;
+  --disc-1: #c99536;
+  --disc-2: #deb357;
+  --disc-dot: #8a6220;
   --bud: #8f86ad;
   --bud-0: #a893e6;
   --bud-1: #c0b0f2;
@@ -102,9 +111,9 @@
   position: relative;
   z-index: 2;
   pointer-events: none;
-  /* Keep the text clear of the resting garden: the soil plus a young
-     plant's height. */
-  padding-bottom: calc(var(--soil) + var(--fw) * 1.05);
+  /* Keep the text clear of the resting garden: the soil plus the
+     tallest resting plant's height. */
+  padding-bottom: calc(var(--soil) + var(--fw) * 1.5);
 }
 
 /* The text block itself. A soft wash of the section colour sits right
@@ -178,9 +187,14 @@
 }
 
 .sprig {
-  width: calc(var(--fw) * 0.6 * var(--s));
+  width: calc(var(--fw) * 0.8 * var(--s));
   aspect-ratio: 60 / 80;
   pointer-events: none;
+}
+/* Foreground tufts overlap the flowers' feet (and the soil's rim) for
+   depth; they never take a click. */
+.sprig[data-front="true"] {
+  z-index: 3;
 }
 
 .flower {
@@ -262,34 +276,35 @@
 /* ------------------------------------------------------------ plant */
 
 .stem,
-.lavStem,
-.blade {
+.lavStem {
   fill: none;
   stroke-linecap: round;
 }
 .stem {
   stroke: var(--stem);
-  stroke-width: 3.2;
+  stroke-width: 3;
 }
 .lavStem {
   stroke: var(--lav-stem);
-  stroke-width: 2.6;
+  stroke-width: 2.8;
 }
-.blade {
-  stroke: var(--blade);
-  stroke-width: 2.2;
+.stemFill {
+  fill: var(--stem);
 }
 .leaf {
-  fill: var(--leaf);
+  fill: var(--leaf-mid);
 }
-.sprigLeaf {
-  fill: var(--sprig-leaf);
+.leaf[data-tone="dark"] {
+  fill: var(--leaf-dark);
 }
-.clumpBack {
-  fill: var(--clump-back);
+.leaf[data-tone="light"] {
+  fill: var(--leaf-light);
 }
-.clumpFront {
-  fill: var(--clump-front);
+.midrib {
+  fill: none;
+  stroke: var(--midrib);
+  stroke-width: 1;
+  stroke-linecap: round;
 }
 
 /* ----------------------------------------------------------- growth */
@@ -301,43 +316,61 @@
    here, never accumulated, so a flower can't grow past full bloom. */
 .flower {
   --t: 0;
-  --hs: 0.5;
-  --open: 0.3;
+  --hs: 0.78;
+  --open: 0.85;
+  --leafs: 0.9;
   --k: calc(var(--k0) + (var(--kmax) - var(--k0)) * var(--t));
 }
 .flower[data-stage="1"] {
-  --t: 0.14;
-  --hs: 0.66;
-  --open: 0.55;
+  --t: 0.1;
+  --hs: 0.84;
+  --open: 0.95;
+  --leafs: 0.95;
 }
 .flower[data-stage="2"] {
-  --t: 0.32;
-  --hs: 0.8;
-  --open: 0.8;
+  --t: 0.24;
+  --hs: 0.9;
+  --open: 1;
+  --leafs: 1;
 }
 .flower[data-stage="3"] {
-  --t: 0.54;
-  --hs: 0.92;
+  --t: 0.42;
+  --hs: 0.95;
   --open: 1;
+  --leafs: 1.05;
 }
 .flower[data-stage="4"] {
-  --t: 0.77;
+  --t: 0.62;
   --hs: 1;
   --open: 1;
+  --leafs: 1.1;
 }
 .flower[data-stage="5"] {
+  --t: 0.82;
+  --hs: 1.05;
+  --open: 1;
+  --leafs: 1.15;
+}
+.flower[data-stage="6"] {
   --t: 1;
   --hs: 1.1;
   --open: 1;
+  --leafs: 1.2;
 }
 
 .plant,
 .stalk,
 .rider,
-.petals,
-.disc {
+.rosette,
+.petals {
   transform-box: view-box;
   transition: transform 800ms cubic-bezier(0.34, 1.35, 0.64, 1);
+}
+
+/* The leaves at the foot fill out as the plant grows. */
+.rosette {
+  transform-origin: 50px 200px;
+  transform: scale(var(--leafs));
 }
 
 /* The stem stretches up from its foot … */
@@ -353,11 +386,11 @@
   transform: translateY(calc((1 - var(--k)) * var(--rise))) scale(var(--hs));
 }
 
-.petals,
-.disc {
-  transform-origin: 50px 58px;
-}
+/* Petals open around their own head's centre (each head is drawn
+   around its own origin, so the box's centre is the head's centre). */
 .petals {
+  transform-box: fill-box;
+  transform-origin: center;
   transform: scale(var(--open)) rotate(calc((1 - var(--open)) * -26deg));
 }
 
@@ -374,13 +407,19 @@
 .petal {
   fill: var(--petal);
   stroke: var(--petal-edge);
-  stroke-width: 0.8;
+  stroke-width: 0.6;
+}
+.petalBack {
+  fill: var(--petal-back);
 }
 .discOuter {
-  fill: #e8b33d;
+  fill: var(--disc-1);
 }
 .discInner {
-  fill: #cf8f2a;
+  fill: var(--disc-2);
+}
+.discDot {
+  fill: var(--disc-dot);
 }
 
 /* Lavender buds start pale and small, colour from stage 2 and fill out
@@ -399,7 +438,8 @@
   transform: scale(0.95);
 }
 .flower[data-stage="4"] .bud,
-.flower[data-stage="5"] .bud {
+.flower[data-stage="5"] .bud,
+.flower[data-stage="6"] .bud {
   transform: scale(1.08);
 }
 .flower:not([data-stage="0"], [data-stage="1"]) .bud[data-tone="0"] {
@@ -520,9 +560,9 @@
   .plant,
   .stalk,
   .rider,
+  .rosette,
   .overlay,
   .petals,
-  .disc,
   .bud {
     transition-duration: 150ms;
     transition-delay: 0ms !important;
