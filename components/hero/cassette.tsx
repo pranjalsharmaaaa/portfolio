@@ -6,7 +6,7 @@ import { cassette } from "@/lib/site-content";
 function Reel() {
   return (
     <div
-      className="cassette-reel relative flex aspect-square w-[clamp(2.25rem,9vw,4.25rem)] shrink-0 items-center justify-center rounded-full"
+      className="cassette-reel relative flex aspect-square w-[3.3em] shrink-0 items-center justify-center rounded-full sm:w-[4.6em]"
       style={{
         background:
           "radial-gradient(circle at 35% 30%, #4b5266 0%, #2b303e 55%, #1c2029 100%)",
@@ -32,7 +32,7 @@ function Reel() {
   );
 }
 
-/** "m:ss" for the progress bar's accessible value. */
+/** "m:ss" for the time readout and the progress bar's accessible value. */
 function formatTime(seconds: number) {
   const s = Math.max(0, Math.floor(seconds));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -105,14 +105,14 @@ export function Cassette() {
 
   return (
     <div
-      // Below `sm`, the fixed desktop floor (26rem) doesn't fit a phone
-      // viewport — it would sit inside the section's `overflow-hidden`
-      // and get visually clipped rather than triggering a scrollbar, so
-      // it needs its own viewport-relative cap there instead of just
-      // inheriting the desktop clamp. 92vw (not 85vw) because the title
-      // needs every spare pixel it can get at the narrowest real phone
-      // widths (~360px) to stay fully readable rather than ellipsizing.
-      className="cassette flex w-[min(92vw,26rem)] items-center gap-3 rounded-[1.75rem] p-3 sm:w-[clamp(26rem,30vw,32rem)]"
+      // Every inner dimension is in `em`, so this one font-size per
+      // breakpoint scales the whole cassette — reels, window, button,
+      // text, track — together, keeping its proportions. Widths are
+      // sized to the room the hero row actually has at each width:
+      // phones are already full-width (92vw), so there the parts grow
+      // within the same width; md is tight beside the cycling word;
+      // from xl up there is room to make it a prominent object.
+      className="cassette flex w-[min(92vw,26rem)] items-center gap-[0.9em] rounded-[1.9em] p-[0.9em] text-[13px] sm:w-[30rem] sm:text-[15px] md:w-[26rem] md:text-[14px] lg:w-[30rem] lg:text-[15px] xl:w-[clamp(34rem,40vw,44rem)] xl:text-[clamp(16px,1.25vw,20px)]"
       style={{
         background: "linear-gradient(160deg, #fffaf0 0%, #f6e9cf 100%)",
         boxShadow:
@@ -122,7 +122,7 @@ export function Cassette() {
       <Reel />
 
       <div
-        className="flex min-w-0 flex-1 flex-col gap-2.5 rounded-2xl px-3.5 py-3.5"
+        className="flex min-w-0 flex-1 flex-col gap-[0.7em] rounded-[1.2em] px-[1em] py-[0.95em]"
         style={{
           background: "rgb(28 34 48 / 6%)",
           boxShadow: "inset 0 2px 4px rgb(28 34 48 / 12%)",
@@ -135,21 +135,20 @@ export function Cassette() {
             that DOES flip (text-ink, var(--accent-strong), …), or
             dark mode quietly turns them into light-on-light. Verified
             by screenshotting dark mode specifically, not assumed. */}
-        {/* Must stay on one line (spec) — never wrap. At desktop
-            widths the cassette's 26rem floor gives this plenty of room
-            at 0.85rem; below `sm`, the cassette itself shrinks with the
-            viewport, so the title drops to 0.75rem there too so it
-            keeps reading in full instead of ellipsizing at the
-            narrowest real phone widths. `text-ellipsis` stays on as a
-            last-resort safety net, never the primary fit strategy. */}
+        {/* Must stay on one line (spec) — never wrap. Below `sm` the
+            cassette can't get any wider than the phone, so the title
+            is a touch smaller relative to the rest there to keep
+            reading in full at the narrowest real phone widths.
+            `text-ellipsis` stays on as a last-resort safety net, never
+            the primary fit strategy. */}
         <p
-          className="overflow-hidden text-[0.75rem] leading-snug font-semibold text-ellipsis whitespace-nowrap sm:text-[0.85rem]"
+          className="overflow-hidden text-[0.92em] leading-snug font-semibold text-ellipsis whitespace-nowrap sm:text-[1.02em]"
           style={{ color: "#1c2230" }}
         >
           {cassette.title}
         </p>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-[0.75em]">
           <audio
             ref={audioRef}
             src={cassette.src}
@@ -174,36 +173,49 @@ export function Cassette() {
             type="button"
             aria-label={failed ? cassette.errorLabel : playing ? cassette.pauseLabel : cassette.playLabel}
             onClick={toggle}
-            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105 ${
+            className={`flex h-[3.4em] w-[3.4em] shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105 sm:h-[2.7em] sm:w-[2.7em] ${
               nudgeKey ? "cassette-nudge" : ""
             }`}
             style={{ background: "#1c2230", color: "#fbf3e6" }}
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-[40%] w-[40%]">
               {playing ? (
-                <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" opacity="0.6" />
+                <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
               ) : (
-                <path d="M8 5v14l11-7z" opacity="0.6" />
+                <path d="M8 5v14l11-7z" />
               )}
             </svg>
           </button>
 
-          {/* The 3% stub is the track's resting look; playback fills
-              it from there with the real position. */}
-          <div
-            role="progressbar"
-            aria-label="Playback position"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(progress * 100)}
-            aria-valuetext={duration > 0 ? `${formatTime(current)} of ${formatTime(duration)}` : undefined}
-            className="relative h-1 flex-1 overflow-hidden rounded-full"
-            style={{ background: "rgb(28 34 48 / 12%)" }}
-          >
-            <span
-              className="absolute inset-y-0 left-0 rounded-full"
-              style={{ width: `${Math.max(3, progress * 100)}%`, background: "#6b7688" }}
-            />
+          <div className="flex min-w-0 flex-1 flex-col gap-[0.45em]">
+            {/* The 3% stub is the track's resting look; playback fills
+                it from there with the real position. */}
+            <div
+              role="progressbar"
+              aria-label="Playback position"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress * 100)}
+              aria-valuetext={duration > 0 ? `${formatTime(current)} of ${formatTime(duration)}` : undefined}
+              className="relative h-[0.32em] min-h-1 overflow-hidden rounded-full"
+              style={{ background: "rgb(28 34 48 / 12%)" }}
+            >
+              <span
+                className="absolute inset-y-0 left-0 rounded-full"
+                style={{ width: `${Math.max(3, progress * 100)}%`, background: "#6b7688" }}
+              />
+            </div>
+
+            {/* Elapsed / total, under the track. The progressbar above
+                already announces the same values to screen readers. */}
+            <div
+              aria-hidden="true"
+              className="flex justify-between text-[0.8em] leading-none font-medium tabular-nums"
+              style={{ color: "#4d5768" }}
+            >
+              <span>{formatTime(current)}</span>
+              <span>{duration > 0 ? formatTime(duration) : "-:--"}</span>
+            </div>
           </div>
         </div>
       </div>
