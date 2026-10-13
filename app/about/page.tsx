@@ -42,14 +42,14 @@ export default function AboutPage() {
             phones and tablets, side by side from `lg` so both sit in view
             together beneath the headline. */}
         <div className="mt-6 sm:mt-8 lg:grid lg:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] lg:items-start lg:gap-12">
-          <div className="max-w-[32rem]">
-            <p className="font-display text-[clamp(1.2rem,1.7vw,1.5rem)] leading-snug font-medium italic">
-              {aboutPage.intro.lead}
-            </p>
-            <p className="mt-3 text-base leading-relaxed text-pretty sm:text-[17px]" style={{ color: "var(--ap-muted)" }}>
-              {aboutPage.intro.body}
-            </p>
-          </div>
+          <p
+            className="max-w-[32rem] text-[17px] leading-relaxed text-pretty sm:text-lg lg:pt-1"
+            style={{ color: "var(--ap-muted)" }}
+          >
+            {/* A no-break space keeps "I love" together, so no line ends on a
+                lone "I". */}
+            {aboutPage.intro.replace("I love", "I\u00a0love")}
+          </p>
 
           <div className="mt-12 sm:mt-16 lg:mt-0">
             <PolaroidCollage />

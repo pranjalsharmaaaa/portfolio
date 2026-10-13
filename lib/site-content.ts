@@ -98,10 +98,8 @@ export const aboutPage = {
     { before: "Curious about the ", highlight: "why", after: "." },
     { before: "Obsessed with the ", highlight: "little things", after: "." },
   ],
-  intro: {
-    lead: "Curious by nature, a designer by choice.",
-    body: "With code in my roots and design in my view, I turn complex problems into experiences that feel simple, thoughtful, and true.",
-  },
+  intro:
+    "Part logic, part creativity, always asking questions. I love untangling complex problems, understanding people, and exploring how technology and AI can create experiences that feel more human.",
   photos: [
     { src: "/images/about/portrait.jpg", alt: "Portrait of Pranjal in a cream coat", width: 900, height: 1200 },
     {
