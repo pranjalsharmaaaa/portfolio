@@ -200,6 +200,7 @@ function SecondaryCard({ project }: { project: SelectedWorkProject }) {
 export function SelectedWork() {
   return (
     <section
+      id="work"
       aria-label="Selected work"
       className="paper-themed selected-work"
     >

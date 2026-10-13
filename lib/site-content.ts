@@ -51,18 +51,17 @@ export type NavItem = {
 };
 
 /**
- * Primary navigation. Routes for not-yet-designed sections still exist
- * (see app/work, app/about, app/playground, app/wrap, app/contact) so
- * links are never dead — they render clearly-marked placeholders.
- * "Wrap" is a future section; its placeholder exists so nav doesn't
- * need restructuring once it's designed.
+ * Primary navigation. Work, About and "Work with me" point at the real
+ * homepage sections (#work, #about, #contact) rather than the
+ * placeholder routes under app/, which only say "coming soon"; the
+ * leading "/" makes them work from any page. Those placeholder routes
+ * (and Playground / Wrap) still exist, just not in the nav.
  */
 export const navItems: NavItem[] = [
-  { label: "Work", href: "/work" },
-  { label: "About", href: "/about" },
-  { label: "Playground", href: "/playground" },
-  { label: "Wrap", href: "/wrap" },
-  { label: "Work with me", href: "/contact", emphasized: true },
+  { label: "Home", href: "/" },
+  { label: "Work", href: "/#work" },
+  { label: "About", href: "/#about" },
+  { label: "Work with me", href: "/#contact", emphasized: true },
 ];
 
 /** Timing for the "Designer who {word}" cycle — quick and alive, not a slideshow. */
