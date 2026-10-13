@@ -1,6 +1,7 @@
 import { Planted, Sprig, Tuft } from "@/components/about-page/botanicals";
 import { SCENE_W, SCENE_X0, WAVE_EDGE, WAVE_H, hillPath, smoothLine, yAt } from "@/components/about-page/scene";
-import { experience, type ExperienceRole } from "@/lib/about-content";
+import { ExperienceList } from "@/components/about-page/experience-list";
+import { experience } from "@/lib/about-content";
 import styles from "./about-page.module.css";
 
 /**
@@ -56,28 +57,6 @@ function ForegroundHill() {
   );
 }
 
-function RoleRow({ role }: { role: ExperienceRole }) {
-  return (
-    <li className={styles.roleRow}>
-      <p className="text-sm tracking-[0.04em] tabular-nums" style={{ color: "var(--ap-muted)" }}>
-        {role.start} – {role.end}
-      </p>
-      <div>
-        <h3 className="font-display text-xl leading-snug font-medium sm:text-2xl">{role.role}</h3>
-        <p className="mt-1 text-[15px]" style={{ color: "var(--ap-muted)" }}>
-          {role.company}
-          {role.location && <span> · {role.location}</span>}
-        </p>
-      </div>
-      {role.summary && (
-        <p className="text-[15px] leading-relaxed" style={{ color: "var(--ap-muted)" }}>
-          {role.summary}
-        </p>
-      )}
-    </li>
-  );
-}
-
 export function ExperienceSection() {
   return (
     <section id="experience" aria-labelledby="experience-heading" className={styles.experience}>
@@ -92,14 +71,7 @@ export function ExperienceSection() {
           Professional Experience
         </h2>
 
-        {/* Rows only once real roles exist — no placeholder cards. */}
-        {experience.length > 0 && (
-          <ol className="mt-10 sm:mt-14">
-            {experience.map((role) => (
-              <RoleRow key={`${role.company}-${role.start}`} role={role} />
-            ))}
-          </ol>
-        )}
+        {experience.length > 0 && <ExperienceList roles={experience} />}
       </div>
     </section>
   );

@@ -175,23 +175,146 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Experience rows                                                      */
+/* Experience accordion                                                 */
 /* ------------------------------------------------------------------ */
-.roleRow {
-  display: grid;
-  gap: 0.75rem;
-  padding: 1.75rem 0;
+.roles {
+  margin-top: clamp(2rem, 4vw, 3.5rem);
   border-top: 1px solid var(--meadow-rule);
 }
 
-.roleRow:last-child {
+.role {
   border-bottom: 1px solid var(--meadow-rule);
 }
 
-@media (min-width: 768px) {
-  .roleRow {
-    grid-template-columns: 10rem minmax(0, 1fr) minmax(0, 1.25fr);
-    align-items: start;
-    gap: 2.5rem;
+.roleButton {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 2.2vw, 1.75rem) 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.roleButton:focus-visible {
+  outline-offset: 6px;
+}
+
+.company {
+  font-family: var(--font-lora), Georgia, serif;
+  font-size: clamp(1.3rem, 1.9vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ap-ink);
+  transition: color 250ms ease;
+}
+
+
+/* A plus whose upright bar folds away into a minus when open. */
+.toggleIcon {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--ap-ink);
+  transition: background-color 250ms ease;
+}
+
+.toggleIcon svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+/* Hover only where there's a real pointer — on touch it would stick
+   after a tap. */
+@media (hover: hover) {
+  .roleButton:hover .company {
+    color: var(--ap-accent);
+  }
+
+  .roleButton:hover .toggleIcon {
+    background: color-mix(in srgb, var(--ap-ink) 6%, transparent);
+  }
+}
+
+.toggleBar {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.role[data-open="true"] .toggleBar {
+  transform: scaleY(0);
+}
+
+/* Height follows the content: the grid row eases between 0fr and 1fr. */
+.rolePanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.role[data-open="true"] .rolePanel {
+  grid-template-rows: 1fr;
+}
+
+.rolePanelInner {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.role[data-open="true"] .rolePanelInner {
+  opacity: 1;
+  transition-delay: 80ms;
+}
+
+.detailText,
+.details {
+  max-width: 47rem;
+  padding-bottom: clamp(1.4rem, 2.4vw, 2rem);
+  font-size: clamp(0.95rem, 1.15vw, 1.0625rem);
+  line-height: 1.65;
+  color: var(--ap-muted);
+  text-wrap: pretty;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Small botanical-peach markers tie the list back to the landscape. */
+.details li {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.details li::before {
+  content: "";
+  position: absolute;
+  top: 0.68em;
+  left: 0.15rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--meadow-plant-front);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rolePanel,
+  .rolePanelInner,
+  .toggleBar {
+    transition: none;
   }
 }
