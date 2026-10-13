@@ -10,6 +10,11 @@ import Image from "next/image";
  * sized to that box with `object-contain` — never cropped or stretched —
  * and the rest of the 34px circle is filled with the photo's own edge
  * colours, so the disc reads as one picture against the translucent nav.
+ *
+ * It's then zoomed 1.2× (around a point just above centre, where the
+ * face is) so Pranjal reads clearly at this small size; the circle's
+ * `overflow-hidden` trims only the photo's outer corners and the top of
+ * the wall, never the face.
  */
 export function Avatar() {
   return (
@@ -26,7 +31,7 @@ export function Avatar() {
         height={480}
         sizes="28px"
         priority
-        className="h-[80%] w-[60%] object-contain"
+        className="h-[80%] w-[60%] origin-[50%_42%] scale-[1.2] object-contain"
       />
     </span>
   );
