@@ -87,16 +87,16 @@ function ProjectLabel({
     <div
       className={`flex items-baseline gap-2 ${align === "center" ? "justify-center" : "justify-center md:justify-start"}`}
     >
-      <span className="font-display text-xs tracking-[0.1em]" style={{ color: "var(--paper-ink-muted)" }}>
+      <span className="font-display text-xs tracking-[0.1em]" style={{ color: "var(--sw-muted)" }}>
         {project.number}
       </span>
-      <h3 className={`font-display leading-tight font-semibold ${titleClassName}`} style={{ color: "var(--paper-ink)" }}>
+      <h3 className={`font-display leading-tight font-semibold ${titleClassName}`} style={{ color: "var(--sw-ink)" }}>
         {project.title}
       </h3>
       <span
         aria-hidden="true"
         className="inline-block text-base opacity-0 transition-all duration-300 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100 max-md:hidden"
-        style={{ color: "var(--paper-ink)" }}
+        style={{ color: "var(--sw-ink)" }}
       >
         ↗
       </span>
@@ -114,7 +114,7 @@ function MobileDescription({ project }: { project: SelectedWorkProject }) {
   return (
     <p
       className="mx-auto mt-2 max-w-[34ch] text-center text-[15px] leading-relaxed md:hidden"
-      style={{ color: "var(--paper-ink-muted)" }}
+      style={{ color: "var(--sw-muted)" }}
     >
       {project.description}
     </p>
@@ -189,7 +189,8 @@ function SecondaryCard({ project }: { project: SelectedWorkProject }) {
  * that already equals Stack Up's width). From `sm` the row's top margin
  * (`sm:mt-15`, 60px) is the only space between Stack Up's title and
  * the two thumbnails. Sits directly after
- * AboutSection on the same `--shore-solid` cream surface.
+ * AboutSection: cream like it by day, slate blue at night (the
+ * `.selected-work` tokens in globals.css follow the theme toggle).
  *
  * `pt-10 sm:pt-8` (paired with AboutSection's own `pb-10 sm:pb-12`)
  * is what lands the philosophy statement → this heading gap at ~80px
@@ -200,11 +201,10 @@ export function SelectedWork() {
   return (
     <section
       aria-label="Selected work"
-      className="relative"
-      style={{ background: "var(--shore-solid)", color: "var(--paper-ink)" }}
+      className="selected-work"
     >
       <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-10 pb-16 sm:px-10 sm:pt-8 sm:pb-20 lg:px-12">
-        <p className="text-center text-xs font-semibold tracking-[0.25em] uppercase" style={{ color: "var(--paper-ink)" }}>
+        <p className="text-center text-xs font-semibold tracking-[0.25em] uppercase" style={{ color: "var(--sw-ink)" }}>
           {selectedWork.heading}
         </p>
 

@@ -425,6 +425,58 @@
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Selected Work                                                        */
+/* ------------------------------------------------------------------ */
+
+/* The homepage's project grid follows the theme toggle (unlike About
+   above it, which stays on the fixed --shore-solid paper): cream by
+   day, a muted slate-blue by night — greyer and lighter than the hero's
+   near-black sky, so the two never read as the same surface. Its own
+   tokens, so the paper tokens it used to borrow stay fixed for the
+   sections that rely on them. */
+.selected-work {
+  --sw-bg: var(--shore-solid);
+  --sw-ink: var(--paper-ink);
+  --sw-muted: var(--paper-ink-muted);
+  position: relative;
+  isolation: isolate;
+  background-color: var(--sw-bg);
+  color: var(--sw-ink);
+  transition:
+    background-color 500ms ease,
+    color 500ms ease;
+}
+.dark .selected-work {
+  --sw-bg: #1d2738;
+  --sw-ink: #eef1f6;
+  --sw-muted: #a9b3c4;
+}
+/* At night the last stretch eases down into the contact section's own
+   top colour (its night sky starts at #0b1324 over #101a2e), so the two
+   meet without a seam. Cross-faded in, so the theme switch stays
+   smooth; nothing in light mode. */
+.selected-work::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: -1;
+  height: 220px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, #0c1426);
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.dark .selected-work::after {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .selected-work,
+  .selected-work::after {
+    transition-duration: 0ms;
+  }
+}
+
 /* Sun/moon crossfade between themes — same position, two states of
    one world, per the sky illustration in components/hero/sky-background.tsx */
 .sun-layer {
