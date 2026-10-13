@@ -55,12 +55,11 @@ export type NavItem = {
  * no "Home" item: the profile photo at the start of the pill is the home
  * link. Work and "Work with me" point at the homepage sections (#work,
  * #contact); the leading "/" makes them work from any page. About is
- * its own page.
+ * its own page. (The Playground route still exists, just not in the nav.)
  */
 export const navItems: NavItem[] = [
   { label: "Work", href: "/#work" },
   { label: "About", href: "/about" },
-  { label: "Playground", href: "/playground" },
   { label: "Work with me", href: "/#contact", emphasized: true },
 ];
 

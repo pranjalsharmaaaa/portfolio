@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -110,33 +110,9 @@ function useScrollVisibility(onHide: () => void, enabled = true) {
 const noopSubscribe = () => () => {};
 
 /**
- * The right end of the nav row. On phones its content hangs down from
- * the top edge (out of flow), so a control taller than the pill, like
- * the stacked theme circles, never pushes the pill down; from `sm` it
- * sits in line, centred with the pill.
- */
-function Trailing({ children, className = "", inert }: { children: ReactNode; className?: string; inert?: boolean }) {
-  return (
-    <div className={`relative h-9 justify-self-end max-sm:w-8 ${className}`} inert={inert}>
-      <div className="absolute top-0 right-0 sm:static">{children}</div>
-    </div>
-  );
-}
-
-/**
- * The nav's row: three columns, the pill in the middle one, so the pill
- * is centred on the page whatever sits beside it; anything passed as
- * `trailing` sits at the right end of the row. With `trailing`, the row
- * keeps the page's own gutters and max width so it lines up with the
- * page content.
- */
-const ROW = "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2";
-const PAGE_GUTTERS = "mx-auto max-w-[100rem] px-3 sm:px-10 lg:px-12";
-
-/**
- * The floating glass nav: the photo (the way home), Work / About /
- * Playground, the "Work with me" call to action and, on the homepage,
- * the theme toggle, in one translucent pill centred at the top.
+ * The floating glass nav: the photo (the way home), Work / About, the
+ * "Work with me" call to action and the theme toggle, in one
+ * translucent pill centred at the top of every page that shows it.
  *
  * It's placed in the page's top row, but drawn above the whole page:
  * the homepage hero is a sticky layer that About slides over, so a nav
@@ -150,28 +126,21 @@ const PAGE_GUTTERS = "mx-auto max-w-[100rem] px-3 sm:px-10 lg:px-12";
  * Scrolling down past the top hides it with a short lift-and-fade;
  * scrolling up brings the whole pill back together with a gentle spring
  * drop. Reduced motion keeps only a quick fade. Below `sm` the text
- * links move into a small menu; the photo and "Work with me" (and the
- * theme toggle, where shown) stay in the pill.
+ * links move into a small menu; the photo, "Work with me" and the theme
+ * toggle stay in the pill.
  *
- * Other pages reuse the same nav: `themeToggle={false}` leaves the
- * in-pill toggle out, `trailing` (the /about page's theme controls)
- * rides at the right end of the same fixed row, and
- * `hideOnScroll={false}` keeps the whole row in place the entire time
- * (the /about page, where the nav is the way back home). A page with no
- * sticky layers to escape passes `portal={false}`: the fixed row then
- * stays where it's rendered, so it comes first in the keyboard order
- * instead of after the page content.
+ * Other pages reuse the same nav: `hideOnScroll={false}` keeps it in
+ * place the entire time (the /about page, where the nav is the way back
+ * home), and a page with no sticky layers to escape passes
+ * `portal={false}`: the fixed row then stays where it's rendered, so it
+ * comes first in the keyboard order instead of after the page content.
  */
 export function GlassNav({
   items = defaultNavItems,
-  themeToggle = true,
-  trailing,
   hideOnScroll = true,
   portal = true,
 }: {
   items?: NavItem[];
-  themeToggle?: boolean;
-  trailing?: ReactNode;
   hideOnScroll?: boolean;
   portal?: boolean;
 } = {}) {
@@ -229,12 +198,8 @@ export function GlassNav({
           </div>
         )}
 
-        {themeToggle && (
-          <>
-            <div className="mx-0.5 h-5 w-px bg-ink/10" aria-hidden="true" />
-            <ThemeToggle />
-          </>
-        )}
+        <div className="mx-0.5 h-5 w-px bg-ink/10" aria-hidden="true" />
+        <ThemeToggle />
 
         <button
           type="button"
@@ -286,10 +251,10 @@ export function GlassNav({
   // badge), so it never floats oddly low over the content.
   const top = atTop ? (homeTop ?? 0) : Math.min(homeTop ?? 16, 16);
 
-  // The fixed row itself: the pill centred, `trailing` at the right end.
+  // The fixed row itself, with the pill centred in it.
   const row = (
     <motion.div
-      className={`pointer-events-none fixed inset-x-0 top-0 z-50 ${ROW} ${trailing ? PAGE_GUTTERS : "px-4"}`}
+      className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4"
       initial={false}
       animate={
         visible
@@ -304,15 +269,9 @@ export function GlassNav({
             : { duration: 0.22, ease: [0.4, 0, 1, 1] }
       }
     >
-      <span aria-hidden="true" />
       <div className={visible ? "pointer-events-auto" : "pointer-events-none"} inert={!visible}>
         {pill}
       </div>
-      {trailing && (
-        <Trailing className={visible ? "pointer-events-auto" : "pointer-events-none"} inert={!visible}>
-          {trailing}
-        </Trailing>
-      )}
     </motion.div>
   );
 
@@ -320,14 +279,8 @@ export function GlassNav({
     <>
       {/* Holds the pill's place in the hero layout (the original 50px row height), and is
           where the pill itself renders until the page has hydrated. */}
-      <div ref={spacerRef} className={`h-[50px] ${ROW}`}>
-        {!mounted && (
-          <>
-            <span aria-hidden="true" />
-            {pill}
-            {trailing && <Trailing>{trailing}</Trailing>}
-          </>
-        )}
+      <div ref={spacerRef} className="flex h-[50px] items-center justify-center">
+        {!mounted && pill}
       </div>
 
       {mounted && (portal ? createPortal(row, document.body) : row)}

@@ -608,29 +608,6 @@
   outline-offset: 4px;
 }
 
-/* The /about page's separate sun/moon circles (components/ui/theme-controls.tsx). */
-.theme-dot {
-  background: var(--nav-bg);
-  border-color: var(--nav-border);
-  color: var(--ink-muted);
-  box-shadow: 0 4px 14px var(--nav-shadow);
-  transition:
-    background-color 220ms ease,
-    color 220ms ease,
-    border-color 220ms ease;
-}
-.theme-dot:hover {
-  color: var(--ink);
-}
-.theme-dot[data-active] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--ap-bg, #fffaf2);
-}
-.theme-dot:focus-visible {
-  border-radius: 9999px;
-}
-
 /* Sun/moon crossfade between themes — same position, two states of
    one world, per the sky illustration in components/hero/sky-background.tsx */
 .sun-layer {

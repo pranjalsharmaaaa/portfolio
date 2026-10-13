@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { GlassNav } from "@/components/navigation/glass-nav";
-import { ThemeControls } from "@/components/ui/theme-controls";
 import { AboutSky } from "@/components/about/about-sky";
 import { PolaroidCollage } from "@/components/about/polaroid-collage";
 import { aboutPage } from "@/lib/site-content";
@@ -12,11 +11,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * The About page: the shared glass nav centred at the top (About outlined)
- * with separate sun/moon theme controls at the top right, a two-line
- * editorial headline with its key words in the accent green, a short
- * introduction, and a stack of Polaroid prints (beside the introduction
- * on wide screens, below it on smaller ones). The nav stays put while scrolling here: it's the way back home.
+ * The About page: the shared glass nav centred at the top (About
+ * outlined, theme toggle in the pill), a two-line editorial headline
+ * with its key words in the accent green, a short introduction, and a
+ * stack of Polaroid prints (beside the introduction on wide screens,
+ * below it on smaller ones). The nav stays put while scrolling here:
+ * it's the way back home.
  */
 export default function AboutPage() {
   return (
@@ -24,12 +24,7 @@ export default function AboutPage() {
       <AboutSky />
 
       <header className="relative mx-auto w-full max-w-[100rem] px-3 pt-4 sm:px-10 sm:pt-5 lg:px-12">
-        <GlassNav
-          themeToggle={false}
-          trailing={<ThemeControls />}
-          hideOnScroll={false}
-          portal={false}
-        />
+        <GlassNav hideOnScroll={false} portal={false} />
       </header>
 
       <main id="main" className="relative mx-auto w-full max-w-[100rem] px-5 pb-20 sm:px-10 sm:pb-28 lg:px-12">
