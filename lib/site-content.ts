@@ -79,8 +79,26 @@ export const headlineTransitionMs = 500;
  * belief — not a second biography paragraph restating the same ground.
  */
 export const about = {
+  label: "About",
+  headline: { lead: "Curious about the why.", emphasis: "Obsessed with the little things." },
   intro:
-    "Someone who enjoys learning, exploring new ideas and finding the little details that make an experience feel just right.",
+    "I’m Pranjal, a product designer. My background in architecture shapes how I think about structure, about people, and about the digital experiences I design.",
+  /** Photos for the Polaroid collage — all from Pranjal's own uploads. */
+  photos: {
+    main: {
+      src: "/images/about/bouquet.jpg",
+      alt: "Pranjal smiling with her eyes closed, holding a bouquet of white flowers beside a hand-painted wall",
+      width: 720,
+      height: 900,
+    },
+    behindLeft: { src: "/images/about/portrait.jpg", alt: "Portrait of Pranjal", width: 480, height: 600 },
+    behindRight: {
+      src: "/images/about/mural.jpg",
+      alt: "Detail of the hand-painted peacock and elephant mural from the same photograph",
+      width: 480,
+      height: 600,
+    },
+  },
   exploringLabel: "Things I'm exploring lately",
   belief:
     "I think every good design starts with a question. I'm here to keep asking better ones.",
