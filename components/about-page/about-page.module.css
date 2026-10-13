@@ -1,0 +1,320 @@
+/*
+ * /about page — the landscape transition into Professional Experience.
+ *
+ * Colours: the light palette is sampled from the reference illustration
+ * (warm beige sky, muted peach botanicals, sage-grey mounds, a cream
+ * foreground). It's a scene within the page, not a new page skin: the
+ * page itself keeps the approved `.about-page` tokens (globals.css), the
+ * landscape's sky fades in out of `--ap-bg`, and dark mode gets its own
+ * night version of the same scene, like the rest of the portfolio.
+ *
+ * Scene units: `--u` is pixels per scene unit (components/about-page/
+ * scene.ts). 1440 units span the viewport on desktop; it's floored on
+ * phones so the plants stay legible (the scene is then cropped to its
+ * centre) and capped on very wide screens so the landscape never grows
+ * taller than the viewport.
+ */
+.page {
+  --u: clamp(0.55px, calc(100vw / 1440), 1.1px);
+  --land-h: calc(680 * var(--u));
+  --wave-h: calc(220 * var(--u));
+  --reveal: calc(300 * var(--u));
+  --scene-w: calc(2400 * var(--u));
+
+  --meadow-sky: #eee0cc;
+  --meadow-far: #e8dbc5;
+  --meadow-hill: #eadac2;
+  --meadow-hill-near: #e7d5bb;
+  --meadow-plant: #e8c4b0;
+  --meadow-plant-deep: #e2b9a3;
+  --meadow-plant-front: #ddb09a;
+  --meadow-mound: #acb0ac;
+  --meadow-mound-deep: #b4b6ae;
+  --meadow-cream-edge: #f6ede0;
+  --meadow-cream-mid: #fcf5eb;
+  --meadow-cream: #fff9f1;
+  --meadow-heading: #78756f;
+  --meadow-rule: rgb(26 23 20 / 10%);
+  --meadow-edge-shadow: rgb(120 92 60 / 12%);
+}
+
+:global(.dark) .page {
+  --meadow-sky: #16233d;
+  --meadow-far: #1a2843;
+  --meadow-hill: #1c2b48;
+  --meadow-hill-near: #213151;
+  --meadow-plant: #8c6f78;
+  --meadow-plant-deep: #7f6670;
+  --meadow-plant-front: #9b7d82;
+  --meadow-mound: #43506a;
+  --meadow-mound-deep: #4a5874;
+  --meadow-cream-edge: #26375a;
+  --meadow-cream-mid: #1b2945;
+  --meadow-cream: #132039;
+  --meadow-heading: #c4cad6;
+  --meadow-rule: rgb(238 241 246 / 12%);
+  --meadow-edge-shadow: rgb(0 0 0 / 30%);
+}
+
+/* ------------------------------------------------------------------ */
+/* The sticky reveal                                                   */
+/*                                                                      */
+/* Same mechanism as app/page.tsx's Hero ↔ About handoff — a pinned    */
+/* rear layer, and the next section scrolling over it in normal flow — */
+/* adapted to a rear layer TALLER than the viewport:                   */
+/*                                                                      */
+/* 1. `.rear` (intro + collage + rear landscape) is sticky with its    */
+/*    BOTTOM at the viewport's bottom: top = 100svh − its own height   */
+/*    (--rear-h, published by sticky-rear.tsx). It scrolls normally    */
+/*    until the landscape is fully in view, then holds still.          */
+/* 2. `.revealSpacer` gives it exactly `--reveal` of room to hold for. */
+/* 3. `.experience` is pulled up over that spacer, so its cream hill   */
+/*    starts at the landscape's foot and climbs across the still rear  */
+/*    layer — the heading rising with it — then the stage runs out,    */
+/*    the rear releases, and everything scrolls on together, resting   */
+/*    in the reference composition.                                     */
+/*                                                                      */
+/* No scroll listener: scroll position alone decides the overlap, so   */
+/* it tracks trackpads, wheels and touch exactly, and the pin can      */
+/* never trap the reader (it lasts a fixed, short distance). `svh`     */
+/* keeps the pin from jumping as mobile toolbars show and hide.        */
+/* ------------------------------------------------------------------ */
+.stage {
+  position: relative;
+  z-index: 0;
+}
+
+.rear {
+  position: sticky;
+  /* Fallback (no measurement yet): so far above that it never pins. */
+  top: min(0px, calc(100svh - var(--rear-h, 400vh)));
+}
+
+.revealSpacer {
+  height: var(--reveal);
+}
+
+.panel {
+  position: relative;
+  z-index: 0;
+  height: var(--land-h);
+  /* Tuck the tallest plant tips up behind the bottom of the intro. */
+  margin-top: calc(-56 * var(--u));
+  overflow: hidden;
+  /* The landscape's sky warms in out of the page background, so the
+     intro above and the scene below read as one surface. */
+  background: linear-gradient(transparent, var(--meadow-sky) 34%);
+}
+
+.sceneSvg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: var(--scene-w);
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+.experience {
+  position: relative;
+  z-index: 2;
+  margin-top: calc(-1 * var(--reveal));
+  /* Always taller than the reveal distance it overlaps, so the pinned
+     landscape can never show beneath it, however short its content. */
+  min-height: calc(var(--reveal) + 14rem);
+  padding-top: max(2.5rem, calc(64 * var(--u)));
+  padding-bottom: clamp(5rem, 10vw, 9rem);
+  background: linear-gradient(var(--meadow-cream-mid), var(--meadow-cream) calc(120 * var(--u)));
+  color: var(--ap-ink);
+}
+
+.hill {
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  bottom: calc(100% - 1px);
+  left: 0;
+  height: var(--wave-h);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  /* No pinned travel: the cream sits directly in its resting,
+     overlapped position. */
+  .rear {
+    position: relative;
+    top: auto;
+  }
+
+  .revealSpacer {
+    display: none;
+  }
+}
+
+/* A barely-there sway from each plant's foot, only where it can't cost
+   a phone anything and only when motion is welcome. */
+.sway {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+@media (min-width: 640px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .sway {
+    animation: meadow-sway var(--sway, 8s) ease-in-out var(--phase, 0s) infinite alternate;
+  }
+}
+
+@keyframes meadow-sway {
+  from {
+    transform: rotate(-1.2deg);
+  }
+  to {
+    transform: rotate(1.2deg);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Experience accordion                                                 */
+/* ------------------------------------------------------------------ */
+.roles {
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+  border-top: 1px solid var(--meadow-rule);
+}
+
+.role {
+  border-bottom: 1px solid var(--meadow-rule);
+}
+
+.roleButton {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 2.2vw, 1.75rem) 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.roleButton:focus-visible {
+  outline-offset: 6px;
+}
+
+.company {
+  font-family: var(--font-lora), Georgia, serif;
+  font-size: clamp(1.3rem, 1.9vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ap-ink);
+  transition: color 250ms ease;
+}
+
+
+/* A plus whose upright bar folds away into a minus when open. */
+.toggleIcon {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--ap-ink);
+  transition: background-color 250ms ease;
+}
+
+.toggleIcon svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+/* Hover only where there's a real pointer — on touch it would stick
+   after a tap. */
+@media (hover: hover) {
+  .roleButton:hover .company {
+    color: var(--ap-accent);
+  }
+
+  .roleButton:hover .toggleIcon {
+    background: color-mix(in srgb, var(--ap-ink) 6%, transparent);
+  }
+}
+
+.toggleBar {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.role[data-open="true"] .toggleBar {
+  transform: scaleY(0);
+}
+
+/* Height follows the content: the grid row eases between 0fr and 1fr. */
+.rolePanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.role[data-open="true"] .rolePanel {
+  grid-template-rows: 1fr;
+}
+
+.rolePanelInner {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.role[data-open="true"] .rolePanelInner {
+  opacity: 1;
+  transition-delay: 80ms;
+}
+
+.detailText,
+.details {
+  max-width: 47rem;
+  padding-bottom: clamp(1.4rem, 2.4vw, 2rem);
+  font-size: clamp(0.95rem, 1.15vw, 1.0625rem);
+  line-height: 1.65;
+  color: var(--ap-muted);
+  text-wrap: pretty;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Small botanical-peach markers tie the list back to the landscape. */
+.details li {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.details li::before {
+  content: "";
+  position: absolute;
+  top: 0.68em;
+  left: 0.15rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--meadow-plant-front);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rolePanel,
+  .rolePanelInner,
+  .toggleBar {
+    transition: none;
+  }
+}
