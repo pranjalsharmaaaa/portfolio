@@ -13,15 +13,15 @@ export function UnderstandScreen() {
     <section className={SCREEN_Y}>
       <Container>
         <SectionTitle heading={c.heading} sub={c.sub} />
-        <ul className="mt-10 grid grid-cols-1 justify-items-center gap-10 @min-[640px]:grid-cols-3 @min-[640px]:gap-6 @min-[1024px]:mt-12 @min-[1024px]:justify-between @min-[1024px]:gap-10">
+        <ul className="mx-auto mt-8 grid max-w-[1000px] grid-cols-1 justify-items-center gap-8 @min-[640px]:grid-cols-3 @min-[640px]:gap-6 @min-[1024px]:gap-10">
           {c.phones.map((p) => (
-            <li key={p.src} className="w-full max-w-[300px] @min-[640px]:max-w-[330px]">
+            <li key={p.src} className="w-full max-w-[240px]">
               <Image
                 src={p.src}
                 alt={p.alt}
                 width={PHONE.w}
                 height={PHONE.h}
-                sizes="(min-width: 1024px) 24vw, (min-width: 640px) 30vw, 80vw"
+                sizes="(min-width: 640px) 240px, 70vw"
                 className="h-auto w-full drop-shadow-[0_24px_32px_rgba(60,10,20,0.18)]"
               />
             </li>
@@ -46,16 +46,16 @@ export function AskScreen() {
   return (
     <section className={SCREEN_Y}>
       <Container>
-        <div className="grid items-center gap-12 @min-[1024px]:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] @min-[1024px]:gap-16">
+        <div className="grid items-center gap-8 @min-[1024px]:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] @min-[1024px]:gap-12">
           <div>
             <SectionTitle heading={c.heading} sub={c.sub} />
-            <Card className="mt-8 max-w-[560px] px-6 py-7 @min-[640px]:px-7 @min-[1024px]:mt-12">
-              <p className="text-[16px] font-medium tracking-[0.03em] text-[var(--sc-muted)] uppercase @min-[640px]:text-[19px]">{c.principle.label}</p>
-              <p className="mt-4 text-[24px] leading-[1.25] font-medium text-[#4a4a4a] @min-[640px]:text-[32px]">{c.principle.title}</p>
-              <p className="mt-4 text-[16px] leading-[1.55] text-[var(--sc-muted)] @min-[640px]:text-[20px]">{c.principle.body}</p>
+            <Card className="mt-8 max-w-[480px] px-6 py-6 @min-[640px]:px-7">
+              <p className="text-[13px] font-medium tracking-[0.06em] text-[var(--sc-muted)] uppercase @min-[640px]:text-[14px]">{c.principle.label}</p>
+              <p className="mt-3 text-[22px] leading-[1.25] font-medium text-[#4a4a4a] @min-[640px]:text-[24px]">{c.principle.title}</p>
+              <p className="mt-3 text-[15px] leading-relaxed text-[var(--sc-muted)] @min-[640px]:text-[16px]">{c.principle.body}</p>
             </Card>
           </div>
-          <div className="mx-auto w-full max-w-[270px] @min-[640px]:max-w-[290px] @min-[1024px]:mr-0 @min-[1024px]:max-w-[300px]">
+          <div className="mx-auto w-full max-w-[220px] @min-[640px]:max-w-[240px] @min-[1024px]:mr-[8%]">
             <DemoVideo {...c.video} />
           </div>
         </div>
@@ -79,7 +79,7 @@ export function PractiseScreen() {
     <section className={SCREEN_Y}>
       <Container>
         <SectionTitle heading={c.heading} sub={c.sub} />
-        <ul className="mx-auto mt-10 grid max-w-[1180px] grid-cols-2 items-start gap-x-4 gap-y-10 @min-[640px]:grid-cols-3 @min-[640px]:gap-x-6 @min-[1024px]:mt-12 @min-[1024px]:max-w-none @min-[1024px]:gap-x-12">
+        <ul className="mx-auto mt-8 grid max-w-[1000px] grid-cols-2 items-start gap-x-4 gap-y-8 @min-[640px]:grid-cols-3 @min-[640px]:gap-x-6 @min-[1024px]:gap-x-10">
           {c.phones.map((p) => (
             <li key={p.src} className="flex justify-center">
               <Image
@@ -87,13 +87,13 @@ export function PractiseScreen() {
                 alt={p.alt}
                 width={PHONE.w}
                 height={PHONE.h}
-                sizes="(min-width: 1024px) 22vw, (min-width: 640px) 30vw, 45vw"
-                className="h-auto w-full max-w-[300px] drop-shadow-[0_24px_32px_rgba(60,10,20,0.18)]"
+                sizes="(min-width: 640px) 240px, 45vw"
+                className="h-auto w-full max-w-[240px] drop-shadow-[0_24px_32px_rgba(60,10,20,0.18)]"
               />
             </li>
           ))}
           <li className="col-span-2 flex justify-center @min-[640px]:col-span-1">
-            <div className="w-[62%] max-w-[300px] @min-[640px]:w-full">
+            <div className="w-[62%] max-w-[240px] @min-[640px]:w-full">
               <DemoVideo {...c.video} />
             </div>
           </li>
