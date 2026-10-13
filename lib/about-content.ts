@@ -23,9 +23,9 @@ export const experience: ExperienceRole[] = [
     start: "Dec 2025",
     end: "Present",
     details: [
-      "Designed a simulated finance experience for young earners to learn through real-world decisions.",
-      "Designed a voice-first Sales Coach to provide contextual guidance to sales teams.",
-      "Codified Airtel’s design legacy into UX principles and interaction guidelines.",
+      "Designed a simulated finance experience that helps young earners learn money management through real-world decisions and build confidence for a more secure financial future.",
+      "Designed a voice-first AI Sales Coach that helps sales teams understand complex customer and product information through contextual, actionable guidance.",
+      "Worked on Airtel’s design legacy, documenting UX principles, interaction guidelines, and design patterns to support a consistent experience across Airtel products.",
     ],
   },
   {
@@ -34,7 +34,7 @@ export const experience: ExperienceRole[] = [
     start: "Sep 2025",
     end: "Nov 2025",
     details: [
-      "Designed an independent learning experience for Anganwadi children, helping them learn and explore with less reliance on Sahyikas.",
+      "Designed augmented reality (AR) learning cards for young children in Anganwadi settings, helping children around 3–6 years old explore and learn more independently, with less reliance on Sahyikas.",
     ],
   },
   {
@@ -43,7 +43,7 @@ export const experience: ExperienceRole[] = [
     start: "Jun 2025",
     end: "Aug 2025",
     details: [
-      "Worked with stakeholders to uncover workflow gaps, redesigned enterprise dashboards, and collaborated with developers to bring simpler experiences to life.",
+      "Worked with stakeholders to identify workflow gaps, redesigned enterprise dashboards, and collaborated with developers to create simpler user experiences. Also worked with React during the implementation process.",
     ],
   },
   {
