@@ -51,24 +51,13 @@ export type NavItem = {
 };
 
 /**
- * Primary navigation. Work and "Work with me" point at the real
- * homepage sections (#work, #contact); the leading "/" makes them work
- * from any page. About is its own page (/about). The remaining
- * placeholder routes (Playground, Wrap) aren't in the homepage nav.
+ * Primary navigation, the same on every page that shows the nav. There's
+ * no "Home" item: the profile photo at the start of the pill is the home
+ * link. Work and "Work with me" point at the homepage sections (#work,
+ * #contact); the leading "/" makes them work from any page. About is
+ * its own page.
  */
 export const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Work", href: "/#work" },
-  { label: "About", href: "/about" },
-  { label: "Work with me", href: "/#contact", emphasized: true },
-];
-
-/**
- * The same nav as it appears on /about, matching that page's design:
- * the photo already leads home, so there's no separate Home link, and
- * Playground sits beside About.
- */
-export const aboutPageNavItems: NavItem[] = [
   { label: "Work", href: "/#work" },
   { label: "About", href: "/about" },
   { label: "Playground", href: "/playground" },
@@ -110,10 +99,10 @@ export const aboutPage = {
     { before: "Curious about the ", highlight: "why", after: "." },
     { before: "Obsessed with the ", highlight: "little things", after: "." },
   ],
-  intro: [
-    "I’m Pranjal, a product designer with a background in computer science and a curiosity for how things work, look, and feel.",
-    "With a B.Tech in Computer Science and Engineering, I bring together technical thinking, UX design, and visual storytelling. I enjoy understanding the problem behind the problem and turning complex ideas into digital experiences that feel simple, intuitive, and human.",
-  ],
+  intro: {
+    lead: "Curious by nature, a designer by choice.",
+    body: "With code in my roots and design in my view, I turn complex problems into experiences that feel simple, thoughtful, and true.",
+  },
   photos: [
     { src: "/images/about/portrait.jpg", alt: "Portrait of Pranjal in a cream coat", width: 900, height: 1200 },
     {

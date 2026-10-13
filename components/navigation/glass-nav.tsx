@@ -109,49 +109,71 @@ function useScrollVisibility(onHide: () => void, enabled = true) {
 
 const noopSubscribe = () => () => {};
 
-/** The fixed row for `align="start"`: the same gutters and max width as the page content. */
-const PAGE_ROW = "mx-auto max-w-[100rem] items-center justify-between gap-3 px-5 sm:px-10 lg:px-12";
+/**
+ * The right end of the nav row. On phones its content hangs down from
+ * the top edge (out of flow), so a control taller than the pill, like
+ * the stacked theme circles, never pushes the pill down; from `sm` it
+ * sits in line, centred with the pill.
+ */
+function Trailing({ children, className = "", inert }: { children: ReactNode; className?: string; inert?: boolean }) {
+  return (
+    <div className={`relative h-9 justify-self-end max-sm:w-8 ${className}`} inert={inert}>
+      <div className="absolute top-0 right-0 sm:static">{children}</div>
+    </div>
+  );
+}
 
 /**
- * The floating glass nav: photo, Home / Work / About, the "Work with me"
- * call to action and the theme toggle, in one translucent pill.
+ * The nav's row: three columns, the pill in the middle one, so the pill
+ * is centred on the page whatever sits beside it; anything passed as
+ * `trailing` sits at the right end of the row. With `trailing`, the row
+ * keeps the page's own gutters and max width so it lines up with the
+ * page content.
+ */
+const ROW = "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2";
+const PAGE_GUTTERS = "mx-auto max-w-[100rem] px-3 sm:px-10 lg:px-12";
+
+/**
+ * The floating glass nav: the photo (the way home), Work / About /
+ * Playground, the "Work with me" call to action and, on the homepage,
+ * the theme toggle, in one translucent pill centred at the top.
  *
- * It's placed in the hero's top row, but drawn above the whole page:
- * the hero is a sticky layer that About slides over, so a nav fixed
- * *inside* it would end up underneath About. Instead this renders an
- * invisible spacer of the pill's size in the hero (so the hero's layout
- * is exactly what it was), measures where that spacer sits, and portals
- * the real pill to <body> as a fixed element at that same spot. Before
- * hydration the pill renders in place, so the first paint already shows
- * it where it belongs.
+ * It's placed in the page's top row, but drawn above the whole page:
+ * the homepage hero is a sticky layer that About slides over, so a nav
+ * fixed *inside* it would end up underneath. Instead this renders an
+ * invisible spacer of the pill's size in place (so the layout is exactly
+ * what it was), measures where that spacer sits, and portals the real
+ * pill to <body> as a fixed element at that same spot. Before hydration
+ * the pill renders in place, so the first paint already shows it where
+ * it belongs.
  *
  * Scrolling down past the top hides it with a short lift-and-fade;
  * scrolling up brings the whole pill back together with a gentle spring
  * drop. Reduced motion keeps only a quick fade. Below `sm` the text
- * links move into a small menu; the photo, "Work with me" and the
- * theme toggle stay in the pill.
+ * links move into a small menu; the photo and "Work with me" (and the
+ * theme toggle, where shown) stay in the pill.
  *
- * Other pages reuse the same nav with `align="start"`: the pill sits at
- * the left of the page's own gutters instead of centred, its photo
- * leads home, and anything passed as `trailing` (the /about page's
- * theme controls) rides at the right edge of the same fixed row, so it
- * hides and returns with the pill. `items` and `themeToggle` let such a
- * page use its own link set and leave the in-pill toggle out, and
+ * Other pages reuse the same nav: `themeToggle={false}` leaves the
+ * in-pill toggle out, `trailing` (the /about page's theme controls)
+ * rides at the right end of the same fixed row, and
  * `hideOnScroll={false}` keeps the whole row in place the entire time
- * (the /about page, where the nav is the way back home).
+ * (the /about page, where the nav is the way back home). A page with no
+ * sticky layers to escape passes `portal={false}`: the fixed row then
+ * stays where it's rendered, so it comes first in the keyboard order
+ * instead of after the page content.
  */
 export function GlassNav({
   items = defaultNavItems,
-  align = "center",
   themeToggle = true,
   trailing,
   hideOnScroll = true,
+  portal = true,
 }: {
   items?: NavItem[];
-  align?: "center" | "start";
   themeToggle?: boolean;
   trailing?: ReactNode;
   hideOnScroll?: boolean;
+  portal?: boolean;
 } = {}) {
   const [open, setOpen] = useState(false);
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -175,7 +197,6 @@ export function GlassNav({
 
   const links = items.filter((item) => !item.emphasized);
   const cta = items.find((item) => item.emphasized);
-  const start = align === "start";
 
   const pill = (
     <nav aria-label="Primary" className="relative w-full max-w-fit">
@@ -187,13 +208,14 @@ export function GlassNav({
           boxShadow: "0 8px 30px var(--nav-shadow)",
         }}
       >
-        {start ? (
-          <Link href="/" aria-label="Pranjal Sharma, home" className={`rounded-full ${FOCUS}`}>
-            <Avatar />
-          </Link>
-        ) : (
+        {/* The photo is the home link (there's no separate "Home"). */}
+        <Link
+          href="/"
+          aria-label="Go to homepage"
+          className={`nav-home shrink-0 rounded-full transition-[scale] duration-200 ease-out hover:scale-[1.06] motion-reduce:hover:scale-100 ${FOCUS}`}
+        >
           <Avatar />
-        )}
+        </Link>
 
         <div className="ml-1 hidden items-center gap-0.5 sm:flex">
           {links.map((item) => (
@@ -264,44 +286,51 @@ export function GlassNav({
   // badge), so it never floats oddly low over the content.
   const top = atTop ? (homeTop ?? 0) : Math.min(homeTop ?? 16, 16);
 
+  // The fixed row itself: the pill centred, `trailing` at the right end.
+  const row = (
+    <motion.div
+      className={`pointer-events-none fixed inset-x-0 top-0 z-50 ${ROW} ${trailing ? PAGE_GUTTERS : "px-4"}`}
+      initial={false}
+      animate={
+        visible
+          ? { opacity: 1, y: top }
+          : { opacity: 0, y: reduceMotion ? top : top - 28 }
+      }
+      transition={
+        reduceMotion
+          ? { duration: 0.15 }
+          : visible
+            ? { type: "spring", stiffness: 520, damping: 34, mass: 0.7, opacity: { duration: 0.2 } }
+            : { duration: 0.22, ease: [0.4, 0, 1, 1] }
+      }
+    >
+      <span aria-hidden="true" />
+      <div className={visible ? "pointer-events-auto" : "pointer-events-none"} inert={!visible}>
+        {pill}
+      </div>
+      {trailing && (
+        <Trailing className={visible ? "pointer-events-auto" : "pointer-events-none"} inert={!visible}>
+          {trailing}
+        </Trailing>
+      )}
+    </motion.div>
+  );
+
   return (
     <>
       {/* Holds the pill's place in the hero layout (the original 50px row height), and is
           where the pill itself renders until the page has hydrated. */}
-      <div ref={spacerRef} className={`flex h-[50px] items-center ${start ? "justify-between gap-3" : "justify-center"}`}>
-        {!mounted && pill}
-        {!mounted && trailing}
+      <div ref={spacerRef} className={`h-[50px] ${ROW}`}>
+        {!mounted && (
+          <>
+            <span aria-hidden="true" />
+            {pill}
+            {trailing && <Trailing>{trailing}</Trailing>}
+          </>
+        )}
       </div>
 
-      {mounted &&
-        createPortal(
-          <motion.div
-            className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex ${start ? PAGE_ROW : "justify-center px-4"}`}
-            initial={false}
-            animate={
-              visible
-                ? { opacity: 1, y: top }
-                : { opacity: 0, y: reduceMotion ? top : top - 28 }
-            }
-            transition={
-              reduceMotion
-                ? { duration: 0.15 }
-                : visible
-                  ? { type: "spring", stiffness: 520, damping: 34, mass: 0.7, opacity: { duration: 0.2 } }
-                  : { duration: 0.22, ease: [0.4, 0, 1, 1] }
-            }
-          >
-            <div className={visible ? "pointer-events-auto" : "pointer-events-none"} inert={!visible}>
-              {pill}
-            </div>
-            {trailing && (
-              <div className={visible ? "pointer-events-auto" : "pointer-events-none"} inert={!visible}>
-                {trailing}
-              </div>
-            )}
-          </motion.div>,
-          document.body,
-        )}
+      {mounted && (portal ? createPortal(row, document.body) : row)}
     </>
   );
 }

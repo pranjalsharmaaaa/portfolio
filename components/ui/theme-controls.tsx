@@ -25,8 +25,8 @@ const OPTIONS = [
 
 /**
  * The /about page's theme controls: two small separate circles, sun and
- * moon, at the top right — the page's own take on the toggle that lives
- * inside the nav pill on the homepage. Same next-themes state, so the
+ * moon, at the top right (stacked on phones) — the page's own take on
+ * the toggle that lives inside the nav pill on the homepage. Same next-themes state, so the
  * choice carries across pages. The current theme's circle is filled in
  * (`aria-pressed`); the other one is the way to switch.
  */
@@ -37,7 +37,9 @@ export function ThemeControls() {
   const mounted = useMounted();
 
   return (
-    <div role="group" aria-label="Color theme" className="flex items-center gap-2">
+    // On phones the two circles stack vertically so they fit beside the
+    // centred nav pill; from `sm` they sit side by side.
+    <div role="group" aria-label="Color theme" className="flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2">
       {OPTIONS.map((option) => {
         const active = mounted && resolvedTheme === option.value;
         return (
@@ -47,7 +49,7 @@ export function ThemeControls() {
             aria-label={option.label}
             aria-pressed={active}
             onClick={() => setTheme(option.value)}
-            className="theme-dot flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-xl"
+            className="theme-dot flex h-8 w-8 items-center justify-center rounded-full border backdrop-blur-xl sm:h-9 sm:w-9"
             data-active={active || undefined}
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none">

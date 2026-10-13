@@ -515,6 +515,11 @@
     0 1px 2px rgb(0 0 0 / 20%);
 }
 .nav-cta:hover,
+/* The nav's home photo keeps its round focus ring (the global
+   :focus-visible rule would square it off). */
+.nav-home:focus-visible {
+  border-radius: 9999px;
+}
 .nav-cta:focus-visible,
 .nav-cta:active,
 .dark .nav-cta:hover,

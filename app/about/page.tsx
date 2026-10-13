@@ -3,7 +3,7 @@ import { GlassNav } from "@/components/navigation/glass-nav";
 import { ThemeControls } from "@/components/ui/theme-controls";
 import { AboutSky } from "@/components/about/about-sky";
 import { PolaroidCollage } from "@/components/about/polaroid-collage";
-import { aboutPage, aboutPageNavItems } from "@/lib/site-content";
+import { aboutPage } from "@/lib/site-content";
 
 export const metadata: Metadata = {
   title: "About — Pranjal Sharma",
@@ -12,24 +12,23 @@ export const metadata: Metadata = {
 };
 
 /**
- * The About page: the shared glass nav at the top left (About outlined)
+ * The About page: the shared glass nav centred at the top (About outlined)
  * with separate sun/moon theme controls at the top right, a two-line
  * editorial headline with its key words in the accent green, a short
- * introduction, and a stack of Polaroid prints in the lower part of the
- * page. The nav stays put while scrolling here: it's the way back home.
+ * introduction, and a stack of Polaroid prints (beside the introduction
+ * on wide screens, below it on smaller ones). The nav stays put while scrolling here: it's the way back home.
  */
 export default function AboutPage() {
   return (
     <div className="about-page relative min-h-dvh overflow-x-clip">
       <AboutSky />
 
-      <header className="relative mx-auto w-full max-w-[100rem] px-5 pt-4 sm:px-10 sm:pt-5 lg:px-12">
+      <header className="relative mx-auto w-full max-w-[100rem] px-3 pt-4 sm:px-10 sm:pt-5 lg:px-12">
         <GlassNav
-          items={aboutPageNavItems}
-          align="start"
           themeToggle={false}
           trailing={<ThemeControls />}
           hideOnScroll={false}
+          portal={false}
         />
       </header>
 
@@ -44,14 +43,22 @@ export default function AboutPage() {
           ))}
         </h1>
 
-        <div className="mt-6 max-w-[40rem] space-y-4 text-[17px] leading-relaxed sm:mt-8 sm:text-lg" style={{ color: "var(--ap-muted)" }}>
-          {aboutPage.intro.map((paragraph) => (
-            <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-          ))}
-        </div>
+        {/* The introduction and the photo stack: one after the other on
+            phones and tablets, side by side from `lg` so both sit in view
+            together beneath the headline. */}
+        <div className="mt-6 sm:mt-8 lg:grid lg:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] lg:items-start lg:gap-12">
+          <div className="max-w-[32rem]">
+            <p className="font-display text-[clamp(1.2rem,1.7vw,1.5rem)] leading-snug font-medium italic">
+              {aboutPage.intro.lead}
+            </p>
+            <p className="mt-3 text-base leading-relaxed text-pretty sm:text-[17px]" style={{ color: "var(--ap-muted)" }}>
+              {aboutPage.intro.body}
+            </p>
+          </div>
 
-        <div className="mt-12 sm:mt-16">
-          <PolaroidCollage />
+          <div className="mt-12 sm:mt-16 lg:mt-0">
+            <PolaroidCollage />
+          </div>
         </div>
       </main>
     </div>
