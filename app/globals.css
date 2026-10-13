@@ -127,10 +127,11 @@
   --moon-shade: rgb(30 34 58 / 30%);
   --moon-glow: rgb(150 175 255 / 30%);
 
-  /* Denser, richer blue for the exploration cards at night — distinct
-     from the near-black sky behind them so they still read as cards,
-     not a lighter tint of the same daytime blue. */
-  --card-blue: #204a75;
+  /* A deeper, richer blue for the exploration cards at night — still
+     distinct from the night sky, and bright enough to stand out on the
+     slate About surface (2.6:1 against it) while keeping the cream
+     card labels at 5.4:1. */
+  --card-blue: #3068a0;
 
   /* Muted, dark cloud strata — present, not just darkened white */
   --cloud-near: rgb(130 150 200 / 14%);
