@@ -48,19 +48,31 @@ export type NavItem = {
   label: string;
   href: string;
   emphasized?: boolean;
+  /** A file (the resume PDF) rather than a page: opens in a new tab. */
+  file?: boolean;
 };
+
+/**
+ * The resume PDF the nav's "View Resume" button opens, as a path under
+ * /public (e.g. "/resume/pranjal-sharma-resume.pdf"). `null` until the
+ * real file is in the repo — the button only appears once this points
+ * at it, so the nav never shows a dead link.
+ */
+export const resumeHref: string | null = null;
 
 /**
  * Primary navigation, the same on every page that shows the nav. There's
  * no "Home" item: the profile photo at the start of the pill is the home
  * link. Work and "Work with me" point at the homepage sections (#work,
  * #contact); the leading "/" makes them work from any page. About is
- * its own page. (The Playground route still exists, just not in the nav.)
+ * its own page. "View Resume" is the one emphasized call to action.
+ * (The Playground route still exists, just not in the nav.)
  */
 export const navItems: NavItem[] = [
   { label: "Work", href: "/#work" },
   { label: "About", href: "/about" },
-  { label: "Work with me", href: "/#contact", emphasized: true },
+  { label: "Work with me", href: "/#contact" },
+  ...(resumeHref ? [{ label: "View Resume", href: resumeHref, emphasized: true, file: true }] : []),
 ];
 
 /** Timing for the "Designer who {word}" cycle — quick and alive, not a slideshow. */

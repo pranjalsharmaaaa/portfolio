@@ -16,11 +16,13 @@ function NavLink({
   href,
   label,
   emphasized,
+  file,
   onClick,
 }: {
   href: string;
   label: string;
   emphasized?: boolean;
+  file?: boolean;
   onClick?: () => void;
 }) {
   // The page you're on is outlined (About, on /about). Section links
@@ -32,12 +34,24 @@ function NavLink({
     // touch lighter than the nav at rest, warming to soft off-white on
     // hover, keyboard focus and press — the one call to action, without
     // a solid white block sitting in the sky.
+    const className = `nav-cta rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap ${FOCUS}`;
+    // A file (the resume PDF) opens in a new tab, outside the app's router.
+    if (file) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${label} (PDF, opens in a new tab)`}
+          onClick={onClick}
+          className={className}
+        >
+          {label}
+        </a>
+      );
+    }
     return (
-      <Link
-        href={href}
-        onClick={onClick}
-        className={`nav-cta rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap ${FOCUS}`}
-      >
+      <Link href={href} onClick={onClick} className={className}>
         {label}
       </Link>
     );

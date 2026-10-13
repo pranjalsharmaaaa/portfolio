@@ -276,8 +276,13 @@ export function AboutSection() {
               closely-matched value. */}
           <div
             ref={cardsTrackRef}
-            className="mt-4 w-full sm:mt-10"
-            style={{ height: cardsScrubActive ? "160vh" : undefined }}
+            // Height and pinning come from media queries (the same `sm:`
+            // and reduced-motion conditions as `cardsScrubActive`), not
+            // from that JS flag, so the page has its final height from the
+            // first paint. Set after hydration instead, the extra 160vh
+            // arrived only after a link like "/#contact" had already
+            // scrolled, leaving the reader well short of the target.
+            className="mt-4 w-full sm:mt-10 sm:h-[160vh] sm:motion-reduce:h-auto"
           >
             {/* Pinned for the track's full height (bar the sliver equal
                 to its own height, right at the very end): the cards
@@ -293,7 +298,7 @@ export function AboutSection() {
                 because it was stacking on top of this wrapper's own
                 margin-top above, which is what created the mismatch
                 with the intro → heading gap in the first place. */}
-            <div className={cardsScrubActive ? "sticky top-0 flex justify-center pb-10" : "flex justify-center"}>
+            <div className="flex justify-center sm:sticky sm:top-0 sm:pb-10 sm:motion-reduce:static sm:motion-reduce:pb-0">
               {/* gap-7 = 1.75rem = exactly 28px, the spec's required
                   final desktop gap between card edges — the grid alone
                   decides width/height/gap for every card; the scroll
