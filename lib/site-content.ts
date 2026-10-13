@@ -46,7 +46,8 @@ export const cassette = {
 
 export type NavItem = {
   label: string;
-  href: string;
+  /** `null` only for a file that hasn't been added yet (see `resumeHref`). */
+  href: string | null;
   emphasized?: boolean;
   /** A file (the resume PDF) rather than a page: opens in a new tab. */
   file?: boolean;
@@ -55,8 +56,8 @@ export type NavItem = {
 /**
  * The resume PDF the nav's "View Resume" button opens, as a path under
  * /public (e.g. "/resume/pranjal-sharma-resume.pdf"). `null` until the
- * real file is in the repo — the button only appears once this points
- * at it, so the nav never shows a dead link.
+ * real file is in the repo: the button still shows, but as an inert
+ * "coming soon" pill rather than a link, so the nav never has a dead link.
  */
 export const resumeHref: string | null = null;
 
@@ -72,7 +73,7 @@ export const navItems: NavItem[] = [
   { label: "Work", href: "/#work" },
   { label: "About", href: "/about" },
   { label: "Work with me", href: "/#contact" },
-  ...(resumeHref ? [{ label: "View Resume", href: resumeHref, emphasized: true, file: true }] : []),
+  { label: "View Resume", href: resumeHref, emphasized: true, file: true },
 ];
 
 /** Timing for the "Designer who {word}" cycle — quick and alive, not a slideshow. */

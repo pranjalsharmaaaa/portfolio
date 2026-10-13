@@ -19,7 +19,7 @@ function NavLink({
   file,
   onClick,
 }: {
-  href: string;
+  href: string | null;
   label: string;
   emphasized?: boolean;
   file?: boolean;
@@ -27,7 +27,24 @@ function NavLink({
 }) {
   // The page you're on is outlined (About, on /about). Section links
   // like "/#work" never are.
-  const current = usePathname() === href && href !== "/";
+  const pathname = usePathname();
+  const current = href !== null && pathname === href && href !== "/";
+
+  // A file that hasn't been added yet (no resume PDF): the same pill, in
+  // its place, but not a link — so it can never lead to a missing file.
+  if (href === null) {
+    return (
+      <span
+        role="link"
+        aria-disabled="true"
+        aria-label={`${label} (coming soon)`}
+        title="Coming soon"
+        className={`nav-cta inline-block cursor-default rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap`}
+      >
+        {label}
+      </span>
+    );
+  }
 
   if (emphasized) {
     // A frosted-glass pill (`.nav-cta`, globals.css): translucent and a
@@ -202,7 +219,7 @@ export function GlassNav({
 
         <div className="ml-1 hidden items-center gap-0.5 sm:flex">
           {links.map((item) => (
-            <NavLink key={item.href} {...item} />
+            <NavLink key={item.label} {...item} />
           ))}
         </div>
 
@@ -252,7 +269,7 @@ export function GlassNav({
             }}
           >
             {links.map((item) => (
-              <NavLink key={item.href} {...item} onClick={() => setOpen(false)} />
+              <NavLink key={item.label} {...item} onClick={() => setOpen(false)} />
             ))}
           </motion.div>
         )}
