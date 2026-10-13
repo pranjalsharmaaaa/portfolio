@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GlassNav } from "@/components/navigation/glass-nav";
 import { AboutSky } from "@/components/about/about-sky";
 import { PolaroidCollage } from "@/components/about/polaroid-collage";
+import { GrowSection } from "@/components/contact/grow-section";
 import { ExperienceSection } from "@/components/about-page/experience-section";
 import { RearLandscape } from "@/components/about-page/landscape";
 import { StickyRear } from "@/components/about-page/sticky-rear";
@@ -83,6 +84,9 @@ export default function AboutPage() {
         </div>
 
         <ExperienceSection />
+
+        {/* The homepage's closing contact section, reused as-is. */}
+        <GrowSection />
       </main>
     </div>
   );

@@ -124,9 +124,31 @@
      landscape can never show beneath it, however short its content. */
   min-height: calc(var(--reveal) + 14rem);
   padding-top: max(2.5rem, calc(64 * var(--u)));
-  padding-bottom: clamp(5rem, 10vw, 9rem);
+  /* The contact section that follows brings its own generous top
+     space, so this only needs a modest gap of its own. */
+  padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
   background: linear-gradient(var(--meadow-cream-mid), var(--meadow-cream) calc(120 * var(--u)));
   color: var(--ap-ink);
+}
+
+/* At night the last stretch eases down into the contact section's own
+   top colour (its night sky starts at #0b1324), so the two meet without
+   a seam — the same hand-off the homepage gives Selected Work. Nothing
+   in light mode, where both are already the same cream. */
+.experience::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: -1;
+  height: 220px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, #0c1426);
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+:global(.dark) .experience::after {
+  opacity: 1;
 }
 
 .hill {
