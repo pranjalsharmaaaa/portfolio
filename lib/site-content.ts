@@ -51,18 +51,16 @@ export type NavItem = {
 };
 
 /**
- * Primary navigation. Routes for not-yet-designed sections still exist
- * (see app/work, app/about, app/playground, app/wrap, app/contact) so
- * links are never dead — they render clearly-marked placeholders.
- * "Wrap" is a future section; its placeholder exists so nav doesn't
- * need restructuring once it's designed.
+ * Primary navigation, the same on every page that shows the nav. There's
+ * no "Home" item: the profile photo at the start of the pill is the home
+ * link. Work and "Work with me" point at the homepage sections (#work,
+ * #contact); the leading "/" makes them work from any page. About is
+ * its own page. (The Playground route still exists, just not in the nav.)
  */
 export const navItems: NavItem[] = [
-  { label: "Work", href: "/work" },
+  { label: "Work", href: "/#work" },
   { label: "About", href: "/about" },
-  { label: "Playground", href: "/playground" },
-  { label: "Wrap", href: "/wrap" },
-  { label: "Work with me", href: "/contact", emphasized: true },
+  { label: "Work with me", href: "/#contact", emphasized: true },
 ];
 
 /** Timing for the "Designer who {word}" cycle — quick and alive, not a slideshow. */
@@ -82,9 +80,42 @@ export const headlineTransitionMs = 500;
 export const about = {
   intro:
     "Someone who enjoys learning, exploring new ideas and finding the little details that make an experience feel just right.",
+  moreLink: "More about me",
   exploringLabel: "Things I'm exploring lately",
   belief:
     "I think every good design starts with a question. I'm here to keep asking better ones.",
+} as const;
+
+export type AboutPhoto = { src: string; alt: string; width: number; height: number };
+
+/**
+ * The dedicated /about page. In the headline, `highlight` is the part
+ * of each line set in the accent green. Photos are all Pranjal's own,
+ * listed back to front (the last one is the print on top).
+ */
+export const aboutPage = {
+  headline: [
+    { before: "Curious about the ", highlight: "why", after: "." },
+    { before: "Obsessed with the ", highlight: "little things", after: "." },
+  ],
+  intro:
+    "Part logic, part creativity, always asking questions. I love untangling complex problems, understanding people, and exploring how technology and AI can create experiences that feel more human.",
+  photos: [
+    { src: "/images/about/portrait.jpg", alt: "Portrait of Pranjal in a cream coat", width: 900, height: 1200 },
+    {
+      src: "/images/about/bridge.jpg",
+      alt: "Pranjal on the Brooklyn Bridge, with the Manhattan skyline behind",
+      width: 900,
+      height: 1200,
+    },
+    { src: "/images/about/puppy.jpg", alt: "Pranjal sitting on the floor, hugging a puppy", width: 900, height: 1266 },
+    {
+      src: "/images/about/bouquet.jpg",
+      alt: "Pranjal smiling, holding a bouquet of white flowers beside a hand-painted wall",
+      width: 900,
+      height: 1200,
+    },
+  ] satisfies AboutPhoto[],
 } as const;
 
 export type ExplorationChip = {
@@ -185,5 +216,8 @@ export const growContact = {
     email: { label: "pranjallsharmaa23@gmail.com", href: "mailto:pranjallsharmaa23@gmail.com" },
     phone: { label: "+91 93544 14884", href: "tel:+919354414884" },
   },
-  gardenHint: { pointer: "Click a flower to water it", touch: "Tap a flower to water it" },
+  gardenHint: {
+    pointer: "Click a flower to water it — keep watering to help it grow",
+    touch: "Tap a flower to water it — keep watering to help it grow",
+  },
 } as const;

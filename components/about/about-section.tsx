@@ -9,6 +9,7 @@ import {
   type MotionValue,
   type Variants,
 } from "framer-motion";
+import Link from "next/link";
 import { about, explorationChips } from "@/lib/site-content";
 import { AboutCloud } from "@/components/about/about-cloud";
 import { ExplorationCard, type CardVariant } from "@/components/about/exploration-card";
@@ -134,11 +135,10 @@ function ScrollDrivenCard({
  * section's one playful visual moment; the closing statement is the
  * section's other loud moment.
  *
- * Background and text are fixed "paper" tokens (--shore-solid /
- * --paper-ink), not the themed --surface/--ink pair used elsewhere:
- * this section is a continuation of the hero's own sky, not a panel
- * that should flip navy in dark mode. The exploration cards are the
- * one deliberate exception — they use --card-blue, which *does* switch
+ * Background and text come from `.paper-themed` (globals.css): the
+ * cream --shore-solid paper by day, a muted slate blue at night, shared
+ * with Selected Work below so the two read as one continuous surface.
+ * The exploration cards keep their own --card-blue, which also switches
  * with the theme (a light, airy blue by day; a denser, richer one at
  * night).
  */
@@ -187,8 +187,7 @@ export function AboutSection() {
     <section
       id="about"
       aria-label="About"
-      className="relative z-10"
-      style={{ background: "var(--shore-solid)", color: "var(--paper-ink)" }}
+      className="paper-themed relative z-10"
     >
       <AboutCloud />
 
@@ -200,16 +199,24 @@ export function AboutSection() {
             not the section's headline. Sized and margined to read as
             one compact editorial composition with the label/cards/
             belief below it, not four separately-spaced sections
-            requiring their own scroll. */}
+            requiring their own scroll. The small link at its end is
+            the quiet way on to the full /about page. */}
         <motion.p
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
           variants={variants}
           className="font-display mx-auto max-w-[28rem] text-center text-[clamp(0.95rem,1.3vw,1.15rem)] leading-[1.5] font-normal"
-          style={{ color: "var(--paper-ink-muted)" }}
+          style={{ color: "var(--pt-muted)" }}
         >
-          {about.intro}
+          {about.intro}{" "}
+          <Link
+            href="/about"
+            className="font-sans text-[0.85em] font-medium whitespace-nowrap underline decoration-1 underline-offset-[5px] transition-colors hover:text-[var(--pt-ink)]"
+          >
+            {about.moreLink}
+            <span aria-hidden="true"> →</span>
+          </Link>
         </motion.p>
 
         {/* Exploration — a small centered label leading into three
@@ -233,7 +240,7 @@ export function AboutSection() {
             viewport={viewport}
             variants={variants}
             className="text-xs font-semibold tracking-[0.25em] uppercase"
-            style={{ color: "var(--paper-ink-muted)" }}
+            style={{ color: "var(--pt-muted)" }}
           >
             {about.exploringLabel}
           </motion.p>

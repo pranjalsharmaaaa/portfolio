@@ -1,21 +1,38 @@
 import Image from "next/image";
 
 /**
- * Small circular photo used in the glass nav.
+ * Small circular photo used in the glass nav: Pranjal's full portrait
+ * (public/images/pranjal-portrait.jpg — the uploaded photo, downscaled,
+ * uncropped), shown whole rather than zoomed to the face.
  *
- * Ships with a placeholder gradient monogram — replace by dropping a
- * real photo at /public/images/avatar.jpg and swapping the `src` below.
- * No other component needs to change.
+ * A 3:4 photo can only fit entirely inside a circle at 60% × 80% of its
+ * diameter (its corners then sit exactly on the edge), so the image is
+ * sized to that box with `object-contain` — never cropped or stretched —
+ * and the rest of the 34px circle is filled with the photo's own edge
+ * colours, so the disc reads as one picture against the translucent nav.
+ *
+ * It's then zoomed 1.2× (around a point just above centre, where the
+ * face is) so Pranjal reads clearly at this small size; the circle's
+ * `overflow-hidden` trims only the photo's outer corners and the top of
+ * the wall, never the face.
  */
 export function Avatar() {
   return (
-    <Image
-      src="/images/avatar-placeholder.svg"
-      alt="Pranjal Sharma"
-      width={32}
-      height={32}
-      priority
-      className="h-8 w-8 shrink-0 rounded-full ring-1 ring-ink/10"
-    />
+    <span
+      className="flex h-[34px] w-[34px] shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-ink/15"
+      // The photo's own edge colours, top to bottom (wall, then the
+      // coat), so the portrait's border melts into the disc.
+      style={{ background: "linear-gradient(to bottom, #e5e4e2 0%, #d8d6d4 40%, #cfcdcb 72%, #c4b4aa 100%)" }}
+    >
+      <Image
+        src="/images/pranjal-portrait.jpg"
+        alt="Pranjal"
+        width={360}
+        height={480}
+        sizes="28px"
+        priority
+        className="h-[80%] w-[60%] origin-[50%_42%] scale-[1.2] object-contain"
+      />
+    </span>
   );
 }
