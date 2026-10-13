@@ -67,7 +67,7 @@ const SCROLL_THRESHOLD = 10;
  * ignored (and don't reset the reference point), so jitter and tiny
  * touch drags never toggle it and a direction change can't flicker it.
  */
-function useScrollVisibility(onHide: () => void) {
+function useScrollVisibility(onHide: () => void, enabled = true) {
   const [state, setState] = useState({ visible: true, atTop: true });
   const onHideRef = useRef(onHide);
   useEffect(() => {
@@ -75,6 +75,7 @@ function useScrollVisibility(onHide: () => void) {
   });
 
   useEffect(() => {
+    if (!enabled) return;
     let lastY = window.scrollY;
     let frame = 0;
     const update = () => {
@@ -101,7 +102,7 @@ function useScrollVisibility(onHide: () => void) {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [enabled]);
 
   return state;
 }
@@ -135,18 +136,22 @@ const PAGE_ROW = "mx-auto max-w-[100rem] items-center justify-between gap-3 px-5
  * leads home, and anything passed as `trailing` (the /about page's
  * theme controls) rides at the right edge of the same fixed row, so it
  * hides and returns with the pill. `items` and `themeToggle` let such a
- * page use its own link set and leave the in-pill toggle out.
+ * page use its own link set and leave the in-pill toggle out, and
+ * `hideOnScroll={false}` keeps the whole row in place the entire time
+ * (the /about page, where the nav is the way back home).
  */
 export function GlassNav({
   items = defaultNavItems,
   align = "center",
   themeToggle = true,
   trailing,
+  hideOnScroll = true,
 }: {
   items?: NavItem[];
   align?: "center" | "start";
   themeToggle?: boolean;
   trailing?: ReactNode;
+  hideOnScroll?: boolean;
 } = {}) {
   const [open, setOpen] = useState(false);
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -154,7 +159,7 @@ export function GlassNav({
   const mounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
   const reduceMotion = useReducedMotion();
   // Scrolling down hides the pill and closes the mobile menu with it.
-  const { visible, atTop } = useScrollVisibility(() => setOpen(false));
+  const { visible, atTop } = useScrollVisibility(() => setOpen(false), hideOnScroll);
 
   // Where the pill sits in the hero at scroll 0 (its "home"), re-measured
   // on resize since the hero's top row moves with the breakpoints.

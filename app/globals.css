@@ -577,7 +577,6 @@
   --ap-cloud: #ece0cb;
   --ap-cloud-front: #e3d4bb;
   --ap-sun: #f2cf3f;
-  --ap-scrim: rgb(250 241 228 / 72%);
   background-color: var(--ap-bg);
   background-image: radial-gradient(120% 70% at 20% 0%, var(--ap-glow), transparent 70%);
   color: var(--ap-ink);
@@ -594,14 +593,10 @@
   --ap-cloud: #1b2944;
   --ap-cloud-front: #22334f;
   --ap-sun: #e9e3c6;
-  --ap-scrim: rgb(9 15 29 / 72%);
 }
 .about-accent {
   color: var(--ap-accent);
   transition: color 500ms ease;
-}
-.about-scrim {
-  background: var(--ap-scrim);
 }
 /* The prints are buttons; focus outlines follow their square frame. */
 .polaroid-button:focus-visible {

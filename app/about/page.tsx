@@ -15,8 +15,8 @@ export const metadata: Metadata = {
  * The About page: the shared glass nav at the top left (About outlined)
  * with separate sun/moon theme controls at the top right, a two-line
  * editorial headline with its key words in the accent green, a short
- * introduction, and an interactive collage of Polaroid prints in the
- * lower part of the page.
+ * introduction, and a stack of Polaroid prints in the lower part of the
+ * page. The nav stays put while scrolling here: it's the way back home.
  */
 export default function AboutPage() {
   return (
@@ -24,7 +24,13 @@ export default function AboutPage() {
       <AboutSky />
 
       <header className="relative mx-auto w-full max-w-[100rem] px-5 pt-4 sm:px-10 sm:pt-5 lg:px-12">
-        <GlassNav items={aboutPageNavItems} align="start" themeToggle={false} trailing={<ThemeControls />} />
+        <GlassNav
+          items={aboutPageNavItems}
+          align="start"
+          themeToggle={false}
+          trailing={<ThemeControls />}
+          hideOnScroll={false}
+        />
       </header>
 
       <main id="main" className="relative mx-auto w-full max-w-[100rem] px-5 pb-20 sm:px-10 sm:pb-28 lg:px-12">

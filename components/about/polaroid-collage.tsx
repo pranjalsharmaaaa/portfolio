@@ -1,207 +1,123 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useAnimate, useReducedMotion } from "framer-motion";
 import { aboutPage, type AboutPhoto } from "@/lib/site-content";
 
 /**
- * Where each print rests in the collage, back to front (same order as
- * `aboutPage.photos`): left/top/width as percentages of the collage box,
- * plus its tilt. The last one, the bouquet, is the print on top.
- *
- * `wide` (from `sm`) fans the prints out in a 2:1 band, the portrait
- * and the bridge to the left of the bouquet and the puppy to its right;
- * `narrow` (phones) stacks them in a taller 4:5 box so each print can
- * be larger. In both, every photo's subject stays in view.
+ * Where each print rests in the stack, in the same order as
+ * `aboutPage.photos` (portrait, bridge, puppy, bouquet): left/top as
+ * percentages of the collage box, and its tilt. Every print is the same
+ * size (72% of the box's width), and each one behind the bouquet peeks
+ * out on a different side — the bridge above, the portrait to the left,
+ * the puppy below right — so the edges of the stack read clearly and
+ * stay large enough to tap. A print keeps its spot when it comes to the
+ * front; only the stacking order changes.
  */
-const PLACEMENTS = [
-  { wide: { left: 7, top: 22, width: 24 }, narrow: { left: 0, top: 6, width: 40 }, rotate: -8 },
-  { wide: { left: 24, top: 1, width: 24 }, narrow: { left: 56, top: 0, width: 40 }, rotate: 3 },
-  { wide: { left: 69, top: 21, width: 24 }, narrow: { left: 58, top: 51, width: 40 }, rotate: 6 },
-  { wide: { left: 44, top: 11, width: 30 }, narrow: { left: 12, top: 34, width: 52 }, rotate: -4 },
+const SLOTS = [
+  { left: 2.9, top: 14, rotate: -6 },
+  { left: 23, top: 1.2, rotate: 3.5 },
+  { left: 22.3, top: 16.4, rotate: 4.5 },
+  { left: 13.7, top: 7, rotate: -2.5 },
 ] as const;
 
-/** How much of the viewport an enlarged print may fill, and its upper limit. */
-const FILL_W = 0.86;
-const FILL_H = 0.84;
-const MAX_SCALE = 3.2;
-
-type Lift = { x: number; y: number; scale: number };
+/** Back-to-front order on first load: the bridge at the very back, the bouquet on top. */
+const INITIAL_ORDER = [1, 0, 2, 3];
 
 /**
- * One instant-film print: a thin warm-white frame with the deeper bottom
+ * One instant-film print: a warm-white frame with the deeper bottom
  * margin of a real Polaroid, a hairline edge on the photo and a soft
- * shadow (`.polaroid` in globals.css). The photo keeps its own aspect
- * ratio, so nothing is cropped.
+ * shadow (`.polaroid` in globals.css). Every frame holds a 3:4 photo;
+ * the puppy photo (a touch taller) loses only a sliver top and bottom.
+ *
+ * Coming to the front, it lifts a little and settles back down, like a
+ * print pulled from a pile and dropped on top.
  */
-function Print({ photo, sizes, priority }: { photo: AboutPhoto; sizes: string; priority?: boolean }) {
+function Print({
+  photo,
+  slot,
+  z,
+  isTop,
+  priority,
+  onSelect,
+}: {
+  photo: AboutPhoto;
+  slot: (typeof SLOTS)[number];
+  z: number;
+  isTop: boolean;
+  priority?: boolean;
+  onSelect: () => void;
+}) {
+  const [scope, animate] = useAnimate();
+  const reduceMotion = useReducedMotion();
+
+  function select() {
+    if (isTop) return;
+    onSelect();
+    if (!reduceMotion) {
+      animate(scope.current, { y: [0, -14, 0], scale: [1, 1.035, 1] }, { duration: 0.42, ease: "easeOut" });
+    }
+  }
+
   return (
-    <span className="polaroid block p-[5%] pb-[17%]">
-      <span className="relative block overflow-hidden">
-        <Image
-          src={photo.src}
-          alt=""
-          width={photo.width}
-          height={photo.height}
-          sizes={sizes}
-          priority={priority}
-          className="block h-auto w-full"
-        />
-        <span aria-hidden="true" className="polaroid-sheen absolute inset-0" />
+    <button
+      type="button"
+      onClick={select}
+      aria-label={isTop ? photo.alt : `Bring to front: ${photo.alt}`}
+      aria-pressed={isTop}
+      // `rotate`/`translate` are their own CSS properties here, so the
+      // tilt, the hover nudge and the lift (a transform on the inner
+      // span) never overwrite one another.
+      className={`polaroid-button absolute block w-[72%] transition-[translate] duration-200 ease-out ${
+        isTop ? "cursor-default" : "cursor-pointer hover:-translate-y-1.5"
+      }`}
+      style={
+        {
+          left: `${slot.left}%`,
+          top: `${slot.top}%`,
+          rotate: `${slot.rotate}deg`,
+          zIndex: z,
+        } as CSSProperties
+      }
+    >
+      <span ref={scope} className="polaroid block p-[5%] pb-[17%]">
+        <span className="relative block aspect-[3/4] overflow-hidden">
+          <Image src={photo.src} alt="" fill sizes="(min-width: 640px) 320px, 60vw" priority={priority} className="object-cover" />
+          <span aria-hidden="true" className="polaroid-sheen absolute inset-0" />
+        </span>
       </span>
-    </span>
+    </button>
   );
 }
 
 /**
- * The /about page's Polaroid collage: four of Pranjal's own photos as
- * layered prints, the bouquet photograph on top.
- *
- * Each print is a button. Clicking or tapping one (or Enter/Space) lifts
- * it to the front, straightens it and smoothly enlarges it to the middle
- * of the screen over a soft scrim. Clicking it again, clicking anywhere
- * outside, pressing Escape, moving focus elsewhere, or scrolling/resizing
- * puts it back exactly where and how it was. Prints are positioned in
- * percentages of one box, so the composition scales as a unit. Under
- * reduced motion the print simply appears enlarged, with no travel.
- *
- * The enlarged print and the scrim rely on z-index against the whole
- * page, so nothing around the collage should create a stacking context
- * (no transform/opacity animation or `isolate` on its ancestors).
+ * The /about page's Polaroid stack: four of Pranjal's own photos piled
+ * on top of each other, the bouquet photograph in front. Clicking or
+ * tapping (or Enter/Space on) a print behind brings it to the top of the
+ * same pile, right where it lies; the others stay as they were beneath
+ * it. No overlay, no zoom. Positions are percentages of one box, so the
+ * pile scales as a unit and keeps its overlaps at every width.
  */
 export function PolaroidCollage() {
   const photos = aboutPage.photos;
-  const reduceMotion = useReducedMotion();
-  const [active, setActive] = useState<number | null>(null);
-  const [lift, setLift] = useState<Lift | null>(null);
-  // Stays set while the print travels back, so it doesn't slip behind
-  // the others before it has landed.
-  const [raised, setRaised] = useState<number | null>(null);
-  const refs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  function open(i: number) {
-    const el = refs.current[i];
-    if (!el) return;
-    // Rotation turns about the centre, so the bounding box's centre is
-    // the print's own centre; offsetWidth/Height are its unrotated size.
-    const rect = el.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const scale = Math.min((vw * FILL_W) / el.offsetWidth, (vh * FILL_H) / el.offsetHeight, MAX_SCALE);
-    setLift({
-      x: vw / 2 - (rect.left + rect.width / 2),
-      y: vh / 2 - (rect.top + rect.height / 2),
-      scale: Math.max(1, scale),
-    });
-    setActive(i);
-    setRaised(i);
-  }
-
-  function close() {
-    setActive(null);
-  }
-
-  function toggle(i: number) {
-    if (active === i) close();
-    else open(i);
-  }
-
-  // Escape, scrolling and resizing all put the print back.
-  useEffect(() => {
-    if (active === null) return;
-    const startY = window.scrollY;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActive(null);
-    };
-    const onScroll = () => {
-      if (Math.abs(window.scrollY - startY) > 40) setActive(null);
-    };
-    const onResize = () => setActive(null);
-    window.addEventListener("keydown", onKey);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [active]);
-
-  const travel = reduceMotion
-    ? { duration: 0 }
-    : ({ type: "spring", stiffness: 260, damping: 30, mass: 0.9 } as const);
+  // Photo indexes, back to front.
+  const [order, setOrder] = useState(INITIAL_ORDER);
+  const top = order[order.length - 1];
 
   return (
-    <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] sm:aspect-[2/1] sm:max-w-[60rem]">
-      <AnimatePresence>
-        {active !== null && (
-          <motion.div
-            key="scrim"
-            aria-hidden="true"
-            className="about-scrim fixed inset-0 z-[55] backdrop-blur-[3px]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0.15 : 0.3 }}
-            onClick={close}
-          />
-        )}
-      </AnimatePresence>
-
-      {photos.map((photo, i) => {
-        const place = PLACEMENTS[i];
-        const isActive = active === i;
-        const front = i === photos.length - 1;
-        return (
-          <motion.button
-            key={photo.src}
-            ref={(el) => {
-              refs.current[i] = el;
-            }}
-            type="button"
-            aria-pressed={isActive}
-            aria-label={`${isActive ? "Close" : "View larger"}: ${photo.alt}`}
-            onClick={() => toggle(i)}
-            onBlur={(e) => {
-              // Focus moving to something else closes it; the window
-              // itself losing focus (relatedTarget null) doesn't.
-              if (isActive && e.relatedTarget) close();
-            }}
-            className={`polaroid-button absolute top-[var(--t)] left-[var(--l)] block w-[var(--w)] sm:top-[var(--t-sm)] sm:left-[var(--l-sm)] sm:w-[var(--w-sm)] ${
-              isActive ? "cursor-zoom-out" : "cursor-zoom-in"
-            }`}
-            style={
-              {
-                "--l": `${place.narrow.left}%`,
-                "--t": `${place.narrow.top}%`,
-                "--w": `${place.narrow.width}%`,
-                "--l-sm": `${place.wide.left}%`,
-                "--t-sm": `${place.wide.top}%`,
-                "--w-sm": `${place.wide.width}%`,
-                zIndex: raised === i ? 60 : i + 1,
-              } as CSSProperties
-            }
-            initial={false}
-            animate={
-              isActive && lift
-                ? { x: lift.x, y: lift.y, scale: lift.scale, rotate: 0 }
-                : { x: 0, y: 0, scale: 1, rotate: place.rotate }
-            }
-            whileHover={active === null && !reduceMotion ? { y: -6, rotate: place.rotate * 0.6 } : undefined}
-            transition={travel}
-            onAnimationComplete={() => {
-              if (!isActive && raised === i) setRaised(null);
-            }}
-          >
-            <Print
-              photo={photo}
-              priority={front}
-              sizes="(min-width: 1024px) 640px, 90vw"
-            />
-          </motion.button>
-        );
-      })}
+    <div className="relative mx-auto aspect-[139/171] w-full max-w-[22rem] sm:max-w-[26rem]">
+      {photos.map((photo, i) => (
+        <Print
+          key={photo.src}
+          photo={photo}
+          slot={SLOTS[i]}
+          z={order.indexOf(i) + 1}
+          isTop={i === top}
+          priority={i === photos.length - 1}
+          onSelect={() => setOrder((o) => [...o.filter((n) => n !== i), i])}
+        />
+      ))}
     </div>
   );
 }
