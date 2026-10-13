@@ -9,10 +9,10 @@ import {
   type MotionValue,
   type Variants,
 } from "framer-motion";
+import Link from "next/link";
 import { about, explorationChips } from "@/lib/site-content";
 import { AboutCloud } from "@/components/about/about-cloud";
 import { ExplorationCard, type CardVariant } from "@/components/about/exploration-card";
-import { PolaroidCollage } from "@/components/about/polaroid-collage";
 
 const CARD_VARIANTS: CardVariant[] = ["storytelling", "motion", "empathy"];
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -128,11 +128,12 @@ function ScrollDrivenCard({
  * margin that repositions the section itself), and is the section's
  * own top edge, not a separate component sitting between the two.
  *
- * It opens with an editorial pair: a small "About" label, the
- * "Curious about the why." headline and a short introduction, set
- * against a collage of Polaroid prints of Pranjal's own photos (see
- * polaroid-collage.tsx). Then come the exploration cards — the
- * section's playful moment — and the closing statement.
+ * Deliberately has no heading — no "A little about me.", no generic
+ * substitute. The section introduces itself through composition and a
+ * deliberate size hierarchy instead of a labeled header: the intro
+ * line is a small, quiet opener; the exploration cards are the
+ * section's one playful visual moment; the closing statement is the
+ * section's other loud moment.
  *
  * Background and text come from `.paper-themed` (globals.css): the
  * cream --shore-solid paper by day, a muted slate blue at night, shared
@@ -194,28 +195,29 @@ export function AboutSection() {
           separates the hero from this content, so About shouldn't add
           a second, redundant gap on top of it. */}
       <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12 lg:px-12">
-        {/* The editorial opener: label, headline and introduction on the
-            left, the Polaroid collage on the right — an asymmetric pair
-            (the text column a little narrower) that stacks text-first
-            below md. Both halves reveal like the rest of the section. */}
-        <div className="grid items-center gap-10 pt-4 sm:pt-6 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-12 lg:gap-20">
-          <motion.div initial="hidden" whileInView="visible" viewport={viewport} variants={variants} className="max-w-[38rem]">
-            <p className="text-xs font-semibold tracking-[0.25em] uppercase" style={{ color: "var(--pt-muted)" }}>
-              {about.label}
-            </p>
-            <h2 className="mt-5 font-display text-[clamp(2rem,4vw,3.4rem)] leading-[1.1] font-medium tracking-[-0.015em]">
-              <span className="block text-balance">{about.headline.lead}</span>
-              <em className="block font-normal text-balance italic">{about.headline.emphasis}</em>
-            </h2>
-            <p className="mt-6 max-w-[30rem] text-[17px] leading-relaxed sm:mt-8 sm:text-lg" style={{ color: "var(--pt-muted)" }}>
-              {about.intro}
-            </p>
-          </motion.div>
-
-          <motion.div initial="hidden" whileInView="visible" viewport={viewport} variants={variants}>
-            <PolaroidCollage />
-          </motion.div>
-        </div>
+        {/* A quiet, centered opener — a concise personal introduction,
+            not the section's headline. Sized and margined to read as
+            one compact editorial composition with the label/cards/
+            belief below it, not four separately-spaced sections
+            requiring their own scroll. The small link at its end is
+            the quiet way on to the full /about page. */}
+        <motion.p
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+          variants={variants}
+          className="font-display mx-auto max-w-[28rem] text-center text-[clamp(0.95rem,1.3vw,1.15rem)] leading-[1.5] font-normal"
+          style={{ color: "var(--pt-muted)" }}
+        >
+          {about.intro}{" "}
+          <Link
+            href="/about"
+            className="font-sans text-[0.85em] font-medium whitespace-nowrap underline decoration-1 underline-offset-[5px] transition-colors hover:text-[var(--pt-ink)]"
+          >
+            {about.moreLink}
+            <span aria-hidden="true"> →</span>
+          </Link>
+        </motion.p>
 
         {/* Exploration — a small centered label leading into three
             uniform cards, each the same size and the same blue. They
@@ -224,13 +226,14 @@ export function AboutSection() {
             position through the track below — not a one-time entrance
             triggered by merely scrolling into view.
 
-            This wrapper's own margin-top is the gap between the
-            editorial opener above and this label — generous, so the
-            opener reads as its own composition — without touching the
-            label → cards gap (a separate margin, further down on the
-            scroll-track wrapper) or anything about the cards
-            themselves. */}
-        <div className="mt-16 flex flex-col items-center sm:mt-24">
+            This wrapper's own margin-top is the ONLY thing controlling
+            the intro-paragraph → heading gap (the heading is its first
+            child) — tightened slightly so the heading reads as
+            connected to the intro rather than a separate block, without
+            touching the heading → cards gap (a separate margin, further
+            down on the scroll-track wrapper) or anything about the
+            cards themselves. */}
+        <div className="mt-4 flex flex-col items-center sm:mt-6">
           <motion.p
             initial="hidden"
             whileInView="visible"

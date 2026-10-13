@@ -51,16 +51,27 @@ export type NavItem = {
 };
 
 /**
- * Primary navigation. Work, About and "Work with me" point at the real
- * homepage sections (#work, #about, #contact) rather than the
- * placeholder routes under app/, which only say "coming soon"; the
- * leading "/" makes them work from any page. Those placeholder routes
- * (and Playground / Wrap) still exist, just not in the nav.
+ * Primary navigation. Work and "Work with me" point at the real
+ * homepage sections (#work, #contact); the leading "/" makes them work
+ * from any page. About is its own page (/about). The remaining
+ * placeholder routes (Playground, Wrap) aren't in the homepage nav.
  */
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Work", href: "/#work" },
-  { label: "About", href: "/#about" },
+  { label: "About", href: "/about" },
+  { label: "Work with me", href: "/#contact", emphasized: true },
+];
+
+/**
+ * The same nav as it appears on /about, matching that page's design:
+ * the photo already leads home, so there's no separate Home link, and
+ * Playground sits beside About.
+ */
+export const aboutPageNavItems: NavItem[] = [
+  { label: "Work", href: "/#work" },
+  { label: "About", href: "/about" },
+  { label: "Playground", href: "/playground" },
   { label: "Work with me", href: "/#contact", emphasized: true },
 ];
 
@@ -79,29 +90,46 @@ export const headlineTransitionMs = 500;
  * belief — not a second biography paragraph restating the same ground.
  */
 export const about = {
-  label: "About",
-  headline: { lead: "Curious about the why.", emphasis: "Obsessed with the little things." },
   intro:
-    "I’m Pranjal, a product designer. My background in architecture shapes how I think about structure, about people, and about the digital experiences I design.",
-  /** Photos for the Polaroid collage — all from Pranjal's own uploads. */
-  photos: {
-    main: {
-      src: "/images/about/bouquet.jpg",
-      alt: "Pranjal smiling with her eyes closed, holding a bouquet of white flowers beside a hand-painted wall",
-      width: 720,
-      height: 900,
-    },
-    behindLeft: { src: "/images/about/portrait.jpg", alt: "Portrait of Pranjal", width: 480, height: 600 },
-    behindRight: {
-      src: "/images/about/mural.jpg",
-      alt: "Detail of the hand-painted peacock and elephant mural from the same photograph",
-      width: 480,
-      height: 600,
-    },
-  },
+    "Someone who enjoys learning, exploring new ideas and finding the little details that make an experience feel just right.",
+  moreLink: "More about me",
   exploringLabel: "Things I'm exploring lately",
   belief:
     "I think every good design starts with a question. I'm here to keep asking better ones.",
+} as const;
+
+export type AboutPhoto = { src: string; alt: string; width: number; height: number };
+
+/**
+ * The dedicated /about page. In the headline, `highlight` is the part
+ * of each line set in the accent green. Photos are all Pranjal's own,
+ * listed back to front (the last one is the print on top).
+ */
+export const aboutPage = {
+  headline: [
+    { before: "Curious about the ", highlight: "why", after: "." },
+    { before: "Obsessed with the ", highlight: "little things", after: "." },
+  ],
+  intro: [
+    "I’m Pranjal, a product designer with a background in computer science and a curiosity for how things work, look, and feel.",
+    "With a B.Tech in Computer Science and Engineering, I bring together technical thinking, UX design, and visual storytelling. I enjoy understanding the problem behind the problem and turning complex ideas into digital experiences that feel simple, intuitive, and human.",
+  ],
+  photos: [
+    { src: "/images/about/portrait.jpg", alt: "Portrait of Pranjal in a cream coat", width: 900, height: 1200 },
+    {
+      src: "/images/about/bridge.jpg",
+      alt: "Pranjal on the Brooklyn Bridge, with the Manhattan skyline behind",
+      width: 900,
+      height: 1200,
+    },
+    { src: "/images/about/puppy.jpg", alt: "Pranjal sitting on the floor, hugging a puppy", width: 900, height: 1266 },
+    {
+      src: "/images/about/bouquet.jpg",
+      alt: "Pranjal smiling, holding a bouquet of white flowers beside a hand-painted wall",
+      width: 900,
+      height: 1200,
+    },
+  ] satisfies AboutPhoto[],
 } as const;
 
 export type ExplorationChip = {

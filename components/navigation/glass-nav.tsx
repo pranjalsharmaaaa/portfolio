@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Avatar } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { navItems } from "@/lib/site-content";
+import { navItems as defaultNavItems, type NavItem } from "@/lib/site-content";
 
 const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]";
@@ -22,6 +23,10 @@ function NavLink({
   emphasized?: boolean;
   onClick?: () => void;
 }) {
+  // The page you're on is outlined (About, on /about). Section links
+  // like "/#work" never are.
+  const current = usePathname() === href && href !== "/";
+
   if (emphasized) {
     // A frosted-glass pill (`.nav-cta`, globals.css): translucent and a
     // touch lighter than the nav at rest, warming to soft off-white on
@@ -42,7 +47,10 @@ function NavLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`rounded-full px-3 py-1.5 text-sm font-medium whitespace-nowrap text-ink-muted transition-colors hover:bg-ink/[0.06] hover:text-ink ${FOCUS}`}
+      aria-current={current ? "page" : undefined}
+      className={`rounded-full px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors hover:bg-ink/[0.06] hover:text-ink ${
+        current ? "text-ink shadow-[inset_0_0_0_1px_var(--ink)]" : "text-ink-muted"
+      } ${FOCUS}`}
     >
       {label}
     </Link>
@@ -100,6 +108,9 @@ function useScrollVisibility(onHide: () => void) {
 
 const noopSubscribe = () => () => {};
 
+/** The fixed row for `align="start"`: the same gutters and max width as the page content. */
+const PAGE_ROW = "mx-auto max-w-[100rem] items-center justify-between gap-3 px-5 sm:px-10 lg:px-12";
+
 /**
  * The floating glass nav: photo, Home / Work / About, the "Work with me"
  * call to action and the theme toggle, in one translucent pill.
@@ -115,11 +126,28 @@ const noopSubscribe = () => () => {};
  *
  * Scrolling down past the top hides it with a short lift-and-fade;
  * scrolling up brings the whole pill back together with a gentle spring
- * drop. Reduced motion keeps only a quick fade. Below `sm` the three
- * text links move into a small menu; the photo, "Work with me" and the
+ * drop. Reduced motion keeps only a quick fade. Below `sm` the text
+ * links move into a small menu; the photo, "Work with me" and the
  * theme toggle stay in the pill.
+ *
+ * Other pages reuse the same nav with `align="start"`: the pill sits at
+ * the left of the page's own gutters instead of centred, its photo
+ * leads home, and anything passed as `trailing` (the /about page's
+ * theme controls) rides at the right edge of the same fixed row, so it
+ * hides and returns with the pill. `items` and `themeToggle` let such a
+ * page use its own link set and leave the in-pill toggle out.
  */
-export function GlassNav() {
+export function GlassNav({
+  items = defaultNavItems,
+  align = "center",
+  themeToggle = true,
+  trailing,
+}: {
+  items?: NavItem[];
+  align?: "center" | "start";
+  themeToggle?: boolean;
+  trailing?: ReactNode;
+} = {}) {
   const [open, setOpen] = useState(false);
   const spacerRef = useRef<HTMLDivElement>(null);
   const [homeTop, setHomeTop] = useState<number | null>(null);
@@ -140,8 +168,9 @@ export function GlassNav() {
     return () => ro.disconnect();
   }, []);
 
-  const links = navItems.filter((item) => !item.emphasized);
-  const cta = navItems.find((item) => item.emphasized);
+  const links = items.filter((item) => !item.emphasized);
+  const cta = items.find((item) => item.emphasized);
+  const start = align === "start";
 
   const pill = (
     <nav aria-label="Primary" className="relative w-full max-w-fit">
@@ -153,7 +182,13 @@ export function GlassNav() {
           boxShadow: "0 8px 30px var(--nav-shadow)",
         }}
       >
-        <Avatar />
+        {start ? (
+          <Link href="/" aria-label="Pranjal Sharma, home" className={`rounded-full ${FOCUS}`}>
+            <Avatar />
+          </Link>
+        ) : (
+          <Avatar />
+        )}
 
         <div className="ml-1 hidden items-center gap-0.5 sm:flex">
           {links.map((item) => (
@@ -167,8 +202,12 @@ export function GlassNav() {
           </div>
         )}
 
-        <div className="mx-0.5 h-5 w-px bg-ink/10" aria-hidden="true" />
-        <ThemeToggle />
+        {themeToggle && (
+          <>
+            <div className="mx-0.5 h-5 w-px bg-ink/10" aria-hidden="true" />
+            <ThemeToggle />
+          </>
+        )}
 
         <button
           type="button"
@@ -224,14 +263,15 @@ export function GlassNav() {
     <>
       {/* Holds the pill's place in the hero layout (the original 50px row height), and is
           where the pill itself renders until the page has hydrated. */}
-      <div ref={spacerRef} className="flex h-[50px] items-center justify-center">
+      <div ref={spacerRef} className={`flex h-[50px] items-center ${start ? "justify-between gap-3" : "justify-center"}`}>
         {!mounted && pill}
+        {!mounted && trailing}
       </div>
 
       {mounted &&
         createPortal(
           <motion.div
-            className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4"
+            className={`pointer-events-none fixed inset-x-0 top-0 z-50 flex ${start ? PAGE_ROW : "justify-center px-4"}`}
             initial={false}
             animate={
               visible
@@ -249,6 +289,11 @@ export function GlassNav() {
             <div className={visible ? "pointer-events-auto" : "pointer-events-none"} inert={!visible}>
               {pill}
             </div>
+            {trailing && (
+              <div className={visible ? "pointer-events-auto" : "pointer-events-none"} inert={!visible}>
+                {trailing}
+              </div>
+            )}
           </motion.div>,
           document.body,
         )}

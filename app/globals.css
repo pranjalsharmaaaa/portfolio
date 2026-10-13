@@ -565,6 +565,72 @@
   pointer-events: none;
 }
 
+/* The /about page (app/about/page.tsx): warm cream paper by day, deep
+   midnight blue at night, with the site's muted green as its accent
+   (a lighter, readable green at night, the contact section's own). */
+.about-page {
+  --ap-bg: #faf1e4;
+  --ap-glow: rgb(255 255 255 / 55%);
+  --ap-ink: #1a1714;
+  --ap-muted: #5d5750;
+  --ap-accent: #5a7743;
+  --ap-cloud: #ece0cb;
+  --ap-cloud-front: #e3d4bb;
+  --ap-sun: #f2cf3f;
+  --ap-scrim: rgb(250 241 228 / 72%);
+  background-color: var(--ap-bg);
+  background-image: radial-gradient(120% 70% at 20% 0%, var(--ap-glow), transparent 70%);
+  color: var(--ap-ink);
+  transition:
+    background-color 500ms ease,
+    color 500ms ease;
+}
+.dark .about-page {
+  --ap-bg: #0f1a30;
+  --ap-glow: rgb(70 100 160 / 18%);
+  --ap-ink: #eef1f6;
+  --ap-muted: #aab4c5;
+  --ap-accent: #94c473;
+  --ap-cloud: #1b2944;
+  --ap-cloud-front: #22334f;
+  --ap-sun: #e9e3c6;
+  --ap-scrim: rgb(9 15 29 / 72%);
+}
+.about-accent {
+  color: var(--ap-accent);
+  transition: color 500ms ease;
+}
+.about-scrim {
+  background: var(--ap-scrim);
+}
+/* The prints are buttons; focus outlines follow their square frame. */
+.polaroid-button:focus-visible {
+  outline-offset: 4px;
+}
+
+/* The /about page's separate sun/moon circles (components/ui/theme-controls.tsx). */
+.theme-dot {
+  background: var(--nav-bg);
+  border-color: var(--nav-border);
+  color: var(--ink-muted);
+  box-shadow: 0 4px 14px var(--nav-shadow);
+  transition:
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease;
+}
+.theme-dot:hover {
+  color: var(--ink);
+}
+.theme-dot[data-active] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ap-bg, #fffaf2);
+}
+.theme-dot:focus-visible {
+  border-radius: 9999px;
+}
+
 /* Sun/moon crossfade between themes — same position, two states of
    one world, per the sky illustration in components/hero/sky-background.tsx */
 .sun-layer {
