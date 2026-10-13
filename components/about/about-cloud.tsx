@@ -15,8 +15,10 @@
  * bubbles rather than one cloud edge). The path is authored to fill
  * all the way down to its own viewBox bottom regardless of how the
  * wave above it moves, so its bottom edge is always flush with the
- * wrapper's bottom — no gap between the cloud and the cream `About`
- * background below it, at any width.
+ * wrapper's bottom — no gap between the cloud and the `About`
+ * background below it, at any width. It's filled with that same
+ * background (`--pt-bg`, cream by day, slate blue at night), so the two
+ * always match in either theme.
  *
  * `preserveAspectRatio="none"` stretches that path to exactly fill the
  * wrapper at whatever aspect ratio the viewport happens to be, rather
@@ -45,7 +47,8 @@ export function AboutCloud() {
       >
         <path
           d="M0,150 C80,60 160,60 240,110 C320,160 380,170 460,120 C540,70 600,70 680,130 C760,190 820,190 900,140 C980,90 1040,90 1120,150 C1200,210 1260,200 1340,140 C1380,110 1410,100 1440,120 L1440,240 L0,240 Z"
-          fill="var(--shore-solid)"
+          fill="var(--pt-bg)"
+          className="transition-[fill] duration-500 ease-out motion-reduce:transition-none"
         />
       </svg>
     </div>

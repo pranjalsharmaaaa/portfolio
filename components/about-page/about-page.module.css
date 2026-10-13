@@ -1,10 +1,12 @@
 /*
- * /about page — landscape transition, collage, and experience rows.
+ * /about page — the landscape transition into Professional Experience.
  *
- * Colours are fixed "paper" tones sampled from the reference, scoped to
- * this page (not themed, same reasoning as the homepage's About
- * section: the page is one continuous illustrated surface, not a panel
- * that flips navy at night).
+ * Colours: the light palette is sampled from the reference illustration
+ * (warm beige sky, muted peach botanicals, sage-grey mounds, a cream
+ * foreground). It's a scene within the page, not a new page skin: the
+ * page itself keeps the approved `.about-page` tokens (globals.css), the
+ * landscape's sky fades in out of `--ap-bg`, and dark mode gets its own
+ * night version of the same scene, like the rest of the portfolio.
  *
  * Scene units: `--u` is pixels per scene unit (components/about-page/
  * scene.ts). 1440 units span the viewport on desktop; it's floored on
@@ -26,20 +28,32 @@
   --meadow-plant: #e8c4b0;
   --meadow-plant-deep: #e2b9a3;
   --meadow-plant-front: #ddb09a;
-  --meadow-mound: #b1b4ae;
+  --meadow-mound: #acb0ac;
   --meadow-mound-deep: #b4b6ae;
   --meadow-cream-edge: #f6ede0;
   --meadow-cream-mid: #fcf5eb;
   --meadow-cream: #fff9f1;
-  --meadow-heading: #75716b;
-  --meadow-accent: #9a5f4a;
-  --meadow-body: #57524b;
+  --meadow-heading: #78756f;
+  --meadow-rule: rgb(26 23 20 / 10%);
+  --meadow-edge-shadow: rgb(120 92 60 / 12%);
+}
 
-  background: var(--meadow-sky);
-  color: var(--paper-ink);
-  /* The scene SVGs are wider than the viewport; clip (not hidden) so
-     no scroll container is created and sticky keeps working. */
-  overflow-x: clip;
+:global(.dark) .page {
+  --meadow-sky: #16233d;
+  --meadow-far: #1a2843;
+  --meadow-hill: #1c2b48;
+  --meadow-hill-near: #213151;
+  --meadow-plant: #8c6f78;
+  --meadow-plant-deep: #7f6670;
+  --meadow-plant-front: #9b7d82;
+  --meadow-mound: #43506a;
+  --meadow-mound-deep: #4a5874;
+  --meadow-cream-edge: #26375a;
+  --meadow-cream-mid: #1b2945;
+  --meadow-cream: #132039;
+  --meadow-heading: #c4cad6;
+  --meadow-rule: rgb(238 241 246 / 12%);
+  --meadow-edge-shadow: rgb(0 0 0 / 30%);
 }
 
 /* ------------------------------------------------------------------ */
@@ -87,6 +101,9 @@
   /* Tuck the tallest plant tips up behind the bottom of the intro. */
   margin-top: calc(-56 * var(--u));
   overflow: hidden;
+  /* The landscape's sky warms in out of the page background, so the
+     intro above and the scene below read as one surface. */
+  background: linear-gradient(transparent, var(--meadow-sky) 34%);
 }
 
 .sceneSvg {
@@ -103,10 +120,13 @@
   position: relative;
   z-index: 2;
   margin-top: calc(-1 * var(--reveal));
+  /* Always taller than the reveal distance it overlaps, so the pinned
+     landscape can never show beneath it, however short its content. */
+  min-height: calc(var(--reveal) + 14rem);
   padding-top: max(2.5rem, calc(64 * var(--u)));
   padding-bottom: clamp(5rem, 10vw, 9rem);
   background: linear-gradient(var(--meadow-cream-mid), var(--meadow-cream) calc(120 * var(--u)));
-  color: var(--paper-ink);
+  color: var(--ap-ink);
 }
 
 .hill {
@@ -155,101 +175,17 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Collage                                                              */
-/* ------------------------------------------------------------------ */
-.collage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 0.94;
-}
-
-.photo {
-  position: absolute;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  transform: rotate(var(--tilt));
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.photo:hover {
-  transform: rotate(var(--tilt)) translateY(-6px);
-}
-
-.photo[data-front="true"] {
-  transform: rotate(calc(var(--tilt) * 0.5)) scale(1.025);
-}
-
-.photoInner {
-  position: absolute;
-  inset: 0;
-  display: block;
-  padding: 3.5%;
-  border-radius: 4px;
-  background: #fffaf2;
-  box-shadow:
-    0 22px 40px -22px rgb(74 52 30 / 42%),
-    0 2px 6px rgb(74 52 30 / 8%);
-  transition: box-shadow 0.55s ease;
-}
-
-.photo[data-front="true"] .photoInner {
-  box-shadow:
-    0 30px 50px -24px rgb(74 52 30 / 48%),
-    0 3px 10px rgb(74 52 30 / 10%);
-}
-
-.photoClip {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 2px;
-  background: #efe3d1;
-}
-
-.photoEmpty {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.5rem;
-  border: 1.5px dashed rgb(120 96 72 / 35%);
-  border-radius: 2px;
-  color: #73624e;
-  font-size: 11px;
-  line-height: 1.3;
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .photo,
-  .photoInner {
-    transition: none;
-  }
-
-  .photo:hover {
-    transform: rotate(var(--tilt));
-  }
-}
-
-/* ------------------------------------------------------------------ */
 /* Experience rows                                                      */
 /* ------------------------------------------------------------------ */
 .roleRow {
   display: grid;
   gap: 0.75rem;
   padding: 1.75rem 0;
-  border-top: 1px solid rgb(23 23 23 / 10%);
+  border-top: 1px solid var(--meadow-rule);
 }
 
 .roleRow:last-child {
-  border-bottom: 1px solid rgb(23 23 23 / 10%);
+  border-bottom: 1px solid var(--meadow-rule);
 }
 
 @media (min-width: 768px) {
@@ -258,11 +194,4 @@
     align-items: start;
     gap: 2.5rem;
   }
-}
-
-.bar {
-  display: block;
-  height: 0.7rem;
-  border-radius: 999px;
-  background: rgb(120 96 72 / 12%);
 }

@@ -127,10 +127,11 @@
   --moon-shade: rgb(30 34 58 / 30%);
   --moon-glow: rgb(150 175 255 / 30%);
 
-  /* Denser, richer blue for the exploration cards at night — distinct
-     from the near-black sky behind them so they still read as cards,
-     not a lighter tint of the same daytime blue. */
-  --card-blue: #204a75;
+  /* A deeper, richer blue for the exploration cards at night — still
+     distinct from the night sky, and bright enough to stand out on the
+     slate About surface (2.6:1 against it) while keeping the cream
+     card labels at 5.4:1. */
+  --card-blue: #3068a0;
 
   /* Muted, dark cloud strata — present, not just darkened white */
   --cloud-near: rgb(130 150 200 / 14%);
@@ -423,6 +424,188 @@
   .cassette-nudge {
     animation: none;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Themed paper: About + Selected Work                                  */
+/* ------------------------------------------------------------------ */
+
+/* The homepage's paper sections (About and Selected Work) follow the
+   theme toggle: the --shore-solid cream and --paper-ink by day, a muted
+   slate blue by night — greyer and lighter than the hero's near-black
+   sky, so the two never read as the same surface. One shared set of
+   tokens, so the two sections always match and meet without a seam;
+   the fixed paper tokens themselves stay untouched for anything else
+   that relies on them. */
+.paper-themed {
+  --pt-bg: var(--shore-solid);
+  --pt-ink: var(--paper-ink);
+  --pt-muted: var(--paper-ink-muted);
+  background-color: var(--pt-bg);
+  color: var(--pt-ink);
+  transition:
+    background-color 500ms ease,
+    color 500ms ease;
+}
+.dark .paper-themed {
+  --pt-bg: #1d2738;
+  --pt-ink: #eef1f6;
+  --pt-muted: #a9b3c4;
+}
+
+.selected-work {
+  position: relative;
+  isolation: isolate;
+}
+/* At night the last stretch eases down into the contact section's own
+   top colour (its night sky starts at #0b1324 over #101a2e), so the two
+   meet without a seam. Cross-faded in, so the theme switch stays
+   smooth; nothing in light mode. */
+.selected-work::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: -1;
+  height: 220px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, #0c1426);
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.dark .selected-work::after {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .paper-themed,
+  .selected-work::after {
+    transition-duration: 0ms;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Nav "Work with me"                                                   */
+/* ------------------------------------------------------------------ */
+
+/* Frosted glass at rest — a little lighter than the nav pill around it,
+   with a hairline edge and a soft top highlight — then soft off-white on
+   hover, keyboard focus and press (press covers touch, which has no
+   hover). Light text on darker glass at night, since dark type would
+   vanish there; both themes land on the same off-white with dark text. */
+.nav-cta {
+  background-color: rgb(255 255 255 / 38%);
+  border-color: rgb(255 255 255 / 70%);
+  color: #1c2230;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 55%),
+    0 1px 2px rgb(28 34 48 / 6%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(140%);
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease;
+}
+.dark .nav-cta {
+  background-color: rgb(255 255 255 / 12%);
+  border-color: rgb(255 255 255 / 22%);
+  color: #f3efe6;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    0 1px 2px rgb(0 0 0 / 20%);
+}
+.nav-cta:hover,
+/* The nav's home photo keeps its round focus ring (the global
+   :focus-visible rule would square it off). */
+.nav-home:focus-visible {
+  border-radius: 9999px;
+}
+.nav-cta:focus-visible,
+.nav-cta:active,
+.dark .nav-cta:hover,
+.dark .nav-cta:focus-visible,
+.dark .nav-cta:active {
+  background-color: #fffaf2;
+  border-color: rgb(28 34 48 / 14%);
+  color: #11161f;
+  box-shadow: 0 2px 8px rgb(28 34 48 / 12%);
+}
+/* The site-wide :focus-visible rule squares corners off (2px radius);
+   keep this one a pill, with its focus ring following the same shape. */
+.nav-cta:focus-visible {
+  border-radius: 9999px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-cta {
+    transition-duration: 0ms;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* About · Polaroid collage                                             */
+/* ------------------------------------------------------------------ */
+
+/* Instant-film prints: a warm white frame and a soft contact shadow
+   plus a longer, gentler drop. At night the frame is a touch dimmer and
+   the shadow deeper, so the prints sit on the slate instead of glowing. */
+.polaroid {
+  background: #fdfbf6;
+  box-shadow:
+    0 1px 2px rgb(28 34 48 / 10%),
+    0 14px 30px -10px rgb(28 34 48 / 30%);
+  transition:
+    background-color 500ms ease,
+    box-shadow 500ms ease;
+}
+.dark .polaroid {
+  background: #ece8de;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 30%),
+    0 18px 36px -12px rgb(0 0 0 / 60%);
+}
+/* A hairline edge and the faintest film sheen on the photo itself. */
+.polaroid-sheen {
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 7%);
+  background: linear-gradient(135deg, rgb(255 255 255 / 8%), transparent 45%);
+  pointer-events: none;
+}
+
+/* The /about page (app/about/page.tsx): warm cream paper by day, deep
+   midnight blue at night, with the site's muted green as its accent
+   (a lighter, readable green at night, the contact section's own). */
+.about-page {
+  --ap-bg: #faf1e4;
+  --ap-glow: rgb(255 255 255 / 55%);
+  --ap-ink: #1a1714;
+  --ap-muted: #5d5750;
+  --ap-accent: #5a7743;
+  --ap-cloud: #ece0cb;
+  --ap-cloud-front: #e3d4bb;
+  --ap-sun: #f2cf3f;
+  background-color: var(--ap-bg);
+  background-image: radial-gradient(120% 70% at 20% 0%, var(--ap-glow), transparent 70%);
+  color: var(--ap-ink);
+  transition:
+    background-color 500ms ease,
+    color 500ms ease;
+}
+.dark .about-page {
+  --ap-bg: #0f1a30;
+  --ap-glow: rgb(70 100 160 / 18%);
+  --ap-ink: #eef1f6;
+  --ap-muted: #aab4c5;
+  --ap-accent: #94c473;
+  --ap-cloud: #1b2944;
+  --ap-cloud-front: #22334f;
+  --ap-sun: #e9e3c6;
+}
+.about-accent {
+  color: var(--ap-accent);
+  transition: color 500ms ease;
+}
+/* The prints are buttons; focus outlines follow their square frame. */
+.polaroid-button:focus-visible {
+  outline-offset: 4px;
 }
 
 /* Sun/moon crossfade between themes — same position, two states of

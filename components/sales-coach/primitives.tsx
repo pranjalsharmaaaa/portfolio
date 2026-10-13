@@ -13,18 +13,30 @@ export function Container({ children, className = "" }: { children: ReactNode; c
   return <div className={`w-full px-5 @min-[640px]:px-10 @min-[1024px]:px-[60px] ${className}`}>{children}</div>;
 }
 
-/** The one vertical rhythm every screen owns. */
-export const SCREEN_Y = "pt-20 pb-14 @min-[640px]:pt-[72px] @min-[640px]:pb-12 @min-[1024px]:pb-[44px]";
+/**
+ * The one vertical rhythm every screen owns — Stack Up's own section
+ * inset (components/stackup/container.tsx `SECTION_Y`: 40 / 56 / 60px),
+ * so the two case studies breathe at the same pace. Only the cover
+ * differs, clearing the fixed "Back home" pill (see CoverScreen).
+ */
+export const SCREEN_Y = "py-10 @min-[640px]:py-14 @min-[1024px]:py-[60px]";
+
+/*
+ * Type scale, matched to Stack Up's rendered sizes (mobile → 640px+):
+ * section heading 30 → 36px, lead/sub 16 → 18px relaxed, card titles
+ * 18–24px, card body 15–16px. Sales Coach keeps its own medium weight,
+ * tight tracking and Airtel red accents; only the scale is shared.
+ */
 
 export function SectionTitle({ heading, sub, className = "" }: { heading: Heading; sub?: ReactNode; className?: string }) {
   return (
     <header className={className}>
-      <h2 className="text-[34px] leading-[1.1] font-medium tracking-[-0.025em] text-[var(--sc-ink)] @min-[640px]:text-[46px] @min-[1024px]:text-[52px]">
+      <h2 className="text-[30px] leading-[1.15] font-medium tracking-[-0.02em] text-[var(--sc-ink)] @min-[640px]:text-[36px]">
         {heading.plain}
         {heading.accent && <span className="text-[var(--sc-red)]">{heading.accent}</span>}
       </h2>
       {sub && (
-        <p className="mt-3 max-w-[1180px] text-[17px] leading-[1.5] text-[var(--sc-ink)] @min-[640px]:text-[20px] @min-[1024px]:text-[21px]">
+        <p className="mt-3 max-w-[960px] text-[16px] leading-relaxed text-[var(--sc-ink)] @min-[640px]:text-[18px]">
           {sub}
         </p>
       )}
@@ -34,7 +46,7 @@ export function SectionTitle({ heading, sub, className = "" }: { heading: Headin
 
 export function Eyebrow({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <p className={`text-[13px] font-medium tracking-[0.12em] text-[var(--sc-label)] uppercase @min-[640px]:text-[15px] ${className}`}>
+    <p className={`text-[12px] font-medium tracking-[0.12em] text-[var(--sc-label)] uppercase @min-[640px]:text-[13px] ${className}`}>
       {children}
     </p>
   );
@@ -67,11 +79,11 @@ export function Takeaway({ label, lines, aside }: { label: string; lines: readon
   const rows: Line[][] = [];
   lines.forEach((l) => (l.inline && rows.length ? rows[rows.length - 1].push(l) : rows.push([l])));
   return (
-    <div className="rounded-[22px] bg-[var(--sc-pink)] px-6 py-6 @min-[640px]:px-8 @min-[640px]:py-6">
-      <div className={aside ? "flex flex-col gap-5 @min-[1024px]:flex-row @min-[1024px]:items-stretch @min-[1024px]:gap-10" : ""}>
+    <div className="rounded-[20px] bg-[var(--sc-pink)] px-6 py-5 @min-[640px]:px-7 @min-[640px]:py-6">
+      <div className={aside ? "flex flex-col gap-4 @min-[1024px]:flex-row @min-[1024px]:items-stretch @min-[1024px]:gap-8" : ""}>
         <div className={aside ? "@min-[1024px]:w-[46%] @min-[1024px]:shrink-0" : ""}>
           <Eyebrow className="mb-2">{label}</Eyebrow>
-          <p className="text-[24px] leading-[1.3] font-medium tracking-[-0.015em] text-[var(--sc-ink)] @min-[640px]:text-[30px] @min-[1024px]:text-[32px]">
+          <p className="text-[20px] leading-[1.3] font-medium tracking-[-0.01em] text-[var(--sc-ink)] @min-[640px]:text-[24px]">
             {rows.map((row, i) => (
               <span key={i} className="block">
                 {row.map((l, j) => (
@@ -90,7 +102,7 @@ export function Takeaway({ label, lines, aside }: { label: string; lines: readon
           <>
             <span aria-hidden className="hidden w-[2px] shrink-0 self-stretch rounded bg-[var(--sc-red)] @min-[1024px]:block" />
             <span aria-hidden className="block h-[2px] w-16 rounded bg-[var(--sc-red)] @min-[1024px]:hidden" />
-            <p className="self-center text-[17px] leading-[1.5] text-[var(--sc-ink)] @min-[640px]:text-[20px]">{aside}</p>
+            <p className="self-center text-[16px] leading-relaxed text-[var(--sc-ink)] @min-[640px]:text-[18px]">{aside}</p>
           </>
         )}
       </div>
@@ -100,7 +112,7 @@ export function Takeaway({ label, lines, aside }: { label: string; lines: readon
 
 /** Red numerals on a pink disc ("01", "02"…). */
 export function NumberDisc({ n, size = "md", tone = "pink" }: { n: string; size?: "sm" | "md"; tone?: "pink" | "grey" }) {
-  const dims = size === "sm" ? "h-9 w-9 text-[15px]" : "h-12 w-12 text-[20px] @min-[640px]:h-14 @min-[640px]:w-14 @min-[640px]:text-[24px]";
+  const dims = size === "sm" ? "h-8 w-8 text-[13px]" : "h-10 w-10 text-[16px] @min-[640px]:h-11 @min-[640px]:w-11 @min-[640px]:text-[18px]";
   const colors = tone === "grey" ? "bg-[#ececea] text-[#5b5b5b]" : "bg-[var(--sc-num)] text-[var(--sc-red)]";
   return (
     <span className={`inline-flex shrink-0 items-center justify-center rounded-full font-medium tabular-nums ${dims} ${colors}`}>
@@ -110,7 +122,7 @@ export function NumberDisc({ n, size = "md", tone = "pink" }: { n: string; size?
 }
 
 /** Glyphs from the PDF's pink-disc icon set, redrawn as SVG so they stay crisp at any scale. */
-export function IconDisc({ name, className = "h-14 w-14" }: { name: "sparkle" | "people" | "arrow" | "rocket" | "sliders" | "pin"; className?: string }) {
+export function IconDisc({ name, className = "h-11 w-11" }: { name: "sparkle" | "people" | "arrow" | "rocket" | "sliders" | "pin"; className?: string }) {
   return (
     <span className={`inline-flex shrink-0 items-center justify-center rounded-full bg-[var(--sc-num)] text-[var(--sc-red-bright)] ${className}`} aria-hidden>
       <svg viewBox="0 0 24 24" className="h-[52%] w-[52%]" fill="currentColor">
@@ -162,7 +174,7 @@ export function IconDisc({ name, className = "h-14 w-14" }: { name: "sparkle" | 
 export function StateTag({ children, tone }: { children: ReactNode; tone: "grey" | "pink" }) {
   return (
     <span
-      className={`inline-flex min-w-[120px] items-center justify-center rounded-[10px] px-5 py-2 text-[14px] font-medium tracking-[0.04em] uppercase @min-[640px]:min-w-[170px] ${
+      className={`inline-flex min-w-[110px] items-center justify-center rounded-[10px] px-4 py-1.5 text-[13px] font-medium tracking-[0.04em] uppercase @min-[640px]:min-w-[140px] ${
         tone === "grey" ? "bg-[#e8e8e8] text-[#3a3a3a]" : "bg-[var(--sc-chip)] text-[var(--sc-red)]"
       }`}
     >

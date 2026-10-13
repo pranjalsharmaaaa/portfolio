@@ -1,81 +1,85 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
 import type { Metadata } from "next";
+import { GlassNav } from "@/components/navigation/glass-nav";
+import { AboutSky } from "@/components/about/about-sky";
+import { PolaroidCollage } from "@/components/about/polaroid-collage";
 import { ExperienceSection } from "@/components/about-page/experience-section";
 import { RearLandscape } from "@/components/about-page/landscape";
-import { PhotoCollage } from "@/components/about-page/photo-collage";
 import { StickyRear } from "@/components/about-page/sticky-rear";
 import styles from "@/components/about-page/about-page.module.css";
-import { GlassNav } from "@/components/navigation/glass-nav";
-import { aboutPage, collagePhotos } from "@/lib/about-content";
+import { aboutPage } from "@/lib/site-content";
 
 export const metadata: Metadata = {
   title: "About — Pranjal Sharma",
-  description: aboutPage.intro,
+  description:
+    "Pranjal Sharma is a product designer with a background in computer science, curious about how things work, look, and feel.",
 };
 
 /**
- * /about: the introduction and photo collage, then a small illustrated
- * landscape the reader scrolls through into Professional Experience.
+ * The About page: the shared glass nav centred at the top (About
+ * outlined, theme toggle in the pill), a two-line editorial headline
+ * with its key words in the accent green, a short introduction, and a
+ * stack of Polaroid prints (beside the introduction on wide screens,
+ * below it on smaller ones). The nav stays put while scrolling here:
+ * it's the way back home.
  *
- * Layering, back to front:
- *   - the rear layer: the intro (headline, paragraph, collage) and the
- *     rear landscape below it, pinned together while the cream travels
- *     over them — see StickyRear and `.stage` in about-page.module.css;
+ * Below the introduction, a small illustrated landscape leads into
+ * Professional Experience. Layering, back to front:
+ *   - the rear layer: everything above plus the rear landscape
+ *     (RearLandscape), pinned together while the cream hill travels over
+ *     them — see StickyRear and `.stage` in about-page.module.css. They
+ *     hold still as one piece, so no gap opens as the intro would
+ *     otherwise scroll away from a separately pinned landscape;
  *   - the Experience section, whose own top edge is the cream hill.
- *
- * Photos are checked on the server so a file that hasn't been added
- * yet renders an honest empty frame instead of a broken image.
  */
 export default function AboutPage() {
-  const photos = collagePhotos.map((photo) => ({
-    ...photo,
-    available: existsSync(path.join(process.cwd(), "public", photo.src)),
-  }));
-
   return (
-    <main id="main" className={styles.page}>
-      <div className={styles.stage}>
-        <StickyRear className={styles.rear}>
-          <div className="relative z-[1] mx-auto w-full max-w-[100rem] px-6 sm:px-10 lg:px-12">
-            <div className="flex justify-center pt-5 sm:pt-6">
-              <GlassNav />
+    <div className={`about-page relative min-h-dvh overflow-x-clip ${styles.page}`}>
+      <main id="main">
+        <div className={styles.stage}>
+          <StickyRear className={styles.rear}>
+            <AboutSky />
+
+            <header className="relative mx-auto w-full max-w-[100rem] px-3 pt-4 sm:px-10 sm:pt-5 lg:px-12">
+              <GlassNav hideOnScroll={false} portal={false} />
+            </header>
+
+            <div className="relative z-[1] mx-auto w-full max-w-[100rem] px-5 sm:px-10 lg:px-12">
+              <h1 className="mt-[clamp(2.5rem,8vh,5.5rem)] font-display text-[clamp(1.85rem,4.1vw,4.25rem)] leading-[1.12] font-bold tracking-[-0.015em]">
+                {aboutPage.headline.map((line) => (
+                  <span key={line.highlight} className="block text-balance">
+                    {line.before}
+                    <span className="about-accent">{line.highlight}</span>
+                    {line.after}
+                  </span>
+                ))}
+              </h1>
+
+              {/* The introduction and the photo stack: one after the other on
+                  phones and tablets, side by side from `lg` so both sit in view
+                  together beneath the headline. */}
+              <div className="mt-6 sm:mt-8 lg:grid lg:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] lg:items-start lg:gap-12">
+                <p
+                  className="max-w-[32rem] text-[17px] leading-relaxed text-pretty sm:text-lg lg:pt-1"
+                  style={{ color: "var(--ap-muted)" }}
+                >
+                  {/* A no-break space keeps "I love" together, so no line ends on a
+                      lone "I". */}
+                  {aboutPage.intro.replace("I love", "I\u00a0love")}
+                </p>
+
+                <div className="mt-12 sm:mt-16 lg:mt-0">
+                  <PolaroidCollage />
+                </div>
+              </div>
             </div>
 
-            <section
-              aria-labelledby="about-heading"
-              className="grid items-center gap-12 pt-14 sm:pt-20 lg:grid-cols-12 lg:gap-10 lg:pt-24"
-            >
-              <div className="lg:col-span-6 xl:col-span-5">
-                <h1
-                  id="about-heading"
-                  className="font-display text-[clamp(2.4rem,4.6vw,4.6rem)] leading-[1.06] font-medium tracking-[-0.02em] text-balance"
-                >
-                  <span className="block">{aboutPage.headline.lead}</span>
-                  <em className="block font-medium italic" style={{ color: "var(--meadow-accent)" }}>
-                    {aboutPage.headline.emphasis}
-                  </em>
-                </h1>
-                <p
-                  className="mt-6 max-w-[34rem] text-[clamp(1rem,1.2vw,1.125rem)] leading-relaxed sm:mt-8"
-                  style={{ color: "var(--meadow-body)" }}
-                >
-                  {aboutPage.intro}
-                </p>
-              </div>
+            <RearLandscape />
+          </StickyRear>
+          <div aria-hidden="true" className={styles.revealSpacer} />
+        </div>
 
-              <div className="mx-auto w-full max-w-[36rem] lg:col-span-6 xl:col-span-6 xl:col-start-7">
-                <PhotoCollage photos={photos} />
-              </div>
-            </section>
-          </div>
-
-          <RearLandscape />
-        </StickyRear>
-        <div aria-hidden="true" className={styles.revealSpacer} />
-      </div>
-
-      <ExperienceSection />
-    </main>
+        <ExperienceSection />
+      </main>
+    </div>
   );
 }

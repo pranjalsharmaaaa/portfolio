@@ -29,7 +29,7 @@ function withEmphasis(line: string, word: string) {
   return (
     <>
       {line.slice(0, at)}
-      <em className="font-medium italic" style={{ color: "#5a7743" }}>
+      <em className="font-medium italic" style={{ color: "var(--grow-accent)" }}>
         {word}
       </em>
       {line.slice(at + word.length)}
@@ -68,7 +68,7 @@ function ContactPill({ kind }: { kind: keyof typeof growContact.links }) {
     <a
       href={link.href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer", "aria-label": `${link.label} (opens in a new tab)` } : {})}
-      className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center gap-2.5 rounded-full border border-[color-mix(in_srgb,var(--paper-ink)_18%,transparent)] px-5 text-[15px] font-medium text-[var(--paper-ink)] transition-colors duration-300 hover:border-[var(--paper-ink)] hover:bg-[var(--paper-ink)] hover:text-[var(--shore-solid)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--paper-ink)] sm:w-auto sm:max-w-none"
+      className="inline-flex min-h-12 w-full max-w-[20rem] items-center justify-center gap-2.5 rounded-full border border-[color-mix(in_srgb,var(--grow-ink)_22%,transparent)] bg-[color-mix(in_srgb,var(--grow-bg)_70%,transparent)] px-5 text-[15px] font-medium whitespace-nowrap text-[var(--grow-ink)] transition-colors duration-300 hover:border-[var(--grow-ink)] hover:bg-[var(--grow-ink)] hover:text-[var(--grow-bg)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--grow-ink)] sm:w-auto sm:max-w-none"
     >
       {icons[kind]}
       <span>{link.label}</span>
@@ -82,12 +82,18 @@ function ContactPill({ kind }: { kind: keyof typeof growContact.links }) {
 }
 
 /**
- * The homepage's closing section, right after Selected Work and on the
- * same --shore-solid cream: a short value line, the "Let's grow your
- * next idea." headline as the centrepiece, an invitation, three contact
- * pills, and the interactive garden along the very bottom. The garden
- * sits in normal flow below the text, so the two can never overlap at
- * any width.
+ * The homepage's closing section, right after Selected Work: a short
+ * value line, the "Let's grow your next idea." headline as the
+ * centrepiece, an invitation, three contact pills and the watering
+ * hint, with the interactive garden along the bottom.
+ *
+ * One scene, about one viewport tall (`min-h-svh`; it only grows past
+ * that when a short or narrow screen needs the room). The garden is the
+ * back layer, filling the whole section, and the text is the front
+ * layer, centred in the space above the resting garden — so a
+ * well-watered flower rises behind the words without ever covering a
+ * link. Colours come from garden.module.css's --grow-* tokens, which
+ * follow the site's light/dark toggle.
  */
 export function GrowSection() {
   const prefersReducedMotion = useReducedMotion();
@@ -98,51 +104,61 @@ export function GrowSection() {
     <section
       id="contact"
       aria-labelledby="grow-heading"
-      className="relative overflow-hidden"
-      style={{ background: "var(--shore-solid)", color: "var(--paper-ink)" }}
+      className={`${gardenStyles.scene} relative isolate flex min-h-svh flex-col overflow-hidden`}
     >
+      <Garden />
+
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
         variants={variants}
-        className="mx-auto flex w-full max-w-[100rem] flex-col items-center px-6 pt-14 text-center sm:px-10 sm:pt-24 lg:px-12"
+        className={`${gardenStyles.foreground} mx-auto flex w-full max-w-[100rem] flex-1 flex-col items-center justify-center px-6 pt-12 text-center sm:px-10 sm:pt-[max(2.5rem,6svh)] lg:px-12`}
       >
-        <p className="max-w-[46ch] text-[15px] leading-relaxed sm:text-lg" style={{ color: "var(--paper-ink-muted)" }}>
-          {intro}
-        </p>
+        <div className={`${gardenStyles.copy} flex w-full flex-col items-center sm:w-auto`}>
+          <p
+            className="max-w-[40ch] text-[15px] leading-relaxed text-balance sm:max-w-[62ch] sm:text-[17px] lg:text-lg"
+            style={{ color: "var(--grow-muted)" }}
+          >
+            {intro}
+          </p>
 
-        <h2
-          id="grow-heading"
-          className="mt-8 font-display text-[clamp(2.4rem,calc((100vw_-_48px)/7.3),3.5rem)] leading-[1.04] font-medium tracking-[-0.02em] text-balance sm:mt-10 sm:text-[clamp(3.5rem,7.4vw,7rem)]"
-        >
-          {headline.lines.map((line, i) => (
-            <span key={line} className="sm:block">
-              {withEmphasis(line, headline.emphasis)}
-              {i < headline.lines.length - 1 && " "}
-            </span>
-          ))}
-        </h2>
+          {/* Sized by the viewport's height as well as its width, so the
+              whole scene still fits a shorter desktop window. */}
+          <h2
+            id="grow-heading"
+            className="mt-6 font-display text-[clamp(2.4rem,calc((100vw_-_48px)/7.3),3.5rem)] leading-[1.04] font-medium tracking-[-0.02em] text-balance sm:mt-[max(1.25rem,3svh)] sm:text-[clamp(2.75rem,min(6.6vw,11.5svh),6.75rem)]"
+          >
+            {headline.lines.map((line, i) => (
+              <span key={line} className="sm:block">
+                {withEmphasis(line, headline.emphasis)}
+                {i < headline.lines.length - 1 && " "}
+              </span>
+            ))}
+          </h2>
 
-        <p className="mt-6 max-w-[40ch] text-base leading-relaxed sm:mt-8 sm:text-lg" style={{ color: "var(--paper-ink-muted)" }}>
-          {supporting}
-        </p>
+          <p
+            className="mt-5 max-w-[40ch] text-base leading-relaxed text-balance sm:mt-[max(1rem,2.5svh)] sm:max-w-[48rem] sm:text-[17px] lg:text-lg"
+            style={{ color: "var(--grow-muted)" }}
+          >
+            {supporting}
+          </p>
 
-        <div className="mt-8 flex w-full flex-col items-center gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center">
-          <ContactPill kind="linkedin" />
-          <ContactPill kind="email" />
-          <ContactPill kind="phone" />
+          <div className="mt-7 flex w-full flex-col items-center gap-3 sm:mt-[max(1.25rem,3.5svh)] sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center">
+            <ContactPill kind="linkedin" />
+            <ContactPill kind="email" />
+            <ContactPill kind="phone" />
+          </div>
+
+          <p
+            className="mt-7 font-display text-sm italic text-balance sm:mt-[max(1rem,3svh)]"
+            style={{ color: "var(--grow-muted)" }}
+          >
+            <span className={gardenStyles.hintPointer}>{gardenHint.pointer}</span>
+            <span className={gardenStyles.hintTouch}>{gardenHint.touch}</span>
+          </p>
         </div>
       </motion.div>
-
-      <p className="mt-14 text-center font-display text-sm italic sm:mt-16" style={{ color: "var(--paper-ink-muted)" }}>
-        <span className={gardenStyles.hintPointer}>{gardenHint.pointer}</span>
-        <span className={gardenStyles.hintTouch}>{gardenHint.touch}</span>
-      </p>
-
-      <div className="mt-2">
-        <Garden />
-      </div>
     </section>
   );
 }

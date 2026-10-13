@@ -40,7 +40,7 @@ function ForegroundHill() {
           d={smoothLine(WAVE_EDGE)}
           transform="translate(0 -3)"
           fill="none"
-          stroke="rgb(120 92 60 / 12%)"
+          stroke="var(--meadow-edge-shadow)"
           strokeWidth="8"
           filter="url(#about-hill-soft)"
         />
@@ -59,52 +59,22 @@ function ForegroundHill() {
 function RoleRow({ role }: { role: ExperienceRole }) {
   return (
     <li className={styles.roleRow}>
-      <p className="text-sm tracking-[0.04em] tabular-nums" style={{ color: "var(--paper-ink-muted)" }}>
+      <p className="text-sm tracking-[0.04em] tabular-nums" style={{ color: "var(--ap-muted)" }}>
         {role.start} – {role.end}
       </p>
       <div>
         <h3 className="font-display text-xl leading-snug font-medium sm:text-2xl">{role.role}</h3>
-        <p className="mt-1 text-[15px]" style={{ color: "var(--paper-ink-muted)" }}>
+        <p className="mt-1 text-[15px]" style={{ color: "var(--ap-muted)" }}>
           {role.company}
           {role.location && <span> · {role.location}</span>}
         </p>
       </div>
       {role.summary && (
-        <p className="text-[15px] leading-relaxed" style={{ color: "var(--paper-ink-muted)" }}>
+        <p className="text-[15px] leading-relaxed" style={{ color: "var(--ap-muted)" }}>
           {role.summary}
         </p>
       )}
     </li>
-  );
-}
-
-/**
- * Shown while lib/about-content.ts has no roles: the row layout drawn
- * as quiet empty bars, so the section's structure can be reviewed
- * without inventing any employers, titles or dates.
- */
-function EmptyRows() {
-  return (
-    <>
-      <p className="mt-6 text-sm" style={{ color: "var(--paper-ink-muted)" }}>
-        Roles coming soon.
-      </p>
-      <ol aria-hidden="true" className="mt-4">
-        {[0, 1, 2].map((i) => (
-          <li key={i} className={styles.roleRow}>
-            <span className={styles.bar} style={{ width: "7rem" }} />
-            <span className="flex flex-col gap-2.5">
-              <span className={styles.bar} style={{ width: "min(16rem, 70%)", height: "0.9rem" }} />
-              <span className={styles.bar} style={{ width: "9rem" }} />
-            </span>
-            <span className="flex flex-col gap-2.5">
-              <span className={styles.bar} style={{ width: "100%" }} />
-              <span className={styles.bar} style={{ width: "82%" }} />
-            </span>
-          </li>
-        ))}
-      </ol>
-    </>
   );
 }
 
@@ -122,14 +92,13 @@ export function ExperienceSection() {
           Professional Experience
         </h2>
 
-        {experience.length > 0 ? (
+        {/* Rows only once real roles exist — no placeholder cards. */}
+        {experience.length > 0 && (
           <ol className="mt-10 sm:mt-14">
             {experience.map((role) => (
               <RoleRow key={`${role.company}-${role.start}`} role={role} />
             ))}
           </ol>
-        ) : (
-          <EmptyRows />
         )}
       </div>
     </section>
