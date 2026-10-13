@@ -426,31 +426,35 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Selected Work                                                        */
+/* Themed paper: About + Selected Work                                  */
 /* ------------------------------------------------------------------ */
 
-/* The homepage's project grid follows the theme toggle (unlike About
-   above it, which stays on the fixed --shore-solid paper): cream by
-   day, a muted slate-blue by night — greyer and lighter than the hero's
-   near-black sky, so the two never read as the same surface. Its own
-   tokens, so the paper tokens it used to borrow stay fixed for the
-   sections that rely on them. */
-.selected-work {
-  --sw-bg: var(--shore-solid);
-  --sw-ink: var(--paper-ink);
-  --sw-muted: var(--paper-ink-muted);
-  position: relative;
-  isolation: isolate;
-  background-color: var(--sw-bg);
-  color: var(--sw-ink);
+/* The homepage's paper sections (About and Selected Work) follow the
+   theme toggle: the --shore-solid cream and --paper-ink by day, a muted
+   slate blue by night — greyer and lighter than the hero's near-black
+   sky, so the two never read as the same surface. One shared set of
+   tokens, so the two sections always match and meet without a seam;
+   the fixed paper tokens themselves stay untouched for anything else
+   that relies on them. */
+.paper-themed {
+  --pt-bg: var(--shore-solid);
+  --pt-ink: var(--paper-ink);
+  --pt-muted: var(--paper-ink-muted);
+  background-color: var(--pt-bg);
+  color: var(--pt-ink);
   transition:
     background-color 500ms ease,
     color 500ms ease;
 }
-.dark .selected-work {
-  --sw-bg: #1d2738;
-  --sw-ink: #eef1f6;
-  --sw-muted: #a9b3c4;
+.dark .paper-themed {
+  --pt-bg: #1d2738;
+  --pt-ink: #eef1f6;
+  --pt-muted: #a9b3c4;
+}
+
+.selected-work {
+  position: relative;
+  isolation: isolate;
 }
 /* At night the last stretch eases down into the contact section's own
    top colour (its night sky starts at #0b1324 over #101a2e), so the two
@@ -471,7 +475,7 @@
   opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
-  .selected-work,
+  .paper-themed,
   .selected-work::after {
     transition-duration: 0ms;
   }

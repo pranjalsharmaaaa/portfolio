@@ -134,11 +134,10 @@ function ScrollDrivenCard({
  * section's one playful visual moment; the closing statement is the
  * section's other loud moment.
  *
- * Background and text are fixed "paper" tokens (--shore-solid /
- * --paper-ink), not the themed --surface/--ink pair used elsewhere:
- * this section is a continuation of the hero's own sky, not a panel
- * that should flip navy in dark mode. The exploration cards are the
- * one deliberate exception — they use --card-blue, which *does* switch
+ * Background and text come from `.paper-themed` (globals.css): the
+ * cream --shore-solid paper by day, a muted slate blue at night, shared
+ * with Selected Work below so the two read as one continuous surface.
+ * The exploration cards keep their own --card-blue, which also switches
  * with the theme (a light, airy blue by day; a denser, richer one at
  * night).
  */
@@ -187,8 +186,7 @@ export function AboutSection() {
     <section
       id="about"
       aria-label="About"
-      className="relative z-10"
-      style={{ background: "var(--shore-solid)", color: "var(--paper-ink)" }}
+      className="paper-themed relative z-10"
     >
       <AboutCloud />
 
@@ -207,7 +205,7 @@ export function AboutSection() {
           viewport={viewport}
           variants={variants}
           className="font-display mx-auto max-w-[28rem] text-center text-[clamp(0.95rem,1.3vw,1.15rem)] leading-[1.5] font-normal"
-          style={{ color: "var(--paper-ink-muted)" }}
+          style={{ color: "var(--pt-muted)" }}
         >
           {about.intro}
         </motion.p>
@@ -233,7 +231,7 @@ export function AboutSection() {
             viewport={viewport}
             variants={variants}
             className="text-xs font-semibold tracking-[0.25em] uppercase"
-            style={{ color: "var(--paper-ink-muted)" }}
+            style={{ color: "var(--pt-muted)" }}
           >
             {about.exploringLabel}
           </motion.p>
