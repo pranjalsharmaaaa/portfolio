@@ -23,15 +23,15 @@ function NavLink({
   onClick?: () => void;
 }) {
   if (emphasized) {
-    // A soft off-white pill with dark type and a hairline border, so it
-    // stays the one clear call to action against the translucent nav in
-    // either theme without the weight of a solid black button.
+    // A frosted-glass pill (`.nav-cta`, globals.css): translucent and a
+    // touch lighter than the nav at rest, warming to soft off-white on
+    // hover, keyboard focus and press — the one call to action, without
+    // a solid white block sitting in the sky.
     return (
       <Link
         href={href}
         onClick={onClick}
-        className={`rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap shadow-[0_1px_2px_rgb(28_34_48/8%)] transition-[transform,background-color,box-shadow] duration-200 hover:scale-[1.03] hover:bg-white hover:shadow-[0_4px_12px_rgb(28_34_48/14%)] ${FOCUS}`}
-        style={{ background: "#fffaf2", color: "#1c2230", borderColor: "rgb(28 34 48 / 14%)" }}
+        className={`nav-cta rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap ${FOCUS}`}
       >
         {label}
       </Link>

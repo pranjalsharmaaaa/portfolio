@@ -482,6 +482,60 @@
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Nav "Work with me"                                                   */
+/* ------------------------------------------------------------------ */
+
+/* Frosted glass at rest — a little lighter than the nav pill around it,
+   with a hairline edge and a soft top highlight — then soft off-white on
+   hover, keyboard focus and press (press covers touch, which has no
+   hover). Light text on darker glass at night, since dark type would
+   vanish there; both themes land on the same off-white with dark text. */
+.nav-cta {
+  background-color: rgb(255 255 255 / 38%);
+  border-color: rgb(255 255 255 / 70%);
+  color: #1c2230;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 55%),
+    0 1px 2px rgb(28 34 48 / 6%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  backdrop-filter: blur(8px) saturate(140%);
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease;
+}
+.dark .nav-cta {
+  background-color: rgb(255 255 255 / 12%);
+  border-color: rgb(255 255 255 / 22%);
+  color: #f3efe6;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    0 1px 2px rgb(0 0 0 / 20%);
+}
+.nav-cta:hover,
+.nav-cta:focus-visible,
+.nav-cta:active,
+.dark .nav-cta:hover,
+.dark .nav-cta:focus-visible,
+.dark .nav-cta:active {
+  background-color: #fffaf2;
+  border-color: rgb(28 34 48 / 14%);
+  color: #11161f;
+  box-shadow: 0 2px 8px rgb(28 34 48 / 12%);
+}
+/* The site-wide :focus-visible rule squares corners off (2px radius);
+   keep this one a pill, with its focus ring following the same shape. */
+.nav-cta:focus-visible {
+  border-radius: 9999px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-cta {
+    transition-duration: 0ms;
+  }
+}
+
 /* Sun/moon crossfade between themes — same position, two states of
    one world, per the sky illustration in components/hero/sky-background.tsx */
 .sun-layer {
