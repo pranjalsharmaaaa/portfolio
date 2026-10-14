@@ -16,28 +16,59 @@ function NavLink({
   href,
   label,
   emphasized,
+  file,
   onClick,
 }: {
-  href: string;
+  href: string | null;
   label: string;
   emphasized?: boolean;
+  file?: boolean;
   onClick?: () => void;
 }) {
   // The page you're on is outlined (About, on /about). Section links
   // like "/#work" never are.
-  const current = usePathname() === href && href !== "/";
+  const pathname = usePathname();
+  const current = href !== null && pathname === href && href !== "/";
+
+  // A file that hasn't been added yet (no resume PDF): the same pill, in
+  // its place, but not a link — so it can never lead to a missing file.
+  if (href === null) {
+    return (
+      <span
+        role="link"
+        aria-disabled="true"
+        aria-label={`${label} (coming soon)`}
+        title="Coming soon"
+        className={`nav-cta inline-block cursor-default rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap`}
+      >
+        {label}
+      </span>
+    );
+  }
 
   if (emphasized) {
     // A frosted-glass pill (`.nav-cta`, globals.css): translucent and a
     // touch lighter than the nav at rest, warming to soft off-white on
     // hover, keyboard focus and press — the one call to action, without
     // a solid white block sitting in the sky.
+    const className = `nav-cta rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap ${FOCUS}`;
+    // A file (the resume PDF) opens in a new tab, outside the app's router.
+    if (file) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${label} (PDF, opens in a new tab)`}
+          onClick={onClick}
+          className={className}
+        >
+          {label}
+        </a>
+      );
+    }
     return (
-      <Link
-        href={href}
-        onClick={onClick}
-        className={`nav-cta rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap ${FOCUS}`}
-      >
+      <Link href={href} onClick={onClick} className={className}>
         {label}
       </Link>
     );
@@ -188,7 +219,7 @@ export function GlassNav({
 
         <div className="ml-1 hidden items-center gap-0.5 sm:flex">
           {links.map((item) => (
-            <NavLink key={item.href} {...item} />
+            <NavLink key={item.label} {...item} />
           ))}
         </div>
 
@@ -238,7 +269,7 @@ export function GlassNav({
             }}
           >
             {links.map((item) => (
-              <NavLink key={item.href} {...item} onClick={() => setOpen(false)} />
+              <NavLink key={item.label} {...item} onClick={() => setOpen(false)} />
             ))}
           </motion.div>
         )}

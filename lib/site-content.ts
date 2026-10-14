@@ -46,21 +46,34 @@ export const cassette = {
 
 export type NavItem = {
   label: string;
-  href: string;
+  /** `null` only for a file that hasn't been added yet (see `resumeHref`). */
+  href: string | null;
   emphasized?: boolean;
+  /** A file (the resume PDF) rather than a page: opens in a new tab. */
+  file?: boolean;
 };
+
+/**
+ * The resume PDF the nav's "View Resume" button opens (public/resume.pdf,
+ * the owner's own file, unmodified). It opens in a new tab in the
+ * browser's PDF viewer, which offers download too. Set to `null` and the
+ * button falls back to an inert "coming soon" pill instead of a dead link.
+ */
+export const resumeHref: string | null = "/resume.pdf";
 
 /**
  * Primary navigation, the same on every page that shows the nav. There's
  * no "Home" item: the profile photo at the start of the pill is the home
  * link. Work and "Work with me" point at the homepage sections (#work,
  * #contact); the leading "/" makes them work from any page. About is
- * its own page. (The Playground route still exists, just not in the nav.)
+ * its own page. "View Resume" is the one emphasized call to action.
+ * (The Playground route still exists, just not in the nav.)
  */
 export const navItems: NavItem[] = [
   { label: "Work", href: "/#work" },
   { label: "About", href: "/about" },
-  { label: "Work with me", href: "/#contact", emphasized: true },
+  { label: "Work with me", href: "/#contact" },
+  { label: "View Resume", href: resumeHref, emphasized: true, file: true },
 ];
 
 /** Timing for the "Designer who {word}" cycle — quick and alive, not a slideshow. */
