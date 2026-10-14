@@ -5,7 +5,20 @@ import { ProductLogo } from "@/components/stackup/product-logo";
 function ProductRow({ product }: { product: BenchmarkProduct }) {
   return (
     <div className="flex items-center gap-4">
-      <ProductLogo src={product.logo} name={product.name} className="h-[4.5rem] w-auto max-w-[40%] shrink-0 @min-[640px]:max-w-none" />
+      {/* Phones: every logo sits in the same 4.5rem square tile, so each
+          name and description starts at the same x. Money Bhai's badge is
+          a wide rectangle, not a square crop like the others: it sits
+          whole, centred in a white tile (like Groww's and Frontpage's own
+          white tiles), instead of claiming 40% of the row. From 640px the
+          tile steps aside (`contents`) and the logo is the row's own item,
+          at its natural width, as before. */}
+      <div className="flex size-[4.5rem] shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white @min-[640px]:contents">
+        <ProductLogo
+          src={product.logo}
+          name={product.name}
+          className="h-full w-full shrink-0 @min-[640px]:h-[4.5rem] @min-[640px]:w-auto"
+        />
+      </div>
       <div className="min-w-0">
         <h3 className="font-bold" style={{ color: "var(--stackup-ink)" }}>
           {product.name}

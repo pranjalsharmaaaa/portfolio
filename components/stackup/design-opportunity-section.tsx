@@ -20,20 +20,33 @@ function Lightbulb({ className = "", style }: { className?: string; style?: CSSP
   );
 }
 
+/** On phones, the outer ring's diameter as a share of the screen's width (vw). */
+const PHONE_OUTER_RING_VW = 88;
+
 /**
  * One concentric background ring, as a bordered circle: `d` is its outer
  * diameter and `t` its band thickness (PDF: 780/71.4 and 545.2/50),
  * centred on (cx, cy). Same fill as the PDF — #d9d8d3 at 14% opacity.
+ *
+ * On phones (flow layout) the rings keep the frame's proportions but are
+ * sized to the screen: the outer one spans PHONE_OUTER_RING_VW of the
+ * width, inside the 20px side margins, so the whole circle shows instead
+ * of being cut by the section's edges (it used to be 150% of the width),
+ * centred on the label and the four questions (the frame they share).
  */
 function Ring({ cx, cy, d, t }: { cx: number; cy: number; d: number; t: number }) {
+  const phoneVw = (PHONE_OUTER_RING_VW * d) / 780;
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[150%] -translate-x-1/2 -translate-y-1/2 rounded-full ${slide.abs} ${slide.w} ${slide.h}`}
-      style={{
-        border: `calc(${t} * var(--u, ${(150 / d).toFixed(4)}vw)) solid rgb(217 216 211 / 14%)`,
-        ...at({ x: cx - d / 2, y: cy - d / 2, w: d, h: d }),
-      }}
+      className={`pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[calc(var(--ring-vw)*1vw)] -translate-x-1/2 -translate-y-1/2 rounded-full ${slide.abs} ${slide.w} ${slide.h}`}
+      style={
+        {
+          "--ring-vw": phoneVw,
+          border: `calc(${t} * var(--u, ${(phoneVw / d).toFixed(4)}vw)) solid rgb(217 216 211 / 14%)`,
+          ...at({ x: cx - d / 2, y: cy - d / 2, w: d, h: d }),
+        } as CSSProperties
+      }
     />
   );
 }
