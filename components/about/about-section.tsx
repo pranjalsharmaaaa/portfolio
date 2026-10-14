@@ -12,6 +12,7 @@ import {
 import { about, explorationChips } from "@/lib/site-content";
 import { AboutCloud } from "@/components/about/about-cloud";
 import { ExplorationCard, type CardVariant } from "@/components/about/exploration-card";
+import { FloatingTopics } from "@/components/about/floating-topics";
 
 const CARD_VARIANTS: CardVariant[] = ["storytelling", "motion", "empathy"];
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -224,7 +225,9 @@ export function AboutSection() {
             touching the heading → cards gap (a separate margin, further
             down on the scroll-track wrapper) or anything about the
             cards themselves. */}
-        <div className="mt-4 flex flex-col items-center sm:mt-6">
+        {/* Phones get more air above the label (mt-10): there the topics
+            below are a looser, airier composition (FloatingTopics). */}
+        <div className="mt-10 flex flex-col items-center sm:mt-6">
           <motion.p
             initial="hidden"
             whileInView="visible"
@@ -273,7 +276,7 @@ export function AboutSection() {
             // first paint. Set after hydration instead, the extra 160vh
             // arrived only after a link like "/#contact" had already
             // scrolled, leaving the reader well short of the target.
-            className="mt-4 w-full sm:mt-10 sm:h-[160vh] sm:motion-reduce:h-auto"
+            className="mt-4 w-full max-sm:hidden sm:mt-10 sm:h-[160vh] sm:motion-reduce:h-auto"
           >
             {/* Pinned for the track's full height (bar the sliver equal
                 to its own height, right at the very end): the cards
@@ -322,6 +325,12 @@ export function AboutSection() {
           </div>
         </div>
 
+        {/* Phones: the topics as floating words instead of the cards
+            (which are hidden below sm, just above). */}
+        <div className="mt-8 w-full sm:hidden">
+          <FloatingTopics label={about.exploringLabel} />
+        </div>
+
         {/* The closing punch — centered, bold, and compact. A visibly
             larger gap than the one above the cards (spec: "slightly
             more vertical space after the cards"), with the foreground
@@ -336,7 +345,7 @@ export function AboutSection() {
           whileInView="visible"
           viewport={viewport}
           variants={variants}
-          className="font-display relative z-10 mx-auto mt-8 max-w-[30rem] text-center text-[clamp(1.15rem,1.8vw,1.5rem)] leading-[1.35] font-bold italic sm:mt-10"
+          className="font-display relative z-10 mx-auto mt-14 max-w-[30rem] text-center text-[clamp(1.15rem,1.8vw,1.5rem)] leading-[1.35] font-bold italic sm:mt-10"
           style={{ textShadow: "0 18px 32px rgb(23 23 23 / 12%)" }}
         >
           {about.belief}
