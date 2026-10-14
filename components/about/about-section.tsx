@@ -9,7 +9,6 @@ import {
   type MotionValue,
   type Variants,
 } from "framer-motion";
-import Link from "next/link";
 import { about, explorationChips } from "@/lib/site-content";
 import { AboutCloud } from "@/components/about/about-cloud";
 import { ExplorationCard, type CardVariant } from "@/components/about/exploration-card";
@@ -199,8 +198,7 @@ export function AboutSection() {
             not the section's headline. Sized and margined to read as
             one compact editorial composition with the label/cards/
             belief below it, not four separately-spaced sections
-            requiring their own scroll. The small link at its end is
-            the quiet way on to the full /about page. */}
+            requiring their own scroll. */}
         <motion.p
           initial="hidden"
           whileInView="visible"
@@ -209,14 +207,7 @@ export function AboutSection() {
           className="font-display mx-auto max-w-[28rem] text-center text-[clamp(0.95rem,1.3vw,1.15rem)] leading-[1.5] font-normal"
           style={{ color: "var(--pt-muted)" }}
         >
-          {about.intro}{" "}
-          <Link
-            href="/about"
-            className="font-sans text-[0.85em] font-medium whitespace-nowrap underline decoration-1 underline-offset-[5px] transition-colors hover:text-[var(--pt-ink)]"
-          >
-            {about.moreLink}
-            <span aria-hidden="true"> →</span>
-          </Link>
+          {about.intro}
         </motion.p>
 
         {/* Exploration — a small centered label leading into three

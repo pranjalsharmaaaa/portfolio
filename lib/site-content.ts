@@ -93,7 +93,6 @@ export const headlineTransitionMs = 500;
 export const about = {
   intro:
     "Someone who enjoys learning, exploring new ideas and finding the little details that make an experience feel just right.",
-  moreLink: "More about me",
   exploringLabel: "Things I'm exploring lately",
   belief:
     "I think every good design starts with a question. I'm here to keep asking better ones.",
