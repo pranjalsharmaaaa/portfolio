@@ -54,12 +54,12 @@ export type NavItem = {
 };
 
 /**
- * The resume PDF the nav's "View Resume" button opens, as a path under
- * /public (e.g. "/resume/pranjal-sharma-resume.pdf"). `null` until the
- * real file is in the repo: the button still shows, but as an inert
- * "coming soon" pill rather than a link, so the nav never has a dead link.
+ * The resume PDF the nav's "View Resume" button opens (public/resume.pdf,
+ * the owner's own file, unmodified). It opens in a new tab in the
+ * browser's PDF viewer, which offers download too. Set to `null` and the
+ * button falls back to an inert "coming soon" pill instead of a dead link.
  */
-export const resumeHref: string | null = null;
+export const resumeHref: string | null = "/resume.pdf";
 
 /**
  * Primary navigation, the same on every page that shows the nav. There's
