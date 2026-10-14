@@ -31,7 +31,7 @@ const ICONS = {
 export function YanaOnboardingSection() {
   const { heading, features, screens } = yanaOnboarding;
   return (
-    <YanaPhoneShowcase label="Onboarding" heading={heading} screens={screens} captions="none">
+    <YanaPhoneShowcase label="Onboarding" heading={heading} screens={screens}>
       <ul className="mt-8 grid gap-5 sm:grid-cols-3 sm:gap-6 lg:mt-9">
         {features.map((f) => (
           <li key={f.title} className="flex items-center gap-4">
@@ -55,26 +55,26 @@ export function YanaOnboardingSection() {
   );
 }
 
-/** "A home that meets you where you are": the four home/community screens on a lavender stage. */
+/** "A home that meets you where you are": the four home/community screens. */
 export function YanaHomeFeatureSection() {
   const { heading, body, screens } = yanaHomeFeature;
-  return <YanaPhoneShowcase label="Personalized home" heading={heading} body={body} screens={screens} captions="none" stage />;
+  return <YanaPhoneShowcase label="Personalized home" heading={heading} body={body} screens={screens} />;
 }
 
-/** "Small moments, big progress": reflection → learning → progress, on one track. */
+/** "Small moments, big progress": reflection → learning → progress. */
 export function YanaJournalFeatureSection() {
   const { heading, body, screens } = yanaJournalFeature;
-  return <YanaPhoneShowcase label="Journal and minis" heading={heading} body={body} screens={screens} captions="timeline" />;
+  return <YanaPhoneShowcase label="Journal and minis" heading={heading} body={body} screens={screens} />;
 }
 
 /** "Find the right support for you": a four-step journey, choose → personalise → discover → join. */
 export function YanaTherapyFeatureSection() {
   const { heading, body, screens } = yanaTherapyFeature;
-  return <YanaPhoneShowcase label="Therapy discovery" heading={heading} body={body} screens={screens} captions="steps" />;
+  return <YanaPhoneShowcase label="Therapy discovery" heading={heading} body={body} screens={screens} sequence />;
 }
 
 /** "Everything in one place": the profile and the three places it leads. */
 export function YanaProfileFeatureSection() {
   const { heading, body, screens } = yanaProfileFeature;
-  return <YanaPhoneShowcase label="Profile" heading={heading} body={body} screens={screens} captions="hub" />;
+  return <YanaPhoneShowcase label="Profile" heading={heading} body={body} screens={screens} />;
 }

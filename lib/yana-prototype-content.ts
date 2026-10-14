@@ -128,7 +128,8 @@ export const yanaPrototype = {
   href: "https://www.figma.com/proto/qv5yeiq6zjTMy87nvgYxdk/Team-project?page-id=1592%3A3749&node-id=1626-2000&viewport=168%2C40%2C0.1&t=JBTSexZ7EV4cHv2Y-1&scaling=scale-down&content-scaling=fixed" as string | null,
 };
 
-export type YanaScreen = { src: string; width: number; height: number; alt: string; caption?: string };
+/** `caption` is the screen's title under the phone; `description` an optional line beneath it. */
+export type YanaScreen = { src: string; width: number; height: number; alt: string; caption?: string; description?: string };
 
 const hi = (name: string, alt: string, caption?: string, height = 1736): YanaScreen => ({
   src: `/images/yana/screen-${name}.webp`,
