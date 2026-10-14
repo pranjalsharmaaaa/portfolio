@@ -202,7 +202,9 @@ export function SelectedWork() {
     <section
       id="work"
       aria-label="Selected work"
-      className="paper-themed selected-work"
+      // Lands "/#work" with the section heading just below the fixed nav
+      // (which sits lower below `md`, under the location badge).
+      className="paper-themed selected-work scroll-mt-20 md:scroll-mt-14"
     >
       <div className="mx-auto flex w-full max-w-[100rem] flex-col px-6 pt-10 pb-16 sm:px-10 sm:pt-8 sm:pb-20 lg:px-12">
         <p className="text-center text-xs font-semibold tracking-[0.25em] uppercase" style={{ color: "var(--pt-ink)" }}>

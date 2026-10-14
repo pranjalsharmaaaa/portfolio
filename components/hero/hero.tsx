@@ -48,7 +48,9 @@ export function Hero() {
           <div className="hidden md:block">
             <LocationBadge />
           </div>
-          <GlassNav />
+          {/* Always shown, in one place, while scrolling the whole page
+              (it no longer lifts away on a scroll down). */}
+          <GlassNav hideOnScroll={false} />
           <div aria-hidden="true" className="hidden md:block" />
         </div>
 

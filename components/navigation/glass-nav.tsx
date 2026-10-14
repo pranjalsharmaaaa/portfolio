@@ -160,9 +160,9 @@ const noopSubscribe = () => () => {};
  * links move into a small menu; the photo, "Work with me" and the theme
  * toggle stay in the pill.
  *
- * Other pages reuse the same nav: `hideOnScroll={false}` keeps it in
- * place the entire time (the /about page, where the nav is the way back
- * home), and a page with no sticky layers to escape passes
+ * Pages pass `hideOnScroll={false}` to keep it in place the entire time
+ * (the homepage and /about both do), and a page with no sticky layers to
+ * escape passes
  * `portal={false}`: the fixed row then stays where it's rendered, so it
  * comes first in the keyboard order instead of after the page content.
  */
@@ -185,10 +185,27 @@ export function GlassNav({
 
   // Where the pill sits in the hero at scroll 0 (its "home"), re-measured
   // on resize since the hero's top row moves with the breakpoints.
+  //
+  // `top + scrollY` is only right for content that scrolls with the page.
+  // On the homepage the spacer lives in the hero's sticky layer, which is
+  // pinned at the viewport's top for the first screen of scrolling — so a
+  // re-measure while pinned (any resize, e.g. a phone's toolbar showing
+  // or hiding) added the scroll distance and dropped the nav that far down
+  // the screen. Inside a sticky layer, measure from that layer's top
+  // instead, taking its unpinned position from its container (the hero's
+  // layer starts at the top of its stage).
   useEffect(() => {
     const el = spacerRef.current;
     if (!el) return;
-    const measure = () => setHomeTop(el.getBoundingClientRect().top + window.scrollY);
+    let sticky: HTMLElement | null = el.parentElement;
+    while (sticky && getComputedStyle(sticky).position !== "sticky") sticky = sticky.parentElement;
+    const measure = () => {
+      const top = el.getBoundingClientRect().top;
+      if (!sticky) return setHomeTop(top + window.scrollY);
+      const container = sticky.parentElement ?? document.documentElement;
+      const naturalTop = container.getBoundingClientRect().top + window.scrollY;
+      setHomeTop(top - sticky.getBoundingClientRect().top + naturalTop);
+    };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(document.documentElement);
