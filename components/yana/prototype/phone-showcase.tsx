@@ -5,15 +5,6 @@ import { YanaFrame, YANA_SCREEN_Y } from "@/components/yana/frame";
 import { YANA_DEEP } from "@/components/yana/prototype/prototype-cta-section";
 
 /**
- * How the four screens' captions read:
- * - "none": phones only (the onboarding screen has its own feature row)
- * - "timeline": names under dots on one connected track (reflection → progress)
- * - "steps": numbered steps with arrows between screens (a journey)
- * - "hub": names as pills, the first filled — the screen the rest lead from
- */
-export type YanaShowcaseCaptions = "none" | "timeline" | "steps" | "hub";
-
-/**
  * One phone screen. Every screen file already includes its device frame
  * (transparent outside it), so it's shown as-is: no added frame, no
  * shadow, never cropped. On desktop all four share one height (--ph,
@@ -53,27 +44,49 @@ function StepArrow() {
 }
 
 /**
+ * The one caption style every walkthrough screen uses: a centred title a
+ * fixed distance under its phone, and, where a screen has one, a short
+ * description beneath it. Same family (the page's), size, weight, colour,
+ * line height and spacing in every section, so no screen's name reads
+ * differently from another's.
+ */
+function ScreenCaption({ title, description }: { title: string; description?: string }) {
+  return (
+    <div className="mt-6 flex max-w-[18rem] flex-col items-center text-center">
+      <p className="text-[16px] leading-snug font-semibold text-balance sm:text-[17px]" style={{ color: YANA_DEEP }}>
+        {title}
+      </p>
+      {description ? (
+        <p className="mt-1.5 text-[14px] leading-relaxed text-pretty sm:text-[15px]" style={{ color: "var(--yana-muted)" }}>
+          {description}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+/**
  * The shared composition of the five prototype walkthrough screens: a
  * large headline and its lavender sub-line from the reference, any
  * section-specific intro (`children`), then the four phone screens in
- * one row on desktop — two per row on tablets, one per row on phones.
- * `stage` sets the screens on a soft lavender platform.
+ * one row on desktop — two per row on tablets, one per row on phones —
+ * straight on the page's cream, each captioned by ScreenCaption when it
+ * has a caption. `sequence` adds arrows between the screens on desktop,
+ * for a step-by-step journey (therapy discovery).
  */
 export function YanaPhoneShowcase({
   label,
   heading,
   body,
   screens,
-  captions = "none",
-  stage = false,
+  sequence = false,
   children,
 }: {
   label: string;
   heading: string;
   body?: string;
   screens: readonly YanaScreen[];
-  captions?: YanaShowcaseCaptions;
-  stage?: boolean;
+  sequence?: boolean;
   children?: ReactNode;
 }) {
   return (
@@ -92,68 +105,17 @@ export function YanaPhoneShowcase({
         ) : null}
         {children}
 
-        <div className="relative mt-10 lg:mt-12">
-          {stage ? (
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-0 top-[22%] -bottom-6 rounded-[36px] lg:-bottom-8 lg:rounded-[48px]"
-              style={{ background: "linear-gradient(180deg, color-mix(in srgb, var(--yana-purple-light) 85%, transparent) 0%, color-mix(in srgb, var(--yana-purple-light) 25%, transparent) 100%)" }}
-            />
-          ) : null}
-          <ol className="relative grid grid-cols-1 justify-items-center gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 lg:items-end lg:gap-x-10 xl:gap-x-14">
-            {screens.map((screen, i) => (
-              <li key={screen.src} className="relative flex w-full flex-col items-center">
+        <ol className="mt-10 grid grid-cols-1 justify-items-center gap-x-6 gap-y-12 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:items-start lg:gap-x-10 xl:gap-x-14">
+          {screens.map((screen, i) => (
+            <li key={screen.src} className="relative flex w-full flex-col items-center">
+              <div className="relative flex w-full justify-center lg:h-[var(--ph)] lg:items-end">
                 <Phone screen={screen} />
-                {captions === "steps" && i < screens.length - 1 ? <StepArrow /> : null}
-                {captions === "timeline" && screen.caption ? (
-                  <div className="relative mt-6 flex w-full justify-center">
-                    {i < screens.length - 1 ? (
-                      <span
-                        aria-hidden="true"
-                        className="absolute top-1/2 left-1/2 hidden h-px w-[calc(100%+2.5rem)] lg:block xl:w-[calc(100%+3.5rem)]"
-                        style={{ background: "linear-gradient(90deg, var(--yana-purple), color-mix(in srgb, var(--yana-purple) 45%, var(--yana-pink)))" }}
-                      />
-                    ) : null}
-                    <span
-                      aria-hidden="true"
-                      className="relative size-3 rounded-full ring-4 ring-[var(--yana-bg)]"
-                      style={{ background: i === screens.length - 1 ? "var(--yana-pink)" : "var(--yana-purple)" }}
-                    />
-                  </div>
-                ) : null}
-                {captions !== "none" && screen.caption ? (
-                  <p
-                    className={`flex items-center gap-2.5 text-center text-[15px] font-semibold sm:text-[16px] ${captions === "timeline" ? "mt-3" : "mt-5"}`}
-                    style={{ color: YANA_DEEP }}
-                  >
-                    {captions === "steps" ? (
-                      <span
-                        className="inline-flex size-7 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white"
-                        style={{ background: "var(--yana-purple)" }}
-                      >
-                        {i + 1}
-                      </span>
-                    ) : null}
-                    {captions === "hub" ? (
-                      <span
-                        className="rounded-full border px-4 py-1.5"
-                        style={
-                          i === 0
-                            ? { background: "var(--yana-purple)", borderColor: "var(--yana-purple)", color: "#ffffff" }
-                            : { background: "var(--yana-card)", borderColor: "color-mix(in srgb, var(--yana-purple) 30%, transparent)" }
-                        }
-                      >
-                        {screen.caption}
-                      </span>
-                    ) : (
-                      screen.caption
-                    )}
-                  </p>
-                ) : null}
-              </li>
-            ))}
-          </ol>
-        </div>
+                {sequence && i < screens.length - 1 ? <StepArrow /> : null}
+              </div>
+              {screen.caption ? <ScreenCaption title={screen.caption} description={screen.description} /> : null}
+            </li>
+          ))}
+        </ol>
       </YanaFrame>
     </section>
   );
