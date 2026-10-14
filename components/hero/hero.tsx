@@ -62,7 +62,12 @@ export function Hero() {
             above the copy (where the sun sits) than between the
             cassette and the hills. The spacers take no gap of their own
             (the gap starts at md; below it, the one real gap moves onto the intro as a
-            margin), so a short landscape phone loses no extra height. */}
+            margin), so a short landscape phone loses no extra height.
+
+            Phone rhythm (max-md), widening step by step down the copy:
+            eyebrow → kicker 36px, kicker → headline 16px, between the
+            headline's two lines 10px (so they don't crowd), headline →
+            cassette 44px. */}
         <div className="flex flex-1 flex-col justify-center py-4 max-sm:pb-[calc(16vh-1.5rem)] sm:py-6 sm:max-md:pb-[calc(20vh-2rem)] md:gap-8">
           <div aria-hidden="true" className="flex-[3] md:hidden" />
           <div className="md:hidden">
@@ -79,7 +84,7 @@ export function Hero() {
               this wrapper's own sizing/centering: below that, mobile
               keeps its current full-width, left-anchored layout
               untouched. */}
-          <div className="flex flex-col gap-1 max-md:mt-6 sm:max-md:mt-8 md:mx-auto md:w-fit md:gap-8">
+          <div className="flex flex-col gap-1 max-md:mt-9 max-md:gap-2.5 sm:max-md:mt-10 md:mx-auto md:w-fit md:gap-8">
             {/* Kicker and headline get their own tight, deliberate gap —
                 siblings of one intro line — separate from the larger gap
                 (above, in the parent wrapper) that separates this whole
@@ -88,7 +93,7 @@ export function Hero() {
                 everywhere would leave as much air between the kicker
                 and "Designer who" as between "Designer who" and the
                 row underneath it. */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 max-md:gap-4">
               <p
                 className="text-xs font-semibold tracking-[0.25em] uppercase"
                 style={{ color: "var(--hero-text)" }}
@@ -110,7 +115,7 @@ export function Hero() {
                 wrap; there the cycling word moves to the front of it
                 (see CyclingWord) so the headline reads continuously
                 and the cassette sits below the complete headline. */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-8 md:flex-nowrap md:gap-x-8">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-8 max-md:gap-y-11 md:flex-nowrap md:gap-x-8">
               {/* A vertical-writing-mode child inside a flex row is a
                   known trap: with no explicit height, its auto block-size
                   calculation stretches to the flex line's full cross

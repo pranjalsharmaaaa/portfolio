@@ -16,7 +16,7 @@
  * flash. Entirely decorative, hidden from assistive tech.
  */
 
-const CLOUD_PATH =
+export const CLOUD_PATH =
   "M20,65 C13,45 35,26 60,31 C67,12 101,7 116,25 C132,8 166,15 169,36 C191,33 201,53 185,65 C193,77 174,85 157,78 C144,89 88,89 71,78 C54,87 24,83 20,65 Z";
 
 type CloudInstance = { x: number; y: number; scale: number; opacity?: number };
@@ -126,7 +126,9 @@ const MOBILE_FAR_CLOUDS: CloudInstance[] = [
 ];
 
 const MOBILE_MID_CLOUDS: CloudInstance[] = [
-  { x: -46, y: 150, scale: 0.56 },
+  // Kept high (just under the nav): short phones bring the copy up to
+  // ~y 190, and any lower this would sit behind the eyebrow line.
+  { x: -46, y: 116, scale: 0.5 },
   { x: 322, y: 222, scale: 0.46 },
 ];
 

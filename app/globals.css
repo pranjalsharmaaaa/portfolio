@@ -328,6 +328,35 @@
   }
 }
 
+/* Phones: the exploration topics as words floating in the sky
+   (components/about/floating-topics.tsx). The cards' blue, as an accent:
+   a deeper shade for the words so they stay readable on the cream, and
+   a faint wash of it for the clouds behind them; lighter at night. */
+.floating-topics {
+  --ft-ink: #2f6aa6;
+  --ft-cloud: rgb(79 143 206 / 13%);
+}
+.dark .floating-topics {
+  --ft-ink: #a9cdf2;
+  --ft-cloud: rgb(169 205 242 / 9%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .topic-float {
+    animation: topic-float 8s ease-in-out infinite;
+  }
+}
+
+@keyframes topic-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -5px;
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* Cassette                                                             */
 /* ------------------------------------------------------------------ */
