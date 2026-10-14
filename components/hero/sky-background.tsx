@@ -5,7 +5,8 @@
  * cloud drifting at different speeds, a night horizon, stars, and an
  * occasional shooting star) so the composition scales fluidly
  * with the hero instead of being assembled from separately-positioned
- * divs. Sun and moon share the same position: day and night are two
+ * divs. Phones get the same world rearranged for a portrait screen
+ * (see "Phone composition" below). Sun and moon share the same position: day and night are two
  * states of one world, not two different backgrounds (spec: "do not
  * simply darken the daytime background").
  *
@@ -95,6 +96,62 @@ const SHORE_SWOOSHES: SwooshInstance[] = [
   { x: 1500, y: 786, scale: 1.4, rotate: -8 },
 ];
 
+/* ------------------------------------------------------------------ */
+/* Phone composition                                                    */
+/*                                                                      */
+/* The desktop canvas is a 16:9 landscape slice-cropped to fill the    */
+/* hero, so on a portrait phone only its centre strip survives: the sun */
+/* (far right) and most clouds fall outside the crop. Instead of        */
+/* cropping, phones get the same world rearranged for a narrow screen:  */
+/* the same sun/moon, cloud shape, three cloud depths, stars and        */
+/* animations, laid out on portrait canvases that scale with the        */
+/* screen's width (so nothing is ever cropped away):                     */
+/*   - the sky, pinned to the top: sun upper right, clouds entering    */
+/*     from both edges, stars at night;                                  */
+/*   - the near clouds and night horizon, pinned to where the cream     */
+/*     hills begin (16vh up, 20vh from sm: components/about/            */
+/*     about-cloud.tsx), so                                              */
+/*     they always rise from behind the hills whatever the phone's      */
+/*     height.                                                           */
+/* The text sits on the left, so the sun and the denser clouds keep to  */
+/* the right and the top.                                                */
+/* ------------------------------------------------------------------ */
+
+const MOBILE_SUN = { cx: 318, cy: 172 } as const;
+
+const MOBILE_FAR_CLOUDS: CloudInstance[] = [
+  { x: 168, y: 118, scale: 0.3 },
+  { x: 92, y: 26, scale: 0.26 },
+  { x: 336, y: 14, scale: 0.28 },
+];
+
+const MOBILE_MID_CLOUDS: CloudInstance[] = [
+  { x: -46, y: 150, scale: 0.56 },
+  { x: 322, y: 222, scale: 0.46 },
+];
+
+const MOBILE_NEAR_CLOUDS: CloudInstance[] = [
+  { x: -62, y: 74, scale: 1 },
+  { x: 140, y: 112, scale: 0.55 },
+  { x: 262, y: 86, scale: 0.86 },
+];
+
+const MOBILE_STARS = [
+  { x: 26, y: 118, r: 1.6 },
+  { x: 132, y: 136, r: 1.3 },
+  { x: 236, y: 26, r: 1.4 },
+  { x: 384, y: 98, r: 1.6 },
+  { x: 222, y: 210, r: 1.2 },
+  { x: 378, y: 300, r: 1.3 },
+  { x: 44, y: 22, r: 1.3 },
+  { x: 300, y: 330, r: 1.1 },
+] as const;
+
+const MOBILE_SPARKLES = [
+  { x: 262, y: 118, size: 6 },
+  { x: 384, y: 236, size: 5 },
+] as const;
+
 function Sparkle({ x, y, size }: { x: number; y: number; size: number }) {
   return (
     <path
@@ -102,6 +159,199 @@ function Sparkle({ x, y, size }: { x: number; y: number; size: number }) {
       d={`M${x},${y - size} L${x + size * 0.22},${y - size * 0.22} L${x + size},${y} L${x + size * 0.22},${y + size * 0.22} L${x},${y + size} L${x - size * 0.22},${y + size * 0.22} L${x - size},${y} L${x - size * 0.22},${y - size * 0.22} Z`}
       fill="var(--star)"
     />
+  );
+}
+
+/** One cloud: a soft blurred shadow a little below, the cloud on top. */
+function ShadowedCloud({
+  c,
+  id,
+  fill,
+  shadowY,
+  blur,
+}: {
+  c: CloudInstance;
+  id: string;
+  fill: string;
+  shadowY: number;
+  blur: string;
+}) {
+  return (
+    <g>
+      <use
+        href={`#${id}cloud-shape`}
+        x={c.x}
+        y={c.y + shadowY}
+        width={210 * c.scale}
+        height={95 * c.scale}
+        fill="var(--cloud-shadow)"
+        filter={`url(#${id}${blur})`}
+      />
+      <use
+        href={`#${id}cloud-shape`}
+        x={c.x}
+        y={c.y}
+        width={210 * c.scale}
+        height={95 * c.scale}
+        fill={fill}
+      />
+    </g>
+  );
+}
+
+/**
+ * The shared cloud shape and blurs, at a given scale. Each canvas needs
+ * its own copy under its own id prefix: a canvas that's hidden at the
+ * current breakpoint is `display: none`, and anything defined inside
+ * one stops rendering for the canvases that point at it.
+ */
+function SkyDefs({ id, blur }: { id: string; blur: [number, number, number] }) {
+  return (
+    <>
+      <symbol id={`${id}cloud-shape`} viewBox="0 0 210 95">
+        <path d={CLOUD_PATH} />
+      </symbol>
+      <filter id={`${id}soft-blur-lg`} x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation={blur[0]} />
+      </filter>
+      <filter id={`${id}soft-blur-md`} x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation={blur[1]} />
+      </filter>
+      <filter id={`${id}soft-blur-sm`} x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation={blur[2]} />
+      </filter>
+    </>
+  );
+}
+
+/**
+ * Phones: the sky itself, scaled to the screen's width from its top
+ * edge (a 400-unit-wide canvas, ~1 unit per pixel on a typical phone).
+ * Past 28rem (large phones turned sideways, small tablets) it stops
+ * growing and stays in the top right, so the sun and the clouds keep a
+ * phone's proportions instead of swelling into the copy on the left.
+ */
+function MobileSky() {
+  const id = "m-sky-";
+  const { cx, cy } = MOBILE_SUN;
+  return (
+    <svg
+      viewBox="0 0 400 420"
+      className="absolute top-0 right-0 h-auto w-full max-w-[28rem] overflow-visible md:hidden"
+    >
+      <defs>
+        <SkyDefs id={id} blur={[17, 7, 3]} />
+        <mask id={`${id}moon-phase`}>
+          <circle cx={cx} cy={cy} r="31" fill="white" />
+          <circle cx={cx + 12} cy={cy - 9} r="27" fill="black" />
+        </mask>
+        <linearGradient id={`${id}shooting-tail`} x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--star)" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="var(--star)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+
+      {/* Sun: the desktop sun's glow → mid → core, at a phone's scale,
+          upper right with room to breathe from the edge and the nav. */}
+      <g className="sun-layer">
+        <circle cx={cx} cy={cy} r="96" fill="var(--sun-glow)" filter={`url(#${id}soft-blur-lg)`} />
+        <circle cx={cx} cy={cy} r="57" fill="var(--sun-glow)" filter={`url(#${id}soft-blur-md)`} opacity="0.7" />
+        <circle cx={cx} cy={cy} r="35" fill="var(--sun-mid)" filter={`url(#${id}soft-blur-sm)`} />
+        <circle cx={cx} cy={cy} r="27" fill="var(--sun-core)" />
+      </g>
+
+      <g className="moon-layer">
+        <circle cx={cx} cy={cy} r="90" fill="var(--moon-glow)" filter={`url(#${id}soft-blur-lg)`} />
+        <g mask={`url(#${id}moon-phase)`}>
+          <circle cx={cx} cy={cy} r="31" fill="var(--moon-body)" />
+          <circle cx={cx - 10} cy={cy + 7} r="4" fill="var(--moon-shade)" />
+          <circle cx={cx - 1} cy={cy - 10} r="2.6" fill="var(--moon-shade)" />
+          <circle cx={cx + 9} cy={cy + 11} r="2" fill="var(--moon-shade)" />
+        </g>
+      </g>
+
+      <g>
+        {MOBILE_STARS.map((s, i) => (
+          <circle
+            key={i}
+            className="star-el motion-safe:animate-twinkle"
+            cx={s.x}
+            cy={s.y}
+            r={s.r}
+            fill="var(--star)"
+            style={{ animationDelay: `${(i % 7) * 0.5}s` }}
+          />
+        ))}
+        {MOBILE_SPARKLES.map((s, i) => (
+          <Sparkle key={i} {...s} />
+        ))}
+        <g className="opacity-0 motion-safe:animate-shooting-star">
+          <line
+            x1="232"
+            y1="40"
+            x2="206"
+            y2="61"
+            stroke={`url(#${id}shooting-tail)`}
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <circle cx="206" cy="61" r="1.8" fill="var(--star)" />
+        </g>
+      </g>
+
+      <g opacity="0.9">
+        {MOBILE_FAR_CLOUDS.map((c, i) => (
+          <use
+            key={i}
+            href={`#${id}cloud-shape`}
+            x={c.x}
+            y={c.y}
+            width={210 * c.scale}
+            height={95 * c.scale}
+            fill="var(--cloud-far)"
+          />
+        ))}
+      </g>
+
+      <g className="motion-safe:animate-drift-slower">
+        {MOBILE_MID_CLOUDS.map((c, i) => (
+          <ShadowedCloud key={i} c={c} id={id} fill="var(--cloud-mid)" shadowY={5} blur="soft-blur-sm" />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * Phones: the near clouds and the night horizon, standing on the line
+ * where the hills begin. The canvas's bottom edge is that line; the
+ * clouds and horizon carry on below it (overflow visible), behind the
+ * hills, so they always read as rising from behind them.
+ */
+function MobileHorizon() {
+  const id = "m-near-";
+  return (
+    <svg
+      viewBox="0 0 400 120"
+      className="absolute inset-x-0 bottom-[16vh] h-auto w-full overflow-visible sm:bottom-[20vh] md:hidden"
+    >
+      <defs>
+        <SkyDefs id={id} blur={[17, 7, 3]} />
+      </defs>
+
+      <g className="motion-safe:animate-drift-slow">
+        {MOBILE_NEAR_CLOUDS.map((c, i) => (
+          <ShadowedCloud key={i} c={c} id={id} fill="var(--cloud-near)" shadowY={8} blur="soft-blur-md" />
+        ))}
+      </g>
+
+      <path
+        d="M0,400 L0,150 C70,130 130,162 210,146 C290,130 340,158 400,140 L400,400 Z"
+        fill="var(--hill)"
+        filter={`url(#${id}soft-blur-sm)`}
+        className="transition-colors duration-700"
+      />
+    </svg>
   );
 }
 
@@ -120,15 +370,15 @@ export function SkyBackground() {
         }}
       />
 
+      {/* Desktop and tablet (md up): the landscape canvas. Phones get
+          their own composition below. */}
       <svg
         viewBox="0 0 1600 900"
         preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 h-full w-full"
+        className="absolute inset-0 h-full w-full max-md:hidden"
       >
         <defs>
-          <symbol id="cloud-shape" viewBox="0 0 210 95">
-            <path d={CLOUD_PATH} />
-          </symbol>
+          <SkyDefs id="" blur={[34, 14, 6]} />
           {/* A tapered, comma-like ribbon — the unit shape behind the
               bottom-edge pattern. Original geometry, not traced from
               any reference: several bezier lobes so it reads as a
@@ -136,15 +386,6 @@ export function SkyBackground() {
           <symbol id="swoosh-shape" viewBox="0 0 200 60">
             <path d="M4,40 C18,12 52,4 88,13 C111,19 118,36 145,35 C166,34 177,17 196,21 C184,42 159,53 130,51 C103,49 82,35 55,40 C33,44 13,52 4,40 Z" />
           </symbol>
-          <filter id="soft-blur-lg" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="34" />
-          </filter>
-          <filter id="soft-blur-md" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="14" />
-          </filter>
-          <filter id="soft-blur-sm" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="6" />
-          </filter>
           {/* The moon's phase is a real cutout, not a flat-colored
               overlay — whatever sits behind it (its own glow, the sky)
               shows through the "dark" side, so it never reads as a
@@ -323,6 +564,9 @@ export function SkyBackground() {
           ))}
         </g>
       </svg>
+
+      <MobileSky />
+      <MobileHorizon />
 
       {/* Grain — a hair of texture so nothing reads as a flat vector fill. */}
       <svg className="absolute inset-0 h-full w-full opacity-[0.05] mix-blend-overlay">

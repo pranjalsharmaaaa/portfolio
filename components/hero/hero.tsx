@@ -54,7 +54,17 @@ export function Hero() {
           <div aria-hidden="true" className="hidden md:block" />
         </div>
 
-        <div className="flex flex-1 flex-col justify-center gap-6 py-4 sm:gap-8 sm:py-6">
+        {/* Phones: the bottom padding stops this block where the cream
+            hills begin (they cover the hero's last 16vh, 20vh from sm —
+            see components/about/about-cloud.tsx), so the composition is
+            balanced in the sky that's actually visible, and the two
+            spacers share the remaining room 3:2 — a little more sky
+            above the copy (where the sun sits) than between the
+            cassette and the hills. The spacers take no gap of their own
+            (the gap starts at md; below it, the one real gap moves onto the intro as a
+            margin), so a short landscape phone loses no extra height. */}
+        <div className="flex flex-1 flex-col justify-center py-4 max-sm:pb-[calc(16vh-1.5rem)] sm:py-6 sm:max-md:pb-[calc(20vh-2rem)] md:gap-8">
+          <div aria-hidden="true" className="flex-[3] md:hidden" />
           <div className="md:hidden">
             <SideVocabulary />
           </div>
@@ -69,7 +79,7 @@ export function Hero() {
               this wrapper's own sizing/centering: below that, mobile
               keeps its current full-width, left-anchored layout
               untouched. */}
-          <div className="flex flex-col gap-1 md:w-fit md:mx-auto md:gap-8">
+          <div className="flex flex-col gap-1 max-md:mt-6 sm:max-md:mt-8 md:mx-auto md:w-fit md:gap-8">
             {/* Kicker and headline get their own tight, deliberate gap —
                 siblings of one intro line — separate from the larger gap
                 (above, in the parent wrapper) that separates this whole
@@ -129,6 +139,7 @@ export function Hero() {
               <CyclingWord />
             </div>
           </div>
+          <div aria-hidden="true" className="flex-[2] md:hidden" />
         </div>
       </div>
     </section>
