@@ -44,6 +44,18 @@ export const cassette = {
   errorLabel: "“My design journey, rapped” couldn’t be loaded",
 } as const;
 
+/**
+ * The standalone listening page (/listen) — the destination of the QR
+ * code printed in the PDF portfolio. Same recording as the homepage
+ * cassette (`cassette.src`), never a separate copy of the file.
+ */
+export const listen = {
+  title: "My Design Journey, Rapped",
+  subtitle: "An original rap about my design journey.",
+  artist: "Pranjal Sharma",
+  src: cassette.src,
+} as const;
+
 export type NavItem = {
   label: string;
   /** `null` only for a file that hasn't been added yet (see `resumeHref`). */
