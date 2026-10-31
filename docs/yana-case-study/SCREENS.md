@@ -29,8 +29,14 @@ Figma copy/paste between files keeps the original vector UI, its photos and its 
 | 40 | Journal calendar | Jornal · 1626:2432 |
 | 40 | Share your thought | Home Screen · 1626:1917 |
 | 41 | Community list | Community · 1626:2080 |
-| 41 | Therapy style | Choose Style · 1626:969 *(matched by name — confirm)* |
-| 41 | Therapist preferences | Choose therapy · 1626:1826 *(matched by name — confirm)* |
+| 41 | Therapy style | Choose Style · 1626:969 |
+| 41 | Therapist preferences | Choose therapy · 1626:1826 |
+| optional | Minis (therapist video) | Minis · 1626:2134 |
+
+All frames above were viewed in the source file and match the website screens.
+
+**Phone mockup:** the source file has none (only status-bar components inside screens).
+Paste the iPhone mockup used on the Stack Up / Sales Coach pages onto `Source screens` too.
 
 **Not in the source file's `yana` page — please locate or export:** onboarding welcome,
 onboarding "How have you been feeling", onboarding "What areas", "All set", the DASS-21
