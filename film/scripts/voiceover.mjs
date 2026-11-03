@@ -86,6 +86,25 @@ if (args.includes("--check")) {
   process.exit(report(timeline) ? 1 : 0);
 }
 
+// --draft <file.json>: measure a PROPOSED script (and optional scene-length
+// changes in its "slots" map) against the film, without touching the film.
+if (args.includes("--draft")) {
+  const draft = JSON.parse(readFileSync(join(root, args[args.indexOf("--draft") + 1]), "utf8"));
+  const fps = 30;
+  let from = 0;
+  const scenes = timeline.SCENES.map((s) => {
+    const slot = Math.round((draft.slots?.[s.id] ?? s.seconds) * fps);
+    const r = { id: s.id, from, slot };
+    from += slot;
+    return r;
+  });
+  const lines = draft.lines.map((l) => {
+    const sc = scenes.find((s) => s.id === l.scene);
+    return { scene: l.scene, from: sc.from + Math.round(l.offset * fps), frames: Math.ceil(timeline.estimateSeconds(l.text) * fps) };
+  });
+  process.exit(report({ VOICEOVER_READY: false, VO_LINES: lines, TOTAL_FRAMES: from }) ? 1 : 0);
+}
+
 const only = args.filter((a) => /^S\d\d$/.test(a));
 const spoken = (s) => timeline.spoken(s);
 mkdirSync(outDir, { recursive: true });
