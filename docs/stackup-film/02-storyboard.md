@@ -303,3 +303,21 @@ The phone is on screen for ~43 s of 108 s (S10–S16), and is never alone: every
 5. **Tap ripples and highlight rings** are the only overlays on real UI; screen content is never altered.
 6. **Benchmark logos (S5)** are shown exactly as in your case study.
 7. **S16 jar** stops at ~80%, so the film doesn't imply the prototype includes graduating to real money.
+
+---
+
+## Revisions after approval (applied in the first animatic)
+
+Decisions from review: keep the illustrative ₹35,000 · Act 3 shown **side by side**, equal size, no implied order · same character throughout · Confidence Jar holds at **~80%** · real screens only, no invented UI or interactions.
+
+| Change | Why |
+|---|---|
+| Timing rebalanced (total still **1:48**): S3 7→6 s · S4 10 s (starts 0:15) · S5 7→6 s · S6 7→**8 s** · S7 6→**7 s** · S14 7→6 s · S15 7→**8 s** | More breathing room for the two research groups (S6) and the four behaviours (S7); the ₹5,000 first investment (S15) becomes the longest product beat. |
+| S5 VO shortened to "So I studied the apps people actually use. Most assumed you were already ready to invest." | Fits 6 s at a conversational pace; all three benchmark insights stay on screen as sticky notes. |
+| S6: 40+ (light disc, left, "Broader research") and 23 (green disc, right, "Focused conversations · aged 21–26") get their own beats; quotes rise only from the 23. | The two groups are never merged or nested. |
+| S7: each behaviour is introduced alone (others dimmed) before all four converge on "guidance before action." | Each pattern gets its own moment. |
+| S8: five areas side by side on the ground line, linked by one hand-drawn line. | No hierarchy (your decision #2). |
+| S9→S10: the mark has **four** bars, not three. | Matches the real `logo.webp`. |
+| S15: on "Ready to Invest?" the camera leans in; one coin leaves the Practice Wallet, carries a "₹5,000 · practice money" tag, lands on the screen's Practice Wallet → ICICI row; the Confidence Jar fills 0% → 10% in sync with "First Investment Complete!". | Your "most memorable product sequence" note. |
+| S17 opens with the same 7-coin salary stack in the same spot as S1, which becomes the case study's own Understand → Practise → Build Confidence illustration, then the closing line and end card. The ground line retracts (mirror of S1). | Ties the ending to the opening and the philosophy. |
+| Characters never appear twice during a camera move. | Continuity in one world. |

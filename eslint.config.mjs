@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Remotion film is a separate package with its own tooling.
+    "film/**",
   ]),
 ]);
 
