@@ -14,10 +14,10 @@ import { WhatsLeft } from "./WhatsLeft";
 
 const BUBBLES = [
   { x: 240, y: 150, w: 470, h: 150, text: "What do I do with what’s left?", start: 6, tail: "right" as const },
-  { x: 1250, y: 130, w: 430, h: 150, text: "How do I track everything?", start: 32, tail: "left" as const },
-  { x: 1240, y: 430, w: 520, h: 150, text: "Should I save, invest or get insurance first?", start: 58, tail: "left" as const },
+  { x: 1250, y: 130, w: 430, h: 150, text: "How do I track everything?", start: 26, tail: "left" as const },
+  { x: 1240, y: 430, w: 520, h: 150, text: "Should I save, invest or get insurance first?", start: 46, tail: "left" as const },
 ];
-const T = { pop: 86, gather: 106, cursor: 130 };
+const T = { pop: 64, gather: 80, cursor: 104 };
 
 export const S03Questions = () => {
   const f = useCurrentFrame();

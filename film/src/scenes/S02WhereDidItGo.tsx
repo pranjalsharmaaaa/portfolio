@@ -13,6 +13,7 @@ import { Coin, CoinStack, LineIcon } from "../components/objects";
 import { Display, Label } from "../components/type";
 import { arc, mix, prog } from "../motion/ease";
 import { color, stage } from "../theme/tokens";
+import { phraseAt } from "../timeline";
 import { C } from "./continuity";
 import { WhatsLeft } from "./WhatsLeft";
 
@@ -23,13 +24,16 @@ const ESSENTIALS = [
   { text: "Transport", icon: "bus" as const },
 ];
 const COL_X = 980;
-const LAND = (i: number) => 16 + i * 22;
+/** Chips drop as each essential is spoken (phrase 2 of the narration). */
+const LIST_AT = phraseAt("S02", 1, 88);
+const LAND = (i: number) => LIST_AT - 8 + i * 22;
 const DROP = 12;
 const FLY = 16;
 const COIN = 104;
 const STEP = COIN * 0.16;
 /** Frames: essentials marked covered → what's left highlighted → line. */
-const T = { covered: 112, highlight: 132, line: 146, out: 218 };
+const LEFT_AT = phraseAt("S02", 2, 192); // "Then you look at what's left…"
+const T = { covered: LAND(3) + 34, highlight: LEFT_AT, line: LEFT_AT + 12, out: 230 };
 
 export const S02WhereDidItGo = () => {
   const f = useCurrentFrame();
@@ -41,7 +45,7 @@ export const S02WhereDidItGo = () => {
     <AbsoluteFill>
       <Label text="Payday" x={stage.margin} y={96} start={-30} exit={0} />
       <Label text="Essentials first" x={stage.margin} y={96} start={12} />
-      <Character poses={[{ at: 0, pose: "kit-working" }, { at: 18, pose: "kit-phone" }]} x={C.deskCharX} scale={1.25} />
+      <Character poses={[{ at: 0, pose: "kit-working" }, { at: LIST_AT - 14, pose: "kit-phone" }]} x={C.deskCharX} scale={1.25} />
 
       {/* the essentials' own stack, set apart on the left */}
       <div style={{ opacity: mix(covered, 1, 0.45) * (1 - out) }}>

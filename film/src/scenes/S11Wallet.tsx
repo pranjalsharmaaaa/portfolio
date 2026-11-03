@@ -14,6 +14,7 @@ import { Asset, Character } from "../components/primitives";
 import { Body } from "../components/type";
 import { arc, ease, mix, prog, settle } from "../motion/ease";
 import { color, stage } from "../theme/tokens";
+import { phraseAt } from "../timeline";
 import { C } from "./continuity";
 import { WhatsLeft } from "./WhatsLeft";
 
@@ -21,13 +22,13 @@ const STACK_X = 880;
 const WALLET_H = 300;
 /** Wallet render position on app-onboarding-4 (centre, fraction of screen) + its on-screen height. */
 const ON_SCREEN = { u: 0.5, v: 0.235, h: PHONE_H * 0.3 };
-const T = { morph: 96, fly: 116, wallet: 144, words: 150 };
+const T = { morph: 30, fly: 48, wallet: 76, words: phraseAt("S11", 1, 90) + 6 };
 const WORDS = ["Understand", "Explore", "Practise"];
 
 export const S11Wallet = () => {
   const f = useCurrentFrame();
   const morph = prog(f, T.morph, 16);
-  const fly = prog(f, T.fly, 30, ease.camera);
+  const fly = prog(f, T.fly, 28, ease.camera);
   const target = screenPoint(C.phone.S11, ON_SCREEN.u, ON_SCREEN.v);
   const pt = arc(fly, { x: STACK_X, y: stage.groundY - WALLET_H / 2 }, target, 120);
   return (
@@ -35,7 +36,7 @@ export const S11Wallet = () => {
       <Phone cx={C.phone.S11} screens={[
         { at: 0, name: "app-onboarding-1" }, { at: 16, name: "app-onboarding-3" }, { at: T.wallet, name: "app-onboarding-4" },
       ]} />
-      <Character poses={[{ at: 0, pose: "kit-phone" }]} x={560} exit={226} />
+      <Character poses={[{ at: 0, pose: "kit-phone" }]} x={560} exit={190} />
       <WhatsLeft x={STACK_X} dropFrom={6} glow={prog(f, 18, 14)} tag={prog(f, 24, 10)} opacity={1 - morph} />
       <Asset name="render-wallet" x={pt.x} y={pt.y} anchor="center" height={mix(fly, WALLET_H, ON_SCREEN.h)}
         opacity={morph * (1 - prog(f, T.wallet + 6, 6))} scale={mix(morph, 0.7, 1)} />
@@ -43,7 +44,7 @@ export const S11Wallet = () => {
         text="A **safe space** to practise managing **what’s left**." />
       <div style={{ position: "absolute", left: stage.margin, top: 320, display: "flex", gap: 22, fontSize: 40, fontWeight: 700 }}>
         {WORDS.map((w, i) => (
-          <span key={w} style={{ color: i === 2 ? color.brand : color.ink, ...settle(f, T.words + i * 12) }}>
+          <span key={w} style={{ color: i === 2 ? color.brand : color.ink, ...settle(f, T.words + i * 16) }}>
             {w}{i < 2 ? <span style={{ color: color.muted }}> ·</span> : null}
           </span>
         ))}

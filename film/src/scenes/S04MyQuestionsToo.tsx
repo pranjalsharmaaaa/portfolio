@@ -8,20 +8,23 @@ import { Character } from "../components/primitives";
 import { Annotation, Body, Display, Label } from "../components/type";
 import { mix, prog } from "../motion/ease";
 import { color, stage } from "../theme/tokens";
+import { phraseAt } from "../timeline";
+
+const CARD_AT = phraseAt("S04", 2, 162) - 14;
 
 export const S04MyQuestionsToo = () => {
   const f = useCurrentFrame();
   const blink = f < 22 && Math.floor(f / 8) % 2 === 0 ? 1 : 0;
-  const cardIn = prog(f, 126, 20);
-  const underline = prog(f, 168, 14);
+  const cardIn = prog(f, CARD_AT, 20);
+  const underline = prog(f, CARD_AT + 40, 14);
   return (
     <AbsoluteFill>
       <div style={{ position: "absolute", left: 957, top: 430, width: 6, height: 84, background: color.ink, opacity: blink }} />
       <Label text="My journey" x={stage.margin} y={96} start={22} />
       {/* the case study's own opening, verbatim */}
-      <Display x={stage.margin} y={290} start={24} exit={116}
+      <Display x={stage.margin} y={290} start={24} exit={CARD_AT - 14}
         lines={[{ text: "You earn money." }, { text: "But how do you manage it?", green: true }]} />
-      <Character poses={[{ at: 0, pose: "phone-notebook" }]} x={1700} enter={18} exit={282} scale={0.96} />
+      <Character poses={[{ at: 0, pose: "phone-notebook" }]} x={1700} enter={18} exit={249} scale={0.96} />
 
       {/* the live brief */}
       <div style={{
@@ -44,9 +47,9 @@ export const S04MyQuestionsToo = () => {
           their overall net worth.”
         </div>
       </div>
-      <Annotation text="…but did I know how?" x={840} y={540} start={180} />
+      <Annotation text="…but did I know how?" x={840} y={540} start={CARD_AT + 52} />
 
-      <Body x={stage.margin} y={620} width={1150} start={212} size={34}
+      <Body x={stage.margin} y={620} width={1150} start={CARD_AT + 78} size={34}
         text="I realised I first needed to **understand the financial ecosystem myself.**" />
     </AbsoluteFill>
   );

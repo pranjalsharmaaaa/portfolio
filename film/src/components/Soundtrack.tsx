@@ -12,7 +12,8 @@ import { Audio, interpolate, Sequence, staticFile } from "remotion";
 import musicInfo from "../music.json";
 import { TOTAL_FRAMES, VO_LINES } from "../timeline";
 
-const MUSIC = { bed: 0.16, ducked: 0.055, noVoice: 0.12, ramp: 9 };
+/** Music levels (linear gain). Ducked ≈ −9.3 dB below the bed. Attack/release in frames. */
+const MUSIC = { bed: 0.22, ducked: 0.075, noVoice: 0.15, attack: 6, release: 20 };
 /** Duck only under clips that actually exist. */
 const SPOKEN = VO_LINES.filter((l) => l.file);
 
@@ -20,7 +21,7 @@ const SPOKEN = VO_LINES.filter((l) => l.file);
 const voiceAt = (frame: number) => {
   let v = 0;
   for (const l of SPOKEN) {
-    const a = interpolate(frame, [l.from - MUSIC.ramp, l.from, l.from + l.frames, l.from + l.frames + MUSIC.ramp], [0, 1, 1, 0], {
+    const a = interpolate(frame, [l.from - MUSIC.attack, l.from, l.from + l.frames, l.from + l.frames + MUSIC.release], [0, 1, 1, 0], {
       extrapolateLeft: "clamp", extrapolateRight: "clamp",
     });
     v = Math.max(v, a);

@@ -24,19 +24,19 @@ export const MarkAt = ({ build, word, scale = 1, opacity = 1 }: { build: number;
 
 export const S09Problem = () => {
   const f = useCurrentFrame();
-  const gather = prog(f, 88, 24);
-  const chrome = 1 - prog(f, 84, 10);
+  const gather = prog(f, 82, 24);
+  const chrome = 1 - prog(f, 78, 10);
   return (
     <AbsoluteFill>
       {/* S8's heading leaves as the problem statement arrives */}
       <Display x={stage.margin} y={140} start={-S08_TEXT_AT} size={88} exit={0}
         lines={[{ text: "Managing what’s left" }, { text: "isn’t just investing.", green: true }]} />
       <BiggerPictureRow build={999} gather={gather} chrome={chrome} />
-      <Character poses={[{ at: 0, pose: "kit-realisation" }, { at: 12, pose: "kit-confused" }]} x={C.rowCharX} scale={1.05} exit={84} />
-      <Label text="Problem statement" x={stage.margin} y={96} start={8} exit={90} />
-      <Statement x={stage.margin} y={150} width={1420} start={12} exit={90}
+      <Character poses={[{ at: 0, pose: "kit-realisation" }, { at: 12, pose: "kit-confused" }]} x={C.rowCharX} scale={1.05} exit={78} />
+      <Label text="Problem statement" x={stage.margin} y={96} start={8} exit={84} />
+      <Statement x={stage.margin} y={150} width={1420} start={12} exit={84}
         text="Financial products help people execute decisions, but do little to build the ==understanding and confidence== needed to make those decisions independently." />
-      <MarkAt build={prog(f, 98, 30)} word={0} />
+      <MarkAt build={prog(f, 94, 30)} word={0} />
     </AbsoluteFill>
   );
 };

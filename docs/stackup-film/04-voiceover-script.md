@@ -1,9 +1,9 @@
 # Stack Up — Case Study Film
 ## Voiceover script, version 3.1 (final words, for approval)
 
-**Status:** words for your approval. No audio has been generated and no animation timing has changed. The one product-screen correction (§ below) is already applied.
+**Status:** ✅ approved and produced. The narration is generated (Kokoro, open-source neural TTS, run locally, because ElevenLabs is blocked in this environment) and integrated into the film. Scene lengths were re-fitted to the measured voice (`film/src/timeline.ts`); the total is still exactly 1:48.
 **Length:** 1:48, unchanged. About 200 words.
-**Draft source:** `film/narration-v3.draft.json`. Fit-checked with `node scripts/voiceover.mjs --draft narration-v3.draft.json`: every line ends 0.23–0.73 s before the next begins, at an unhurried storytelling pace (~150 words/min plus pauses).
+**Source:** `film/src/narration.json`. Measured fit (`npm run voiceover:check`): every line ends 0.23–1.13 s before the next begins; the last word ends at 1:45.5.
 
 **How to read it:** `/` is a natural breath or pause. **Bold** is gentle emphasis, never a punch. `…` is a held, trailing thought that hands over to the next line. Times are estimates; they're re-measured on the real voice clips once generated.
 

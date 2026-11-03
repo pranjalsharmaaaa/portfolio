@@ -33,28 +33,28 @@ export type SceneSpec = {
 
 export const SCENES: SceneSpec[] = [
   // ACT 1 — THE PROBLEM
-  { id: "S01", act: 1, title: "Payday", seconds: 4, out: { kind: "cut", frames: 0 } },
-  { id: "S02", act: 1, title: "Essentials first, then what's left", seconds: 8, out: { kind: "fade", frames: 12 } },
-  { id: "S03", act: 1, title: "The questions", seconds: 5, out: { kind: "fade", frames: 8 } },
+  { id: "S01", act: 1, title: "Payday", seconds: 4.5, out: { kind: "cut", frames: 0 } },
+  { id: "S02", act: 1, title: "Essentials first, then what's left", seconds: 8.4, out: { kind: "fade", frames: 12 } },
+  { id: "S03", act: 1, title: "The questions", seconds: 4, out: { kind: "fade", frames: 8 } },
   // ACT 2 — MY JOURNEY
-  { id: "S04", act: 2, title: "These were my questions too", seconds: 10, out: { kind: "dolly", frames: 24 } },
-  { id: "S05", act: 2, title: "Exploring the ecosystem", seconds: 6, out: { kind: "dolly", frames: 24 } },
-  { id: "S06", act: 2, title: "Listening", seconds: 8, out: { kind: "fade", frames: 12 } },
-  { id: "S07", act: 2, title: "Four patterns, one need", seconds: 6, out: { kind: "dolly", frames: 24 } },
+  { id: "S04", act: 2, title: "These were my questions too", seconds: 8.9, out: { kind: "dolly", frames: 24 } },
+  { id: "S05", act: 2, title: "Exploring the ecosystem", seconds: 5.2, out: { kind: "dolly", frames: 24 } },
+  { id: "S06", act: 2, title: "Listening", seconds: 9.5, out: { kind: "fade", frames: 12 } },
+  { id: "S07", act: 2, title: "Four patterns, one need", seconds: 10.8, out: { kind: "dolly", frames: 24 } },
   // ACT 3 — THE BIGGER PICTURE
-  { id: "S08", act: 3, title: "The bigger picture", seconds: 7.5, out: { kind: "cut", frames: 0 } },
-  { id: "S09", act: 3, title: "The real problem", seconds: 4.5, out: { kind: "cut", frames: 0 } },
+  { id: "S08", act: 3, title: "The bigger picture", seconds: 7.8, out: { kind: "cut", frames: 0 } },
+  { id: "S09", act: 3, title: "The real problem", seconds: 128 / 30, out: { kind: "cut", frames: 0 } },
   // ACT 4 — INTRODUCING STACK UP
   { id: "S10", act: 4, title: "The reveal", seconds: 3, out: { kind: "cut", frames: 0 } },
-  { id: "S11", act: 4, title: "What's left → Practice Wallet", seconds: 8, out: { kind: "fade", frames: 10 } },
+  { id: "S11", act: 4, title: "What's left → Practice Wallet", seconds: 6.9, out: { kind: "fade", frames: 10 } },
   // ACT 5 — LEARNING THROUGH DOING
-  { id: "S12", act: 5, title: "First move", seconds: 6, out: { kind: "fade", frames: 10 } },
-  { id: "S13", act: 5, title: "Guided questions", seconds: 6.5, out: { kind: "fade", frames: 10 } },
-  { id: "S14", act: 5, title: "Recommendation & alternatives", seconds: 6, out: { kind: "fade", frames: 10 } },
-  { id: "S15", act: 5, title: "The first investment", seconds: 7.5, out: { kind: "fade", frames: 12 } },
+  { id: "S12", act: 5, title: "First move", seconds: 142 / 30, out: { kind: "fade", frames: 10 } },
+  { id: "S13", act: 5, title: "Guided questions", seconds: 172 / 30, out: { kind: "fade", frames: 10 } },
+  { id: "S14", act: 5, title: "Recommendation & alternatives", seconds: 5, out: { kind: "fade", frames: 10 } },
+  { id: "S15", act: 5, title: "The first investment", seconds: 203 / 30, out: { kind: "fade", frames: 12 } },
   // ACT 6 — THE DESTINATION
-  { id: "S16", act: 6, title: "The Confidence Jar", seconds: 6, out: { kind: "fade", frames: 15 } },
-  { id: "S17", act: 6, title: "Understand → Practise → Build Confidence", seconds: 6, out: { kind: "cut", frames: 0 } },
+  { id: "S16", act: 6, title: "The Confidence Jar", seconds: 5.5, out: { kind: "fade", frames: 15 } },
+  { id: "S17", act: 6, title: "Understand → Practise → Build Confidence", seconds: 7, out: { kind: "cut", frames: 0 } },
 ];
 
 export const sec = (s: number) => Math.round(s * stage.fps);
@@ -78,7 +78,7 @@ export const sceneStart = (id: SceneId) => TIMED.find((s) => s.id === id)!.from;
 
 // ---------------------------------------------------------------- voiceover
 
-type Manifest = { generated: boolean; lines: Partial<Record<SceneId, { file: string; seconds: number }>> };
+type Manifest = { generated: boolean; lines: Partial<Record<SceneId, { file: string; seconds: number; phrases?: number[] }>> };
 const VO = manifest as Manifest;
 
 /** Spoken text (caption-break marks removed) — exactly what the TTS voice reads. */
@@ -100,6 +100,8 @@ export type VoLine = {
   measured: boolean; // true once real audio has been generated
   file?: string;
   captions: boolean;
+  /** Absolute start frame of each '|' phrase (measured once audio exists). */
+  phrases?: number[];
 };
 
 export const VO_LINES: VoLine[] = narration.lines.map((l) => {
@@ -114,8 +116,20 @@ export const VO_LINES: VoLine[] = narration.lines.map((l) => {
     measured: Boolean(m),
     file: m?.file,
     captions: (l as { captions?: boolean }).captions !== false,
+    phrases: m?.phrases?.map((p) => scene.from + sec(l.offset) + Math.round(p * stage.fps)),
   };
 });
+
+/**
+ * Scene-local frame at which phrase `i` of a scene's narration starts —
+ * lets a scene land its visuals on the spoken words. Falls back to the
+ * given frame until real audio has been generated.
+ */
+export const phraseAt = (id: SceneId, i: number, fallback: number) => {
+  const l = VO_LINES.find((v) => v.scene === id);
+  const p = l?.phrases?.[i];
+  return p === undefined ? fallback : p - sceneStart(id);
+};
 
 export const VOICEOVER_READY = VO.generated && VO_LINES.every((l) => l.measured);
 

@@ -8,6 +8,9 @@ import { Character } from "../components/primitives";
 import { Rich, Label } from "../components/type";
 import { mix, prog, settle } from "../motion/ease";
 import { color, stage } from "../theme/tokens";
+import { phraseAt } from "../timeline";
+
+const FOCUSED_AT = phraseAt("S06", 1, 92);
 
 const R = 210;
 const LEFT = { x: 520, y: 420 };
@@ -45,18 +48,18 @@ const Disc = ({ c, at, fill, ink, tag, n, suffix, caption, dim = 1, f }: {
 
 export const S06Listening = () => {
   const f = useCurrentFrame();
-  const leftOut = 1 - prog(f, 146, 14);
+  const leftOut = 1 - prog(f, FOCUSED_AT + 72, 14);
   return (
     <AbsoluteFill>
       <Label text="Research" x={stage.margin} y={96} start={4} />
       <Disc f={f} c={LEFT} at={6} fill={color.ground} ink={color.ink} tag="BROADER RESEARCH" n={40} suffix="+"
-        caption="people across **different levels of financial experience**" dim={leftOut * mix(prog(f, 86, 12), 1, 0.7)} />
-      <Disc f={f} c={RIGHT} at={80} fill={color.brand} ink="white" tag="FOCUSED CONVERSATIONS" n={23} suffix=""
+        caption="people across **different levels of financial experience**" dim={leftOut * mix(prog(f, FOCUSED_AT, 12), 1, 0.7)} />
+      <Disc f={f} c={RIGHT} at={FOCUSED_AT - 6} fill={color.brand} ink="white" tag="FOCUSED CONVERSATIONS" n={23} suffix=""
         caption="**early-career professionals, aged 21–26**, managing money independently" />
       <Character poses={[{ at: 0, pose: "kit-phone" }]} x={960} enter={36} scale={0.92} />
       {/* real quotes rise out of the focused group */}
       {QUOTES.map((q, i) => {
-        const p = prog(f, 154 + i * 16, 22);
+        const p = prog(f, FOCUSED_AT + 80 + i * 20, 22);
         return (
           <div key={q} style={{
             position: "absolute", left: mix(p, RIGHT.x - 340, stage.margin), top: mix(p, RIGHT.y, 180 + i * 160), width: 680,

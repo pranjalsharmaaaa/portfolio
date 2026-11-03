@@ -55,6 +55,11 @@ const CAPTIONS = VO_LINES.flatMap((l) => {
   const chunks = l.text.split("|").map((c) => c.trim()).filter(Boolean);
   const words = chunks.map((c) => c.split(/\s+/).length);
   const total = words.reduce((a, b) => a + b, 0);
+  const end = l.from + l.frames;
+  // measured phrase starts (real audio) — otherwise split the clip by word count
+  if (l.phrases && l.phrases.length === chunks.length) {
+    return chunks.map((text, i) => ({ text, from: l.phrases![i], to: (l.phrases![i + 1] ?? end) + (i === chunks.length - 1 ? 10 : 0) }));
+  }
   let t = l.from;
   return chunks.map((text, i) => {
     const len = (l.frames * words[i]) / total;

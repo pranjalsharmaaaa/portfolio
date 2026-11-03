@@ -1,4 +1,151 @@
 {
-  "generated": false,
-  "lines": {}
+  "generated": true,
+  "engine": "kokoro-v1.0 (local, Apache-2.0)",
+  "voice": {
+    "hf_alpha": 0.65,
+    "af_heart": 0.35
+  },
+  "lines": {
+    "S01": {
+      "file": "voiceover/S01.mp3",
+      "seconds": 4.284,
+      "phrases": [
+        0.0,
+        2.015
+      ]
+    },
+    "S02": {
+      "file": "voiceover/S02.mp3",
+      "seconds": 7.81,
+      "phrases": [
+        0.0,
+        2.642,
+        6.093
+      ]
+    },
+    "S03": {
+      "file": "voiceover/S03.mp3",
+      "seconds": 2.896,
+      "phrases": [
+        0.0,
+        1.364
+      ]
+    },
+    "S04": {
+      "file": "voiceover/S04.mp3",
+      "seconds": 8.547,
+      "phrases": [
+        0.0,
+        2.22,
+        5.179
+      ]
+    },
+    "S05": {
+      "file": "voiceover/S05.mp3",
+      "seconds": 4.899,
+      "phrases": [
+        0.0,
+        2.598
+      ]
+    },
+    "S06": {
+      "file": "voiceover/S06.mp3",
+      "seconds": 9.273,
+      "phrases": [
+        0.0,
+        2.853
+      ]
+    },
+    "S07": {
+      "file": "voiceover/S07.mp3",
+      "seconds": 10.436,
+      "phrases": [
+        0.0,
+        2.04,
+        4.287,
+        6.581,
+        8.259
+      ]
+    },
+    "S08": {
+      "file": "voiceover/S08.mp3",
+      "seconds": 7.421,
+      "phrases": [
+        0.0,
+        2.844
+      ]
+    },
+    "S09": {
+      "file": "voiceover/S09.mp3",
+      "seconds": 3.919,
+      "phrases": [
+        0.0,
+        2.238
+      ]
+    },
+    "S10": {
+      "file": "voiceover/S10.mp3",
+      "seconds": 1.735,
+      "phrases": [
+        0.0
+      ]
+    },
+    "S11": {
+      "file": "voiceover/S11.mp3",
+      "seconds": 6.523,
+      "phrases": [
+        0.0,
+        2.794
+      ]
+    },
+    "S12": {
+      "file": "voiceover/S12.mp3",
+      "seconds": 4.163,
+      "phrases": [
+        0.0,
+        2.511
+      ]
+    },
+    "S13": {
+      "file": "voiceover/S13.mp3",
+      "seconds": 5.273,
+      "phrases": [
+        0.0,
+        2.034
+      ]
+    },
+    "S14": {
+      "file": "voiceover/S14.mp3",
+      "seconds": 4.616,
+      "phrases": [
+        0.0,
+        2.974
+      ]
+    },
+    "S15": {
+      "file": "voiceover/S15.mp3",
+      "seconds": 6.158,
+      "phrases": [
+        0.0,
+        2.247,
+        4.318
+      ]
+    },
+    "S16": {
+      "file": "voiceover/S16.mp3",
+      "seconds": 5.317,
+      "phrases": [
+        0.0,
+        3.221
+      ]
+    },
+    "S17": {
+      "file": "voiceover/S17.mp3",
+      "seconds": 4.184,
+      "phrases": [
+        0.0,
+        2.12
+      ]
+    }
+  }
 }

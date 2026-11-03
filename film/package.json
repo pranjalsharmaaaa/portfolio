@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "voiceover": "node scripts/voiceover.mjs",
     "voiceover:check": "node scripts/voiceover.mjs --check",
-    "music": "python3 scripts/generate-music.py"
+    "music": "python3 scripts/generate-music.py",
+    "voiceover:local": "python3 scripts/voiceover_kokoro.py"
   },
   "dependencies": {
     "@remotion/cli": "4.0.540",
