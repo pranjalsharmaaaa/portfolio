@@ -9,7 +9,15 @@
  */
 import { staticFile } from "remotion";
 
-export const screen = (name: string) => staticFile(`stackup/${name}.webp`);
+/**
+ * Film-only corrections of real screens (built by prepare-assets.py). The
+ * portfolio's originals stay untouched; the film uses the corrected copy.
+ *  - app-first-investment-3: "Remaining Balance ₹20,000" row removed.
+ */
+const SCREEN_OVERRIDES = new Set(["app-first-investment-3"]);
+
+export const screen = (name: string) =>
+  staticFile(SCREEN_OVERRIDES.has(name) ? `film-assets/screens/${name}.webp` : `stackup/${name}.webp`);
 export const stackup = (name: string) => staticFile(`stackup/${name}.webp`);
 export const filmAsset = (name: string) => staticFile(`film-assets/${name}.png`);
 

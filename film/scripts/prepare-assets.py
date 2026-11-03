@@ -137,3 +137,23 @@ for name, (src, (l, t, r, b)) in RENDERS.items():
     W, H = img.size
     crop = img.crop((int(l * W), int(t * H), int(r * W), int(b * H)))
     save(key_paper(crop, light=236, chroma=12), name)
+
+# 5. Screen corrections for the film (the portfolio's own files stay untouched).
+# "Ready to Invest?": remove the "Remaining Balance ₹20,000" row, which
+# implies a fixed wallet balance. The row band is cut out of the summary
+# card and everything below it (card edge, Practice Money note) moves up by
+# the same amount, keeping the card's original 84px bottom padding and its full rounded corners; the
+# space opens above the bottom-pinned Invest button, as the layout would
+# reflow. Only the screen interior (inside the bezel) is touched.
+SCREENS_OUT = OUT / "screens"
+SCREENS_OUT.mkdir(exist_ok=True)
+fi3 = np.array(Image.open(SRC_STACKUP / "app-first-investment-3.webp").convert("RGBA"))
+KEEP_TO, RESUME_AT, MOVE_TO = 1860, 2062, 2478  # px rows; measured. MOVE_TO stops above the rounded screen corners
+X0, X1 = 85, 1231  # screen interior, kept 12px clear of the bezel edges
+cut = RESUME_AT - KEEP_TO
+fixed = fi3.copy()
+fixed[KEEP_TO:MOVE_TO - cut, X0:X1] = fi3[RESUME_AT:MOVE_TO, X0:X1]
+BG_ROW = 2490  # clean background just below the Practice Money note (no card shadow)
+fixed[MOVE_TO - cut:MOVE_TO, X0:X1] = fi3[BG_ROW:BG_ROW + 1, X0:X1]
+Image.fromarray(fixed, "RGBA").save(SCREENS_OUT / "app-first-investment-3.webp", "WEBP", lossless=True)
+print("screens/app-first-investment-3.webp (Remaining Balance row removed)")

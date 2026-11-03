@@ -1,36 +1,37 @@
 {
   "_status": "DRAFT for review — not yet in the film. Measured with: node scripts/voiceover.mjs --draft narration-v3.draft.json",
   "slots": {
-    "S02": 7,
-    "S04": 9,
+    "S02": 8,
+    "S04": 8,
     "S05": 6.5,
     "S07": 10.5,
     "S08": 7,
-    "S11": 7,
+    "S11": 6.5,
     "S15": 7,
     "S16": 5.5,
-    "S12": 5.5
+    "S12": 5.5,
+    "S01": 4.5
   },
   "lines": [
     {
       "scene": "S01",
       "offset": 0.2,
-      "text": "Your first salary. | It feels like freedom."
+      "text": "Your first salary lands… | and honestly? It feels incredible."
     },
     {
       "scene": "S02",
       "offset": 0.3,
-      "text": "First, the essentials: | rent, electricity, groceries, travel. | What's left is yours to plan."
+      "text": "Before anything else, the essentials: | rent, electricity, groceries, getting to work. | Then you look at what's left…"
     },
     {
       "scene": "S03",
       "offset": 0.2,
-      "text": "That's where it gets harder. | Where do you even begin?"
+      "text": "And you wonder: | what do I do with it now?"
     },
     {
       "scene": "S04",
       "offset": 0.2,
-      "text": "I know that question well. It was mine. | Starting my semester project, I realised I didn't understand money myself."
+      "text": "Those were my questions too. | I didn't really understand money myself, | and that curiosity shaped my semester project."
     },
     {
       "scene": "S05",
@@ -85,7 +86,7 @@
     {
       "scene": "S15",
       "offset": 0.3,
-      "text": "Your first investment, | in small, guided steps — | and with it, a little more confidence."
+      "text": "Your first practice investment — | no real money at stake, | but real confidence gained."
     },
     {
       "scene": "S16",
