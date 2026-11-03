@@ -30,9 +30,9 @@ export const S07Patterns = () => {
   return (
     <AbsoluteFill>
       <Label text="Insights" x={stage.margin} y={96} start={2} />
-      <Statement text="People weren’t struggling in the same way." x={stage.margin} y={140} start={4} exit={118} />
-      <Statement text="Different behaviours pointed to the same underlying need:" x={stage.margin} y={130} start={128} />
-      <Display lines={[{ text: "guidance before action.", green: true }]} x={stage.margin} y={196} start={138} size={84} />
+      <Statement text="People weren’t struggling in the same way." x={stage.margin} y={140} start={4} exit={104} />
+      <Statement text="Different behaviours pointed to the same underlying need:" x={stage.margin} y={130} start={110} />
+      <Display lines={[{ text: "guidance before action.", green: true }]} x={stage.margin} y={196} start={118} size={84} />
       {PATTERNS.map((p, i) => {
         const appear = prog(f, 6 + i * BEAT, 14);
         const o = appear * (0.45 + 0.55 * focus(i));
@@ -49,11 +49,11 @@ export const S07Patterns = () => {
       {/* four lines converge on one point: the same need */}
       {XS.map((x, i) => (
         <Stroke key={x} d={`M${x} ${stage.groundY + 76} C ${x} ${stage.groundY + 120}, 960 ${stage.groundY + 100}, 960 ${stage.groundY + 150}`}
-          start={140 + i * 3} dur={22} stroke={color.brand} width={3} />
+          start={122 + i * 3} dur={18} stroke={color.brand} width={3} />
       ))}
       <div style={{
         position: "absolute", left: 950, top: stage.groundY + 142, width: 20, height: 20, borderRadius: "50%",
-        background: color.brand, transform: `scale(${prog(f, 164, 8)})`,
+        background: color.brand, transform: `scale(${prog(f, 142, 8)})`,
       }} />
     </AbsoluteFill>
   );

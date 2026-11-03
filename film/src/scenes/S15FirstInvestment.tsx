@@ -23,10 +23,10 @@ const T = { emerge: 102, travel: 122, land: 160, complete: 166, fill: 172 };
 
 export const S15FirstInvestment = () => {
   const f = useCurrentFrame();
-  const leave = prog(f, 212, 26, ease.camera);
+  const leave = prog(f, 198, 26, ease.camera);
   const cx = mix(leave, phoneGlide(f, C.phone.S14, C.phone.S15), C.phone.S16);
-  const push = prog(f, 96, 30, ease.camera) * (1 - prog(f, 196, 20, ease.camera));
-  const worldOut = 1 - prog(f, 204, 12);
+  const push = prog(f, 96, 30, ease.camera) * (1 - prog(f, 182, 20, ease.camera));
+  const worldOut = 1 - prog(f, 190, 12);
 
   // the coin
   const emerge = prog(f, T.emerge, 16);
@@ -74,8 +74,8 @@ export const S15FirstInvestment = () => {
           </>
         )}
       </div>
-      <Character poses={[{ at: 0, pose: "kit-phone" }, { at: T.fill + 4, pose: "kit-realisation" }]} x={1690} enter={12} exit={204} />
-      <Body x={stage.margin} y={110} width={600} start={10} size={40} exit={200} text="**Small, guided steps.**" />
+      <Character poses={[{ at: 0, pose: "kit-phone" }, { at: T.fill + 4, pose: "kit-realisation" }]} x={1690} enter={12} exit={190} />
+      <Body x={stage.margin} y={110} width={600} start={10} size={40} exit={186} text="**Small, guided steps.**" />
       <div style={{
         position: "absolute", left: stage.margin, top: 190, fontSize: 64, fontWeight: 700, letterSpacing: "-0.02em",
         opacity: prog(f, T.fill, 10) * worldOut,

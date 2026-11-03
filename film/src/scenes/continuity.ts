@@ -7,7 +7,9 @@ export const C = {
   /** S1–S2: the salary coin stack and the character at the desk. */
   stackX: 700,
   deskCharX: 1400,
-  /** S3: two leftover coins at the character's feet. */
+  /** S2: where the essentials' coins are set aside. */
+  essentialsX: 330,
+  /** S3: "what's left" at the character's feet (same spot as the salary stack). */
   leftoverX: 700,
 
   /** S8–S9: the five-part "bigger picture" row on the ground line. */

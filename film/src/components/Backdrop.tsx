@@ -5,7 +5,7 @@
  */
 import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { prog } from "../motion/ease";
-import { ACT_RANGES, cameraX, TIMED, TOTAL_FRAMES } from "../timeline";
+import { ACT_RANGES, cameraX, TOTAL_FRAMES, VO_LINES } from "../timeline";
 import { color, stage } from "../theme/tokens";
 
 /** A gently hand-drawn horizontal line across the full width. */
@@ -45,17 +45,20 @@ export const Backdrop = () => {
   );
 };
 
-/** Split VO into caption chunks (on "·") and time them by word count. */
-const CAPTIONS = TIMED.flatMap((s) => {
-  if (s.captions === false) return [];
-  const chunks = s.vo.split("·").map((c) => c.trim()).filter(Boolean);
+/**
+ * Caption chunks come from the narration's "|" marks and are timed inside
+ * each line's actual clip (measured once audio exists, estimated before),
+ * so captions stay in sync with the voice.
+ */
+const CAPTIONS = VO_LINES.flatMap((l) => {
+  if (!l.captions) return [];
+  const chunks = l.text.split("|").map((c) => c.trim()).filter(Boolean);
   const words = chunks.map((c) => c.split(/\s+/).length);
   const total = words.reduce((a, b) => a + b, 0);
-  const start = s.from + 8, end = s.from + s.slot - 6;
-  let t = start;
+  let t = l.from;
   return chunks.map((text, i) => {
-    const len = ((end - start) * words[i]) / total;
-    const c = { text, from: Math.round(t), to: Math.round(t + len) };
+    const len = (l.frames * words[i]) / total;
+    const c = { text, from: Math.round(t), to: Math.round(t + len) + (i === chunks.length - 1 ? 10 : 0) };
     t += len;
     return c;
   });

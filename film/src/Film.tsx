@@ -3,6 +3,7 @@ import { fade } from "@remotion/transitions/fade";
 import { Fragment } from "react";
 import { AbsoluteFill } from "remotion";
 import { Backdrop, Captions } from "./components/Backdrop";
+import { Soundtrack } from "./components/Soundtrack";
 import { dolly } from "./components/transitions";
 import { ease } from "./motion/ease";
 import { SCENE_COMPONENTS } from "./scenes";
@@ -41,5 +42,6 @@ export const Film = () => (
       })}
     </TransitionSeries>
     <Captions />
+    <Soundtrack />
   </AbsoluteFill>
 );

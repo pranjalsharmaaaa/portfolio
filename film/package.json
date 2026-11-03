@@ -2,13 +2,16 @@
   "name": "stackup-film",
   "version": "0.1.0",
   "private": true,
-  "description": "Stack Up — animated product design case study film (Remotion).",
+  "description": "Stack Up \u2014 animated product design case study film (Remotion).",
   "scripts": {
     "sync-assets": "node scripts/sync-assets.mjs",
     "studio": "npm run sync-assets && remotion studio",
     "still": "npm run sync-assets && remotion still StackUpFilm",
     "render": "npm run sync-assets && remotion render StackUpFilm out/stackup-film.mp4",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "voiceover": "node scripts/voiceover.mjs",
+    "voiceover:check": "node scripts/voiceover.mjs --check",
+    "music": "python3 scripts/generate-music.py"
   },
   "dependencies": {
     "@remotion/cli": "4.0.540",

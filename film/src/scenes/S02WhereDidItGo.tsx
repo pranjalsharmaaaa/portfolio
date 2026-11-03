@@ -1,53 +1,85 @@
-/** S2 · Where did it go? (0:04–0:09) — each notification takes a coin: 7 → 2. */
+/**
+ * S2 · Essentials first, then what's left (0:04–0:12.5).
+ *
+ * The product's founding idea: Stack Up is not about the whole salary.
+ * The essentials (rent, electricity, groceries, transport) each take a
+ * coin into their own stack and are marked as covered; the coins that
+ * remain light up as "What's left" — the money the rest of the film,
+ * and Stack Up, is about.
+ */
 import { AbsoluteFill, useCurrentFrame } from "remotion";
-import { Asset, Character, Chip } from "../components/primitives";
+import { Character, Chip } from "../components/primitives";
 import { Coin, CoinStack, LineIcon } from "../components/objects";
+import { Display, Label } from "../components/type";
 import { arc, mix, prog } from "../motion/ease";
-import { stage } from "../theme/tokens";
+import { color, stage } from "../theme/tokens";
 import { C } from "./continuity";
+import { WhatsLeft } from "./WhatsLeft";
 
-const NOTES = [
-  { text: "Shopping", icon: <Asset name="kit-bags" x={0} y={0} height={44} anchor="top-left" style={{ position: "relative" }} /> },
-  { text: "EMI due", icon: <LineIcon kind="calendar" /> },
-  { text: "Credit card bill", icon: <Asset name="kit-card" x={0} y={0} height={40} anchor="top-left" style={{ position: "relative" }} /> },
-  { text: "Subscriptions", icon: <LineIcon kind="repeat" /> },
-  { text: "Monthly expenses", icon: <LineIcon kind="receipt" /> },
+const ESSENTIALS = [
+  { text: "Rent", icon: "home" as const },
+  { text: "Electricity", icon: "bolt" as const },
+  { text: "Groceries", icon: "cart" as const },
+  { text: "Transport", icon: "bus" as const },
 ];
-const COL_X = 960;
-const LAND = (i: number) => 14 + i * 18; // frame each chip starts dropping
+const COL_X = 980;
+const LAND = (i: number) => 16 + i * 22;
 const DROP = 12;
+const FLY = 16;
+const COIN = 104;
+const STEP = COIN * 0.16;
+/** Frames: essentials marked covered → what's left highlighted → line. */
+const T = { covered: 112, highlight: 132, line: 146, out: 218 };
 
 export const S02WhereDidItGo = () => {
   const f = useCurrentFrame();
-  const taken = NOTES.filter((_, i) => f >= LAND(i) + DROP).length;
-  const exit = prog(f, 128, 16);
+  const left = ESSENTIALS.filter((_, i) => f >= LAND(i) + DROP).length; // coins pulled off the salary
+  const arrived = ESSENTIALS.filter((_, i) => f >= LAND(i) + DROP + FLY).length; // coins in the essentials stack
+  const covered = prog(f, T.covered, 14);
+  const out = prog(f, T.out, 16);
   return (
     <AbsoluteFill>
-      <Character
-        poses={[{ at: 0, pose: "kit-working" }, { at: 16, pose: "kit-phone" }, { at: 112, pose: "kit-confused" }]}
-        x={C.deskCharX} scale={1.25}
-      />
-      <CoinStack x={C.stackX} y={stage.groundY} count={7 - taken} size={104} />
-      {NOTES.map((n, i) => {
+      <Label text="Payday" x={stage.margin} y={96} start={-30} exit={0} />
+      <Label text="Essentials first" x={stage.margin} y={96} start={12} />
+      <Character poses={[{ at: 0, pose: "kit-working" }, { at: 18, pose: "kit-phone" }]} x={C.deskCharX} scale={1.25} />
+
+      {/* the essentials' own stack, set apart on the left */}
+      <div style={{ opacity: mix(covered, 1, 0.45) * (1 - out) }}>
+        <CoinStack x={C.essentialsX} y={stage.groundY} count={arrived} size={COIN} />
+        <div style={{ position: "absolute", left: C.essentialsX, top: stage.groundY + 22, transform: "translateX(-50%)", opacity: prog(f, T.covered, 10) }}>
+          <Chip bg={color.tint} border={false}>✓ Essentials covered</Chip>
+        </div>
+      </div>
+
+      {/* the salary stack shrinks to what's left, then lights up */}
+      <WhatsLeft x={C.stackX} count={7 - left} glow={prog(f, T.highlight, 16)} tag={prog(f, T.highlight + 6, 12)} />
+
+      {ESSENTIALS.map((n, i) => {
         const p = prog(f, LAND(i), DROP);
-        const y = mix(p, -90, 150 + i * 92);
-        // the coin pulled off the stack, flying into this notification
-        const cp = prog(f, LAND(i) + DROP, 14);
-        const from = { x: C.stackX, y: stage.groundY - 70 - (6 - i) * 16.6 };
-        const pt = arc(cp, from, { x: COL_X - 40, y: y + 30 }, 120);
+        const y = mix(p, -90, 170 + i * 92);
+        const cp = prog(f, LAND(i) + DROP, FLY);
+        const from = { x: C.stackX, y: stage.groundY - 70 - (6 - i) * STEP };
+        const to = { x: C.essentialsX, y: stage.groundY - 70 - i * STEP };
+        const pt = arc(cp, from, to, 150);
         return (
           <div key={n.text}>
-            <div style={{ position: "absolute", left: COL_X + exit * 700, top: y, opacity: p * (1 - exit) }}>
-              <Chip>{n.icon}{n.text}</Chip>
+            <div style={{
+              position: "absolute", left: COL_X, top: y - out * 30,
+              opacity: p * mix(covered, 1, 0.5) * (1 - out),
+            }}>
+              <Chip><LineIcon kind={n.icon} />{n.text}{covered > 0.5 ? <span style={{ color: color.brand, fontWeight: 700 }}>✓</span> : null}</Chip>
             </div>
             {cp > 0 && cp < 1 && (
-              <div style={{ position: "absolute", left: pt.x - 40, top: pt.y - 20, opacity: 1 - cp * 0.6, transform: `scale(${1 - cp * 0.5})` }}>
-                <Coin size={80} />
+              <div style={{ position: "absolute", left: pt.x, top: pt.y, transform: "translate(-50%, -50%)" }}>
+                <Coin size={COIN} />
               </div>
             )}
           </div>
         );
       })}
+
+      <Display x={stage.margin} y={160} start={T.line} size={72}
+        lines={[{ text: "Essentials covered." }, { text: "Now, what’s left.", green: true }]} />
     </AbsoluteFill>
   );
 };

@@ -106,10 +106,14 @@ export const StackMark = ({ size = 1, build = 1, word = 1, wordOnly = false }: {
 };
 
 /** Simple line icons for the two notifications the asset kit doesn't cover. */
-export const LineIcon = ({ kind, size = 40 }: { kind: "calendar" | "repeat" | "receipt"; size?: number }) => (
+export const LineIcon = ({ kind, size = 40 }: { kind: "calendar" | "repeat" | "receipt" | "home" | "bolt" | "cart" | "bus"; size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 40 40" fill="none" stroke={color.ink} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
     {kind === "calendar" && (<><rect x={5} y={8} width={30} height={27} rx={5} fill={color.tint} /><path d="M5 16h30M13 4v8M27 4v8" /><text x={20} y={31} fontSize={11} textAnchor="middle" fill={color.ink} stroke="none" fontWeight={700} fontFamily="Inter">EMI</text></>)}
     {kind === "repeat" && (<><path d="M8 18a12 12 0 0 1 21-7l3 3M32 22a12 12 0 0 1-21 7l-3-3" /><path d="M32 6v8h-8M8 34v-8h8" /></>)}
+    {kind === "home" && (<><path d="M6 19 20 7l14 12" /><path d="M10 16v18h20V16" fill={color.tint} /><path d="M17 34v-9h6v9" /></>)}
+    {kind === "bolt" && (<path d="M23 4 9 22h10l-3 14 15-19H21z" fill={color.tint} />)}
+    {kind === "cart" && (<><path d="M4 7h5l4 18h18l4-13H11" /><circle cx={15} cy={32} r={2.5} /><circle cx={28} cy={32} r={2.5} /></>)}
+    {kind === "bus" && (<><rect x={8} y={5} width={24} height={26} rx={5} fill={color.tint} /><path d="M8 18h24M13 31v4M27 31v4" /><circle cx={14} cy={25} r={1.5} /><circle cx={26} cy={25} r={1.5} /></>)}
     {kind === "receipt" && (<><path d="M9 4h22v32l-4-3-4 3-3-3-4 3-3-3-4 3z" fill={color.tint} /><path d="M14 13h12M14 19h12M14 25h7" /></>)}
   </svg>
 );

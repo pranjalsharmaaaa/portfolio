@@ -1,36 +1,35 @@
 /**
- * S3 · The questions (0:09–0:15) — closer, quieter. Three bubbles draw
- * on, then condense into a single "?" that becomes a text cursor (match
- * cut into Act 2).
+ * S3 · The questions (0:12.5–0:17.5) — closer, quieter. "What's left"
+ * sits at the character's feet; the questions are about that money.
+ * The bubbles condense into a single "?" that becomes a text cursor
+ * (match cut into Act 2).
  */
 import { AbsoluteFill, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Character } from "../components/primitives";
-import { CoinStack } from "../components/objects";
 import { ThoughtBubble } from "../components/ThoughtBubble";
 import { mix, prog } from "../motion/ease";
-import { color, stage } from "../theme/tokens";
+import { color } from "../theme/tokens";
 import { C } from "./continuity";
+import { WhatsLeft } from "./WhatsLeft";
 
 const BUBBLES = [
-  { x: 260, y: 150, w: 470, h: 150, text: "How do I start managing money?", start: 8, tail: "right" as const },
-  { x: 1250, y: 130, w: 430, h: 150, text: "How do I track everything?", start: 44, tail: "left" as const },
-  { x: 1240, y: 430, w: 520, h: 150, text: "Should I save, invest or get insurance first?", start: 80, tail: "left" as const },
+  { x: 240, y: 150, w: 470, h: 150, text: "What do I do with what’s left?", start: 6, tail: "right" as const },
+  { x: 1250, y: 130, w: 430, h: 150, text: "How do I track everything?", start: 32, tail: "left" as const },
+  { x: 1240, y: 430, w: 520, h: 150, text: "Should I save, invest or get insurance first?", start: 58, tail: "left" as const },
 ];
+const T = { pop: 86, gather: 106, cursor: 130 };
 
 export const S03Questions = () => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const gather = prog(f, 140, 22);
-  const qPop = spring({ frame: f - 116, fps, config: { damping: 9, stiffness: 160 } }); // the film's only bounce
+  const gather = prog(f, T.gather, 22);
+  const qPop = spring({ frame: f - T.pop, fps, config: { damping: 9, stiffness: 160 } }); // the film's only bounce
   const qX = mix(gather, 1010, 960), qY = mix(gather, 120, 470);
-  const toCursor = prog(f, 164, 8);
-  const wobble = f > 100 && f < 124 ? Math.sin(f * 0.9) * 2 : 0;
+  const toCursor = prog(f, T.cursor, 8);
   return (
     <AbsoluteFill>
-      <Character poses={[{ at: 0, pose: "kit-thinking" }]} x={960} scale={1.32} exit={140} />
-      <div style={{ position: "absolute", inset: 0, transform: `rotate(${wobble * 0.5}deg)`, transformOrigin: `${C.leftoverX}px ${stage.groundY}px`, opacity: 1 - gather }}>
-        <CoinStack x={C.leftoverX} y={stage.groundY} count={2} size={104} />
-      </div>
+      <Character poses={[{ at: 0, pose: "kit-thinking" }]} x={960} scale={1.32} exit={T.gather} />
+      <WhatsLeft x={C.leftoverX} opacity={1 - gather} />
       {BUBBLES.map((b) => (
         <div key={b.text} style={{
           position: "absolute", inset: 0, opacity: 1 - gather,

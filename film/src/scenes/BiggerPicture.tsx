@@ -14,7 +14,7 @@ import { C } from "./continuity";
 
 export const AREAS = [
   { label: "Spending", asset: "kit-bags" },
-  { label: "Savings", asset: null }, // the coin stack — the film's motif
+  { label: "Savings", asset: null }, // grows from the "what's left" coins
   { label: "Emergency fund", asset: "kit-jar" },
   { label: "Insurance", asset: "kit-shield" },
   { label: "Investments", asset: "kit-chart" },
@@ -29,7 +29,7 @@ const OBJ_H = 180;
 export const BiggerPictureRow = ({ build, gather = 0, chrome = 1 }: { build: number; gather?: number; chrome?: number }) => {
   const local = build;
   const roll = prog(local, 0, 26);
-  const savingsCount = local < 28 ? 2 : Math.min(5, 2 + Math.floor((local - 28) / 5));
+  const savingsCount = local < 28 ? 3 : Math.min(5, 3 + Math.floor((local - 28) / 6));
   return (
     <>
       {AREAS.map((a, i) => {

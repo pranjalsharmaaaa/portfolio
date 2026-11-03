@@ -20,7 +20,7 @@ export const S08BiggerPicture = () => {
       <Character poses={[{ at: 0, pose: "kit-thinking" }, { at: 96, pose: "kit-realisation" }]} x={C.rowCharX} enter={26} scale={1.05} />
       <Label text="The bigger picture" x={stage.margin} y={96} start={S08_TEXT_AT - 6} />
       <Display x={stage.margin} y={140} start={S08_TEXT_AT} size={88}
-        lines={[{ text: "Managing money" }, { text: "isn’t just investing.", green: true }]} />
+        lines={[{ text: "Managing what’s left" }, { text: "isn’t just investing.", green: true }]} />
     </AbsoluteFill>
   );
 };

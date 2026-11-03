@@ -1,5 +1,6 @@
 /**
- * S12 · First move (1:09–1:15). Home → First Move → Mutual Funds.
+ * S12 · First move. First Move → Mutual Funds. (The Home screen is not
+ * shown: it displays a fixed wallet balance, which the film avoids.)
  * The sprout jar lifts out of the First Move card into the world, then
  * one coin splits into many — what "spreads your money across many
  * companies" means, explained beside the real screen.
@@ -33,7 +34,7 @@ export const S12FirstMove = () => {
   return (
     <AbsoluteFill>
       <Label text="One concept at a time" x={stage.margin} y={96} start={10} />
-      <Phone cx={cx} screens={[{ at: 0, name: "app-onboarding-5" }, { at: 6, name: "app-journey-1" }, { at: 30, name: "app-journey-2" }, { at: 98, name: "app-journey-3" }]}
+      <Phone cx={cx} screens={[{ at: 0, name: "app-onboarding-4" }, { at: 8, name: "app-journey-2" }, { at: 98, name: "app-journey-3" }]}
         rings={[
           { at: 120, until: 172, u: 0.273, v: 0.704, w: 0.36, h: 0.04 },
           { at: 134, until: 172, u: 0.695, v: 0.704, w: 0.36, h: 0.04 },

@@ -63,6 +63,19 @@ Replacing a placeholder needs no code change: drop a hi-res PNG with the same
 name into `public/film-assets/` (or into `source/` and re-run the prep script),
 then adjust its `head` value in `src/assets.ts` so the head size still matches.
 
-Not yet in the animatic (production phase): voiceover audio, music, sound
-design, per-limb character rigs (blink/arm motion), polish of individual
-motion curves.
+## Audio
+
+| What | Where | Command |
+|---|---|---|
+| Narration script (single source) | `src/narration.json` | edit, then `npm run voiceover:check` |
+| AI voiceover (ElevenLabs) | `public/voiceover/<scene>.mp3` + `src/voiceover-manifest.json` | `npm run voiceover` (needs `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`, and network access to `api.elevenlabs.io`) |
+| Music bed (original, generated) | `public/audio/music-bed.mp3`, `src/music.json` | `npm run music` |
+
+`npm run voiceover:check` works offline and reports, line by line, whether
+each sentence finishes before the next one starts: estimated before audio
+exists, measured afterwards. Captions and music ducking follow the measured
+clip lengths automatically. Setup details:
+[`../docs/stackup-film/03-narration-and-voiceover.md`](../docs/stackup-film/03-narration-and-voiceover.md).
+
+Still to come in final production: the generated voice, per-limb character
+rigs (blink/arm motion), and polish of individual motion curves.

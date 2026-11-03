@@ -1,0 +1,105 @@
+{
+  "_readme": "The single source of the narration. `text` is sent to the TTS voice with the '|' marks removed; '|' only marks caption breaks. `offset` = seconds after the scene starts that the line begins. Edit here, then run `npm run voiceover`.",
+  "voice": {
+    "direction": "Young adult female, Indian English. Conversational, warm, clear, confident. Not an advert read. Natural pauses between sentences.",
+    "model_id": "eleven_multilingual_v2",
+    "voice_settings": {
+      "stability": 0.55,
+      "similarity_boost": 0.75,
+      "style": 0.12,
+      "use_speaker_boost": true
+    }
+  },
+  "estimate": {
+    "wordsPerSecond": 2.55,
+    "pauseSeconds": 0.35
+  },
+  "lines": [
+    {
+      "scene": "S01",
+      "offset": 0.2,
+      "text": "You start earning. | The money is finally yours."
+    },
+    {
+      "scene": "S02",
+      "offset": 0.3,
+      "text": "The essentials come first: rent, bills, groceries, travel. | What you do with what's left is what matters."
+    },
+    {
+      "scene": "S03",
+      "offset": 0.2,
+      "text": "Should you save it, invest it, | or get insurance first?"
+    },
+    {
+      "scene": "S04",
+      "offset": 0.2,
+      "text": "Those were my questions too. | In my semester project, I realised I didn't understand money. | Did other young earners feel the same?"
+    },
+    {
+      "scene": "S05",
+      "offset": 0.2,
+      "text": "I studied the apps people use. | Most assumed you were ready to invest."
+    },
+    {
+      "scene": "S06",
+      "offset": 0.2,
+      "text": "I spoke with over forty people, | and had twenty-three focused conversations with early-career professionals, aged twenty-one to twenty-six."
+    },
+    {
+      "scene": "S07",
+      "offset": 0.3,
+      "text": "Different habits. | The same need: guidance before action."
+    },
+    {
+      "scene": "S08",
+      "offset": 0.2,
+      "text": "Managing what's left isn't just investing. | Spending, saving, emergency funds, insurance — it's all connected."
+    },
+    {
+      "scene": "S09",
+      "offset": 0.1,
+      "text": "Most products help you act. | Few help you understand."
+    },
+    {
+      "scene": "S10",
+      "offset": 0.3,
+      "text": "So I designed Stack Up."
+    },
+    {
+      "scene": "S11",
+      "offset": 0.2,
+      "text": "With your essentials covered, Stack Up gives you a safe space | to understand, explore and practise managing what's left."
+    },
+    {
+      "scene": "S12",
+      "offset": 0.2,
+      "text": "Your first move is mutual funds, | explained simply, one concept at a time."
+    },
+    {
+      "scene": "S13",
+      "offset": 0.2,
+      "text": "Then, guided questions: | how you feel about change, and how long you'd stay invested."
+    },
+    {
+      "scene": "S14",
+      "offset": 0.2,
+      "text": "A recommendation, with its reasons — | and the freedom to compare before choosing."
+    },
+    {
+      "scene": "S15",
+      "offset": 0.3,
+      "text": "Your first investment happens in small, guided steps. | And with every step, your confidence grows."
+    },
+    {
+      "scene": "S16",
+      "offset": 0.2,
+      "text": "Every decision fills your Confidence Jar — | until you're ready for real money."
+    },
+    {
+      "scene": "S17",
+      "offset": 0.4,
+      "text": "Stack Up. | Understand money. Build confidence. Make informed decisions.",
+      "captions": false
+    }
+  ]
+}
