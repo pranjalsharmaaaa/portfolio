@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CoverSection } from "@/components/stackup/cover-section";
 import { OverviewSection } from "@/components/stackup/overview-section";
+import { FilmSection } from "@/components/stackup/film-section";
 import { QuestionSection } from "@/components/stackup/question-section";
 import { ProblemSection } from "@/components/stackup/problem-section";
 import { HypothesisSection } from "@/components/stackup/hypothesis-section";
@@ -72,6 +73,7 @@ export default function StackUpPage() {
       <PageStack>
         <CoverSection />
         <OverviewSection />
+        <FilmSection />
         <QuestionSection />
         <ProblemSection />
         <HypothesisSection />
