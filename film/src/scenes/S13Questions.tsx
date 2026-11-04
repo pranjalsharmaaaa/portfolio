@@ -15,15 +15,15 @@ import { phoneGlide } from "./S12FirstMove";
 export const S13Questions = () => {
   const f = useCurrentFrame();
   const cx = phoneGlide(f, C.phone.S12, C.phone.S13);
-  const dots = prog(f, 14, 12) * (1 - prog(f, 100, 10));
+  const dots = prog(f, 14, 12) * (1 - prog(f, 84, 10));
   return (
     <AbsoluteFill>
       <Phone cx={cx}
         screens={[
-          { at: 0, name: "app-journey-3" }, { at: 8, name: "app-journey-4" }, { at: 66, name: "app-journey-5" },
-          { at: 108, name: "app-recommendation-1" }, { at: 136, name: "app-recommendation-2" },
+          { at: 0, name: "app-journey-3" }, { at: 8, name: "app-journey-4" }, { at: 52, name: "app-journey-5" },
+          { at: 86, name: "app-recommendation-1" }, { at: 112, name: "app-recommendation-2" },
         ]}
-        ripples={[{ at: 40, u: 0.5, v: 0.484 }, { at: 92, u: 0.48, v: 0.49 }]} />
+        ripples={[{ at: 30, u: 0.5, v: 0.484 }, { at: 72, u: 0.48, v: 0.49 }]} />
       <Character poses={[{ at: 0, pose: "kit-comparing" }]} x={420} enter={10} />
       {/* steady vs. moving — the question, as two dots */}
       <div style={{ position: "absolute", left: 1290, top: 420, opacity: dots }}>

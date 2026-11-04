@@ -1,7 +1,7 @@
 {
-  "_readme": "The single source of the narration (approved script v3.1). `text` is what the voice reads; '|' marks phrase breaks: each phrase is synthesised separately and joined with a natural pause, and captions follow the measured phrase timings. `offset` = seconds after the scene starts that the line begins.",
+  "_readme": "The single source of the narration (script v4: conversational rewrite). `text` is what the voice reads; '|' marks phrase breaks: each phrase is synthesised separately and joined with a natural pause, and captions follow the measured phrase timings. `offset` = seconds after the scene starts that the line begins.",
   "voice": {
-    "direction": "Young adult female, Indian English. Warm, expressive, conversational, confident; a thoughtful storyteller, not an advert.",
+    "direction": "Young adult female, Indian English. Conversational and human: like telling a friend the story behind something you care about. Warm, a little playful in Act 1, reflective in Act 2, bright in Act 5. Not bookish, not dramatic, not promotional.",
     "model_id": "eleven_multilingual_v2",
     "voice_settings": {
       "stability": 0.55,
@@ -16,14 +16,14 @@
       },
       "lang": "en-us",
       "speedByAct": {
-        "1": 0.95,
-        "2": 0.92,
-        "3": 0.94,
-        "4": 0.95,
-        "5": 0.97,
-        "6": 0.92
+        "1": 1.0,
+        "2": 0.97,
+        "3": 0.98,
+        "4": 1.0,
+        "5": 1.0,
+        "6": 0.94
       },
-      "phrasePauseSeconds": 0.38
+      "phrasePauseSeconds": 0.32
     }
   },
   "estimate": {
@@ -34,88 +34,87 @@
     {
       "scene": "S01",
       "offset": 0.2,
-      "text": "Your first salary lands… | and honestly? It feels incredible."
+      "text": "My first salary landed… | and honestly? It felt amazing."
     },
     {
       "scene": "S02",
       "offset": 0.3,
-      "text": "Before anything else, the essentials: | rent, electricity, groceries, getting to work. | Then you look at what's left…"
+      "text": "Then the essentials went out — | rent, electricity, groceries, getting to work. | And whatever was left… was up to me."
     },
     {
       "scene": "S03",
       "offset": 0.2,
-      "text": "And you wonder: | what do I do with it now?"
+      "text": "Save it? Invest it? Insurance? | I had no clue where to start."
     },
     {
       "scene": "S04",
       "offset": 0.2,
-      "text": "Those were my questions too. | I didn't really understand money myself, | and that curiosity shaped my semester project."
+      "text": "And I wondered — was it just me? | My semester project became the perfect excuse to find out."
     },
     {
       "scene": "S05",
       "offset": 0.2,
-      "text": "So I explored the apps people use. | Most assumed you knew how to invest."
+      "text": "First, I looked at the apps. | Most assumed you already knew what you were doing."
     },
     {
       "scene": "S06",
       "offset": 0.2,
-      "text": "Then I listened. Over forty people, | and twenty-three deeper conversations with early-career professionals, aged twenty-one to twenty-six."
+      "text": "Then I talked to people — over forty of them. | Then twenty-three deeper conversations with early-career professionals, twenty-one to twenty-six. | I wasn't alone."
     },
     {
       "scene": "S07",
       "offset": 0.3,
-      "text": "Some relied on others. | Some figured it out alone. | Some managed in fragments. | Some never asked. | All needed guidance before action."
+      "text": "Some leaned on a friend. | Some googled everything. | Some kept it in bits and pieces. | Some felt awkward asking. | Everyone needed a different place to start."
     },
     {
       "scene": "S08",
       "offset": 0.2,
-      "text": "What's left isn't only for investing. | Spending, saving, emergency funds, insurance, it's all connected."
+      "text": "And it's not just investing. | Spending, saving, emergencies, insurance — | there's a lot to learn, and no rush."
     },
     {
       "scene": "S09",
       "offset": 0.1,
-      "text": "Most products help you act. | Few help you understand."
+      "text": "Most apps just want you to act. | I wanted to help people understand first."
     },
     {
       "scene": "S10",
       "offset": 0.3,
-      "text": "That gap became Stack Up."
+      "text": "And that's how Stack Up started."
     },
     {
       "scene": "S11",
       "offset": 0.2,
-      "text": "Your Practice Wallet is a safe space | to understand, explore and practise managing what's left."
+      "text": "You get practice money — | a safe place to explore, practise, even mess up."
     },
     {
       "scene": "S12",
       "offset": 0.2,
-      "text": "The first move: a mutual fund, | one idea at a time."
+      "text": "You choose where to begin — | saving, insurance, or investing. | Say you pick mutual funds."
     },
     {
       "scene": "S13",
       "offset": 0.2,
-      "text": "Then, simple questions: | how you feel about change, how long you'd stay invested."
+      "text": "It asks a few simple questions, | and suggests where you could start."
     },
     {
       "scene": "S14",
       "offset": 0.2,
-      "text": "It suggests a fund, and explains why — | yet the choice stays yours."
+      "text": "But it's only a suggestion. | If it doesn't feel right, pick another."
     },
     {
       "scene": "S15",
       "offset": 0.3,
-      "text": "Your first practice investment — | no real money at stake, | but real confidence gained."
+      "text": "Then you try it, with practice money — | and see what your decision looks like, | without risking your actual savings."
     },
     {
       "scene": "S16",
       "offset": 0.2,
-      "text": "Every decision fills your Confidence Jar, | until you're ready for real money."
+      "text": "Every step fills your Confidence Jar, | at your own pace."
     },
     {
       "scene": "S17",
       "offset": 0.3,
-      "text": "Confidence isn't given. | It's built, one step at a time.",
-      "captions": true
+      "text": "Confidence isn't given. | It's built — one step at a time."
     }
   ]
 }

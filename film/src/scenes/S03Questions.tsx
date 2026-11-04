@@ -17,7 +17,7 @@ const BUBBLES = [
   { x: 1250, y: 130, w: 430, h: 150, text: "How do I track everything?", start: 26, tail: "left" as const },
   { x: 1240, y: 430, w: 520, h: 150, text: "Should I save, invest or get insurance first?", start: 46, tail: "left" as const },
 ];
-const T = { pop: 64, gather: 80, cursor: 104 };
+const T = { pop: 70, gather: 96, cursor: 120 };
 
 export const S03Questions = () => {
   const f = useCurrentFrame();

@@ -33,28 +33,28 @@ export type SceneSpec = {
 
 export const SCENES: SceneSpec[] = [
   // ACT 1 — THE PROBLEM
-  { id: "S01", act: 1, title: "Payday", seconds: 4.5, out: { kind: "cut", frames: 0 } },
-  { id: "S02", act: 1, title: "Essentials first, then what's left", seconds: 8.4, out: { kind: "fade", frames: 12 } },
-  { id: "S03", act: 1, title: "The questions", seconds: 4, out: { kind: "fade", frames: 8 } },
+  { id: "S01", act: 1, title: "Payday", seconds: 126 / 30, out: { kind: "cut", frames: 0 } },
+  { id: "S02", act: 1, title: "Essentials first, then what's left", seconds: 237 / 30, out: { kind: "fade", frames: 12 } },
+  { id: "S03", act: 1, title: "The questions", seconds: 132 / 30, out: { kind: "fade", frames: 8 } },
   // ACT 2 — MY JOURNEY
-  { id: "S04", act: 2, title: "These were my questions too", seconds: 8.9, out: { kind: "dolly", frames: 24 } },
-  { id: "S05", act: 2, title: "Exploring the ecosystem", seconds: 5.2, out: { kind: "dolly", frames: 24 } },
-  { id: "S06", act: 2, title: "Listening", seconds: 9.5, out: { kind: "fade", frames: 12 } },
-  { id: "S07", act: 2, title: "Four patterns, one need", seconds: 10.8, out: { kind: "dolly", frames: 24 } },
+  { id: "S04", act: 2, title: "These were my questions too", seconds: 198 / 30, out: { kind: "dolly", frames: 24 } },
+  { id: "S05", act: 2, title: "Exploring the ecosystem", seconds: 153 / 30, out: { kind: "dolly", frames: 24 } },
+  { id: "S06", act: 2, title: "Listening", seconds: 324 / 30, out: { kind: "fade", frames: 12 } },
+  { id: "S07", act: 2, title: "Four patterns, one need", seconds: 336 / 30, out: { kind: "dolly", frames: 24 } },
   // ACT 3 — THE BIGGER PICTURE
-  { id: "S08", act: 3, title: "The bigger picture", seconds: 7.8, out: { kind: "cut", frames: 0 } },
-  { id: "S09", act: 3, title: "The real problem", seconds: 128 / 30, out: { kind: "cut", frames: 0 } },
+  { id: "S08", act: 3, title: "The bigger picture", seconds: 237 / 30, out: { kind: "cut", frames: 0 } },
+  { id: "S09", act: 3, title: "The real problem", seconds: 144 / 30, out: { kind: "cut", frames: 0 } },
   // ACT 4 — INTRODUCING STACK UP
-  { id: "S10", act: 4, title: "The reveal", seconds: 3, out: { kind: "cut", frames: 0 } },
-  { id: "S11", act: 4, title: "What's left → Practice Wallet", seconds: 6.9, out: { kind: "fade", frames: 10 } },
+  { id: "S10", act: 4, title: "The reveal", seconds: 90 / 30, out: { kind: "cut", frames: 0 } },
+  { id: "S11", act: 4, title: "What's left → Practice Wallet", seconds: 168 / 30, out: { kind: "fade", frames: 10 } },
   // ACT 5 — LEARNING THROUGH DOING
-  { id: "S12", act: 5, title: "First move", seconds: 142 / 30, out: { kind: "fade", frames: 10 } },
-  { id: "S13", act: 5, title: "Guided questions", seconds: 172 / 30, out: { kind: "fade", frames: 10 } },
-  { id: "S14", act: 5, title: "Recommendation & alternatives", seconds: 5, out: { kind: "fade", frames: 10 } },
-  { id: "S15", act: 5, title: "The first investment", seconds: 203 / 30, out: { kind: "fade", frames: 12 } },
+  { id: "S12", act: 5, title: "Where to begin", seconds: 228 / 30, out: { kind: "fade", frames: 10 } },
+  { id: "S13", act: 5, title: "Guided questions", seconds: 156 / 30, out: { kind: "fade", frames: 10 } },
+  { id: "S14", act: 5, title: "Recommendation & alternatives", seconds: 138 / 30, out: { kind: "fade", frames: 10 } },
+  { id: "S15", act: 5, title: "The first investment", seconds: 225 / 30, out: { kind: "fade", frames: 12 } },
   // ACT 6 — THE DESTINATION
-  { id: "S16", act: 6, title: "The Confidence Jar", seconds: 5.5, out: { kind: "fade", frames: 15 } },
-  { id: "S17", act: 6, title: "Understand → Practise → Build Confidence", seconds: 7, out: { kind: "cut", frames: 0 } },
+  { id: "S16", act: 6, title: "The Confidence Jar", seconds: 150 / 30, out: { kind: "fade", frames: 15 } },
+  { id: "S17", act: 6, title: "Understand → Practise → Build Confidence", seconds: 198 / 30, out: { kind: "cut", frames: 0 } },
 ];
 
 export const sec = (s: number) => Math.round(s * stage.fps);

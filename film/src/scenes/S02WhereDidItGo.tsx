@@ -33,7 +33,7 @@ const COIN = 104;
 const STEP = COIN * 0.16;
 /** Frames: essentials marked covered → what's left highlighted → line. */
 const LEFT_AT = phraseAt("S02", 2, 192); // "Then you look at what's left…"
-const T = { covered: LAND(3) + 34, highlight: LEFT_AT, line: LEFT_AT + 12, out: 230 };
+const T = { covered: LAND(3) + 34, highlight: LEFT_AT, line: LEFT_AT + 12, out: 216 };
 
 export const S02WhereDidItGo = () => {
   const f = useCurrentFrame();

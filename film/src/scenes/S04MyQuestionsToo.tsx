@@ -10,7 +10,8 @@ import { mix, prog } from "../motion/ease";
 import { color, stage } from "../theme/tokens";
 import { phraseAt } from "../timeline";
 
-const CARD_AT = phraseAt("S04", 2, 162) - 14;
+/** The brief card arrives with "My semester project became the perfect excuse…" */
+const CARD_AT = phraseAt("S04", 1, 76) - 14;
 
 export const S04MyQuestionsToo = () => {
   const f = useCurrentFrame();
@@ -22,9 +23,9 @@ export const S04MyQuestionsToo = () => {
       <div style={{ position: "absolute", left: 957, top: 430, width: 6, height: 84, background: color.ink, opacity: blink }} />
       <Label text="My journey" x={stage.margin} y={96} start={22} />
       {/* the case study's own opening, verbatim */}
-      <Display x={stage.margin} y={290} start={24} exit={CARD_AT - 14}
+      <Display x={stage.margin} y={290} start={24} exit={CARD_AT - 4}
         lines={[{ text: "You earn money." }, { text: "But how do you manage it?", green: true }]} />
-      <Character poses={[{ at: 0, pose: "phone-notebook" }]} x={1700} enter={18} exit={249} scale={0.96} />
+      <Character poses={[{ at: 0, pose: "phone-notebook" }]} x={1700} enter={18} exit={180} scale={0.96} />
 
       {/* the live brief */}
       <div style={{

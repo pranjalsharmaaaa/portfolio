@@ -8,143 +8,145 @@
   "lines": {
     "S01": {
       "file": "voiceover/S01.mp3",
-      "seconds": 4.284,
+      "seconds": 3.991,
       "phrases": [
         0.0,
-        2.015
+        1.903
       ]
     },
     "S02": {
       "file": "voiceover/S02.mp3",
-      "seconds": 7.81,
+      "seconds": 7.529,
       "phrases": [
         0.0,
-        2.642,
-        6.093
+        2.085,
+        5.389
       ]
     },
     "S03": {
       "file": "voiceover/S03.mp3",
-      "seconds": 2.896,
+      "seconds": 4.129,
       "phrases": [
         0.0,
-        1.364
+        2.405
       ]
     },
     "S04": {
       "file": "voiceover/S04.mp3",
-      "seconds": 8.547,
+      "seconds": 6.299,
       "phrases": [
         0.0,
-        2.22,
-        5.179
+        2.33
       ]
     },
     "S05": {
       "file": "voiceover/S05.mp3",
-      "seconds": 4.899,
+      "seconds": 4.841,
       "phrases": [
         0.0,
-        2.598
+        1.995
       ]
     },
     "S06": {
       "file": "voiceover/S06.mp3",
-      "seconds": 9.273,
+      "seconds": 10.592,
       "phrases": [
         0.0,
-        2.853
+        3.12,
+        9.423
       ]
     },
     "S07": {
       "file": "voiceover/S07.mp3",
-      "seconds": 10.436,
+      "seconds": 10.839,
       "phrases": [
         0.0,
-        2.04,
-        4.287,
-        6.581,
-        8.259
+        1.877,
+        3.871,
+        6.3,
+        8.392
       ]
     },
     "S08": {
       "file": "voiceover/S08.mp3",
-      "seconds": 7.421,
+      "seconds": 7.496,
       "phrases": [
         0.0,
-        2.844
+        2.12,
+        5.332
       ]
     },
     "S09": {
       "file": "voiceover/S09.mp3",
-      "seconds": 3.919,
+      "seconds": 4.739,
       "phrases": [
         0.0,
-        2.238
+        2.248
       ]
     },
     "S10": {
       "file": "voiceover/S10.mp3",
-      "seconds": 1.735,
+      "seconds": 1.728,
       "phrases": [
         0.0
       ]
     },
     "S11": {
       "file": "voiceover/S11.mp3",
-      "seconds": 6.523,
+      "seconds": 4.906,
       "phrases": [
         0.0,
-        2.794
+        1.732
       ]
     },
     "S12": {
       "file": "voiceover/S12.mp3",
-      "seconds": 4.163,
+      "seconds": 6.155,
       "phrases": [
         0.0,
-        2.511
+        1.885,
+        4.403
       ]
     },
     "S13": {
       "file": "voiceover/S13.mp3",
-      "seconds": 5.273,
+      "seconds": 4.327,
       "phrases": [
         0.0,
-        2.034
+        2.436
       ]
     },
     "S14": {
       "file": "voiceover/S14.mp3",
-      "seconds": 4.616,
+      "seconds": 4.061,
       "phrases": [
         0.0,
-        2.974
+        2.019
       ]
     },
     "S15": {
       "file": "voiceover/S15.mp3",
-      "seconds": 6.158,
+      "seconds": 7.098,
       "phrases": [
         0.0,
-        2.247,
-        4.318
+        2.507,
+        4.934
       ]
     },
     "S16": {
       "file": "voiceover/S16.mp3",
-      "seconds": 5.317,
+      "seconds": 3.941,
       "phrases": [
         0.0,
-        3.221
+        2.685
       ]
     },
     "S17": {
       "file": "voiceover/S17.mp3",
-      "seconds": 4.184,
+      "seconds": 4.038,
       "phrases": [
         0.0,
-        2.12
+        2.032
       ]
     }
   }

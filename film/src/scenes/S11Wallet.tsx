@@ -36,7 +36,7 @@ export const S11Wallet = () => {
       <Phone cx={C.phone.S11} screens={[
         { at: 0, name: "app-onboarding-1" }, { at: 16, name: "app-onboarding-3" }, { at: T.wallet, name: "app-onboarding-4" },
       ]} />
-      <Character poses={[{ at: 0, pose: "kit-phone" }]} x={560} exit={190} />
+      <Character poses={[{ at: 0, pose: "kit-phone" }]} x={560} exit={154} />
       <WhatsLeft x={STACK_X} dropFrom={6} glow={prog(f, 18, 14)} tag={prog(f, 24, 10)} opacity={1 - morph} />
       <Asset name="render-wallet" x={pt.x} y={pt.y} anchor="center" height={mix(fly, WALLET_H, ON_SCREEN.h)}
         opacity={morph * (1 - prog(f, T.wallet + 6, 6))} scale={mix(morph, 0.7, 1)} />

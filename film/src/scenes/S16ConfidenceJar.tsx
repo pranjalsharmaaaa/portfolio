@@ -16,8 +16,8 @@ import { C } from "./continuity";
 const JAR = { x: 1240, h: 380 };
 // jar mouth on the render (it sits left of the arrow)
 const MOUTH = { x: JAR.x - 70, y: stage.groundY - JAR.h * 0.78 };
-const DECISIONS = ["Practice Wallet", "Mutual Funds", "Guided questions", "Compared alternatives", "First investment"];
-const DROP0 = 66, DROP_GAP = 18;
+const DECISIONS = ["Practice Wallet", "Mutual Funds", "Guided questions", "Compared alternatives", "Practice investment"];
+const DROP0 = 66, DROP_GAP = 15;
 const HOLD_AT = 0.8;
 
 export const S16ConfidenceJar = () => {

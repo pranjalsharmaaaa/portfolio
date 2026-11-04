@@ -1,4 +1,7 @@
 # Stack Up — Case Study Film
+
+> **Superseded by v4 (conversational rewrite, in production).** The live narration is `film/src/narration.json`: first-person and conversational; users choose where to begin (saving, insurance or investing), with mutual funds shown as one example path; Stack Up's recommendation is a suggestion the user can change. The text below is kept for history.
+
 ## Voiceover script, version 3.1 (final words, for approval)
 
 **Status:** ✅ approved and produced. The narration is generated (Kokoro, open-source neural TTS, run locally, because ElevenLabs is blocked in this environment) and integrated into the film. Scene lengths were re-fitted to the measured voice (`film/src/timeline.ts`); the total is still exactly 1:48.
