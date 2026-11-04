@@ -26,7 +26,9 @@ export function FilmSection() {
           </p>
         </div>
 
-        <figure className="m-0 flex flex-col gap-4">
+        {/* Capped at 800px and centred so the film sits as a refined frame on
+            wide screens; below 800px it simply fills the content width. */}
+        <figure className="m-0 mx-auto flex w-full max-w-[800px] flex-col gap-4">
           <FilmPlayer {...video} />
           <figcaption className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm" style={{ color: "var(--stackup-muted)" }}>
             {stackupFilm.meta.map((m, i) => (
