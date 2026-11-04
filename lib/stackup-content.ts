@@ -30,6 +30,27 @@ export const stackupOverview = {
   ],
 } as const;
 
+/**
+ * The narrated case-study film (1:48), shown right after the overview as
+ * a cinematic introduction. Built in film/ (Remotion); the MP4 here is
+ * the final render, copied byte-for-byte. Captions are burned in.
+ */
+export const stackupFilm = {
+  label: "The Film",
+  headingPlain: "A different way to ",
+  headingAccent: "learn about money.",
+  body: "What if understanding money didn't have to begin with investing? Stack Up explores a more approachable way to build financial confidence — one decision at a time.",
+  video: {
+    src: "/videos/stackup/stackup-film.mp4",
+    poster: "/videos/stackup/stackup-film-poster.webp",
+    width: 1920,
+    height: 1080,
+    duration: "1:48",
+    title: "Stack Up — the story behind the product, a 1 minute 48 second narrated film",
+  },
+  meta: ["1:48", "Narrated", "Captions on screen"],
+} as const;
+
 export const stackupQuestion = {
   label: "It all started with a question",
   lineOne: "You earn money",
