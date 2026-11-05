@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     // Remotion film is a separate package with its own tooling.
     "film/**",
     "sales-coach-film/**",
+    "yana-film/**",
   ]),
 ]);
 

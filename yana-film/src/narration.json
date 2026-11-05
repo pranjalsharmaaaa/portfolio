@@ -1,0 +1,53 @@
+{
+  "_readme": "Approved YANA script, word for word. '|' marks phrase breaks only (not spoken): each phrase is synthesised separately and joined with a natural pause; captions follow the measured phrase timings. `offset` = seconds after the scene starts. Captions show 'YANA'; the voice is given 'Yana' so it says the name rather than spelling it. `phraseSpeed` slows one phrase where the default pace blurred a word (S3: 'simply being heard' was heard as 'hurt').",
+  "voice": {
+    "direction": "Female, Indian English. Warm, empathetic, natural; gentle but confident. Never rushed, never sad.",
+    "kokoro": {
+      "style": {
+        "hf_alpha": 0.65,
+        "af_heart": 0.35
+      },
+      "lang": "en-us",
+      "speed": 0.94,
+      "phrasePauseSeconds": 0.38
+    },
+    "say": {
+      "YANA": "Yana"
+    }
+  },
+  "lines": [
+    {
+      "scene": "S1",
+      "offset": 0.5,
+      "text": "Sometimes, you know something doesn't feel right. | But finding the words for it isn't always easy."
+    },
+    {
+      "scene": "S2",
+      "offset": 0.4,
+      "text": "And when opening up feels difficult, | getting the right support can feel even further away."
+    },
+    {
+      "scene": "S3",
+      "offset": 0.3,
+      "text": "What if taking care of your mental wellbeing started with simply being heard? | Meet YANA. | You Are Not Alone.",
+      "phraseSpeed": {
+        "0": 0.88
+      }
+    },
+    {
+      "scene": "S4",
+      "offset": 0.3,
+      "text": "Start at your own pace. | Check in with how you're feeling, | explore what matters to you, | and find a space that understands your needs."
+    },
+    {
+      "scene": "S5",
+      "offset": 0.3,
+      "text": "Reflect through journaling. | Discover bite-sized guidance. | Share your thoughts | and connect with a supportive community."
+    },
+    {
+      "scene": "S6",
+      "offset": 0.3,
+      "text": "And when you're ready for more, | explore individual therapy, group sessions and professional support. | Because wellbeing isn't a one-time destination. | It's a journey, and you don't have to take it alone. | YANA. You are not alone."
+    }
+  ]
+}

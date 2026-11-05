@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "film", "sales-coach-film"]
+  "exclude": ["node_modules", "film", "sales-coach-film", "yana-film"]
 }
