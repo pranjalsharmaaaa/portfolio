@@ -1,0 +1,27 @@
+{
+  "name": "sales-coach-film",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sales Coach \u2014 60-second product film (Remotion).",
+  "scripts": {
+    "sync-assets": "node scripts/sync-assets.mjs",
+    "studio": "npm run sync-assets && remotion studio",
+    "voiceover": "python3 scripts/voiceover_kokoro.py",
+    "voiceover:check": "node scripts/export-deliverables.mjs --check",
+    "music": "python3 scripts/generate-music.py",
+    "render": "npm run sync-assets && remotion render SalesCoachFilm out/sales-coach-film-final.mp4 --crf=18 --audio-bitrate=192k",
+    "deliverables": "node scripts/export-deliverables.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.540",
+    "@remotion/transitions": "4.0.540",
+    "remotion": "4.0.540",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

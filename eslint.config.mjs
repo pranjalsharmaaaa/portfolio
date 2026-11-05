@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Remotion film is a separate package with its own tooling.
     "film/**",
+    "sales-coach-film/**",
   ]),
 ]);
 

@@ -1,0 +1,63 @@
+{
+  "generated": true,
+  "engine": "kokoro-v1.0 (local, Apache-2.0)",
+  "voice": {
+    "hf_alpha": 0.65,
+    "af_heart": 0.35
+  },
+  "lines": {
+    "S1": {
+      "file": "voiceover/S1.wav",
+      "seconds": 6.27,
+      "phrases": [
+        0.0,
+        3.945
+      ]
+    },
+    "S2": {
+      "file": "voiceover/S2.wav",
+      "seconds": 7.37,
+      "phrases": [
+        0.0,
+        2.152,
+        4.755
+      ]
+    },
+    "S3": {
+      "file": "voiceover/S3.wav",
+      "seconds": 5.179,
+      "phrases": [
+        0.0,
+        3.892
+      ]
+    },
+    "S4": {
+      "file": "voiceover/S4.wav",
+      "seconds": 14.289,
+      "phrases": [
+        0.0,
+        2.365,
+        4.068,
+        7.325,
+        9.755
+      ]
+    },
+    "S5": {
+      "file": "voiceover/S5.wav",
+      "seconds": 9.255,
+      "phrases": [
+        0.0,
+        2.42,
+        6.913
+      ]
+    },
+    "S6": {
+      "file": "voiceover/S6.wav",
+      "seconds": 8.815,
+      "phrases": [
+        0.0,
+        6.38
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "_readme": "Approved Sales Coach script, word for word. '|' marks phrase breaks only (not spoken): each phrase is synthesised separately and joined with a natural pause; captions follow the measured phrase timings. `offset` = seconds after the scene starts.",
+  "voice": {
+    "direction": "Young adult female, Indian English. Warm, conversational, confident, human; professional but not corporate-advert.",
+    "kokoro": { "style": { "hf_alpha": 0.65, "af_heart": 0.35 }, "lang": "en-us", "speed": 1.0, "phrasePauseSeconds": 0.3 }
+  },
+  "lines": [
+    { "scene": "S1", "offset": 0.4, "text": "Every customer meeting begins long before you enter the room. | But getting ready isn't always easy." },
+    { "scene": "S2", "offset": 0.3, "text": "Information is everywhere. | Reports, account history, updates. | But what actually matters for this conversation?" },
+    { "scene": "S3", "offset": 0.3, "text": "What if your meeting brief could do more than just show information? | Meet Sales Coach." },
+    { "scene": "S4", "offset": 0.3, "text": "See your upcoming conversations, | understand the account, | and get the context that matters — all in one place. | Need to go deeper? Just ask. | With voice-first AI, get answers without losing the context of your work." },
+    { "scene": "S5", "offset": 0.3, "text": "And preparation doesn't stop there. | Practise realistic customer conversations, respond to questions, | and get feedback before the actual meeting." },
+    { "scene": "S6", "offset": 0.3, "text": "From understanding to practising, Sales Coach helps you walk into every conversation better prepared. | Sales Coach. Be ready for what matters." }
+  ]
+}
