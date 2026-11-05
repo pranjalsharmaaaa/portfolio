@@ -40,6 +40,23 @@ export type YanaProcessStep = {
   icon: string;
 };
 
+/* ── Film · the 60-second product film (after the overview) ─────────── */
+// Built in yana-film/ (Remotion) from this case study's own illustrations
+// and app screens. Captions are burned in.
+export const yanaFilm = {
+  heading: "YANA in 60 seconds",
+  sub: "From finding the words to finding support: check in at your own pace, reflect and connect, and explore therapy when you're ready.",
+  video: {
+    src: "/videos/yana/yana-film.mp4",
+    poster: "/videos/yana/yana-film-poster.webp",
+    width: 1920,
+    height: 1080,
+    duration: "1:00",
+    title: "YANA — a 60-second narrated product film",
+  },
+  meta: ["1:00", "Narrated", "Captions on screen"],
+} as const;
+
 export const yanaProcess = {
   heading: "Design Process",
   steps: [

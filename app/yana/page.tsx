@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { YanaCoverSection } from "@/components/yana/cover-section";
 import { YanaOverviewSection } from "@/components/yana/overview-section";
+import { YanaFilmSection } from "@/components/yana/film-section";
 import { YanaProcessSection } from "@/components/yana/process-section";
 import { YanaChapterDivider } from "@/components/yana/chapter-divider";
 import { YanaDiscoverSection } from "@/components/yana/discover-section";
@@ -93,6 +94,7 @@ export default function YanaPage() {
 
       <YanaCoverSection />
       <YanaOverviewSection />
+      <YanaFilmSection />
       <YanaProcessSection />
 
       {/* The chapter band and its first page of content share ONE screen:
