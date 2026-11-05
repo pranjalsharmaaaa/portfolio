@@ -5,6 +5,7 @@ import { BriefMoreScreen, CoverScreen, EnvironmentScreen, FindingScreen } from "
 import { AiPossibleScreen, PatternsScreen, PrinciplesScreen, PrototypeScreen } from "@/components/sales-coach/sections/explore";
 import { ConfidenceScreen, PartnerScreen, ScrutinyScreen, SharpenedScreen, TalkingScreen } from "@/components/sales-coach/sections/validate";
 import { AskScreen, PractiseScreen, UnderstandScreen } from "@/components/sales-coach/sections/product";
+import { FilmScreen } from "@/components/sales-coach/sections/film";
 
 export const metadata: Metadata = {
   title: "Sales Coach — Pranjal Sharma",
@@ -53,6 +54,7 @@ export default function SalesCoachPage() {
 
       <ScreenStack>
         <CoverScreen />
+        <FilmScreen />
         <EnvironmentScreen />
         <FindingScreen />
         <BriefMoreScreen />

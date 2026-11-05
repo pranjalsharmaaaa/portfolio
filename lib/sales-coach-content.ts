@@ -35,6 +35,23 @@ export const scCover = {
   orb: { src: img("cover-ai-orb"), alt: "", width: 1000, height: 671 },
 } as const;
 
+/* ── Film · the 60-second product film (after the cover) ────────────── */
+// Built in sales-coach-film/ (Remotion) from this case study's own
+// illustrations, screens and recordings. Captions are burned in.
+export const scFilm = {
+  heading: { plain: "Sales Coach ", accent: "in 60 seconds" } satisfies Heading,
+  sub: "From scattered information to walking into the meeting ready: understand the account, ask in context, and practise the conversation.",
+  video: {
+    src: "/videos/sales-coach/sales-coach-film.mp4",
+    poster: "/videos/sales-coach/sales-coach-film-poster.webp",
+    width: 1920,
+    height: 1080,
+    duration: "1:00",
+    title: "Sales Coach — a 60-second narrated product film",
+  },
+  meta: ["1:00", "Narrated", "Captions on screen"],
+} as const;
+
 /* ── 02 · Understanding the sales environment ──────────────────────── */
 export const scEnvironment = {
   heading: { plain: "Understanding the ", accent: "sales environment" } satisfies Heading,
