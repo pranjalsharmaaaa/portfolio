@@ -30,6 +30,14 @@ npm run music            # regenerate the original music bed (numpy)
 
 Live preview while editing: `npm run studio`.
 
+Output: H.264 High, yuv420p (standard range), 1920×1080, 30 fps, 1,800 frames,
+AAC 48 kHz stereo. Frames are captured as lossless PNG (`remotion.config.ts`).
+
+Deliverables (`npm run deliverables`): `sales-coach-film-final.mp4`,
+`sales-coach-voiceover.wav` (narration only, 48 kHz, 60.000 s, each line at
+its film time) and `sales-coach-captions.srt`. The MP4 and WAV are git-ignored
+and regenerate exactly from the committed source.
+
 ## How it's organised
 
 | Path | What lives there |

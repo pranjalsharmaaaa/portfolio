@@ -3,3 +3,5 @@ out
 public/sc
 public/fonts
 .tts-models
+deliverables/*.mp4
+deliverables/*.wav
